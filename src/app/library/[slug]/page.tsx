@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type React from "react";
-import { BOOKS, type Book } from "../../books/_data"; // 상대경로 주의
+import { BOOKS, type Book } from "./_data"; // 상대경로 주의
 
 /** 라우팅 동작을 dev에서 즉시 반영 */
 export const dynamic = "force-dynamic";
@@ -165,4 +165,3 @@ export default function LibraryBookPage({
     </main>
   );
 }
-
