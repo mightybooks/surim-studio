@@ -5,9 +5,9 @@ export default function NewsDetailPage({
   params,
 }: {
   params: { slug: string };
-}): JSX.Element { // ← 반환 타입 명시
+}) {
   const item = NEWS.find((n) => n.slug === params.slug);
-  if (!item) notFound(); // return notFound() 대신 그냥 호출해도 됨
+  if (!item) notFound(); 
 
   if (item.href) {
     redirect(item.href);

@@ -64,7 +64,7 @@ export default function News500NovelPage() {
             ))}
           </div>
           <span className="ml-auto" />
-          {/* @ts-expect-error Server Component에서 Client Component import */}
+          
           <CopyLinkButton />
         </div>
       </header>
