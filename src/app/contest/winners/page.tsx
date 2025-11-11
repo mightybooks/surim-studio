@@ -19,7 +19,7 @@ export default function WinnersPage() {
   const load = useCallback(async () => {
     setLoading(true);
 
-    // 컨테스트 조회
+    // 1) 컨테스트 조회
     const { data: contest, error: cErr } = await supabase
       .from("contests")
       .select("id")
@@ -27,12 +27,13 @@ export default function WinnersPage() {
       .single();
 
     if (cErr || !contest?.id) {
+      console.warn("Contest not found:", CONTEST_SLUG, cErr);
       setWinners([]);
       setLoading(false);
       return;
     }
 
-    // 수상작 조회
+    // 2) 수상작 조회
     const { data, error } = await supabase
       .from("submissions")
       .select("id,title,body,profiles(display_name)")
@@ -40,13 +41,34 @@ export default function WinnersPage() {
       .eq("status", "winner")
       .order("created_at", { ascending: false });
 
-    if (!error && data) setWinners(data as Winner[]);
+    if (error) {
+      console.error(error);
+      setWinners([]);
+      setLoading(false);
+      return;
+    }
+
+    // 3) Supabase 응답 → 화면용 Winner로 안전 매핑
+    const mapped: Winner[] = (data ?? []).map((d: any) => ({
+      id: String(d.id),
+      title: String(d.title ?? ""),
+      body: String(d.body ?? ""),
+      profiles: Array.isArray(d.profiles)
+        ? d.profiles[0]
+          ? { display_name: d.profiles[0].display_name ?? null }
+          : null
+        : d.profiles
+        ? { display_name: d.profiles.display_name ?? null }
+        : null,
+    }));
+
+    setWinners(mapped);
     setLoading(false);
-  }, [supabase]); // 의존성 명시
+  }, [supabase]);
 
   useEffect(() => {
     load();
-  }, [load]); // 콜백을 의존성으로
+  }, [load]);
 
   if (loading) return <div className="p-8">불러오는 중…</div>;
   if (winners.length === 0) return <div className="p-8">아직 수상작이 발표되지 않았습니다.</div>;
