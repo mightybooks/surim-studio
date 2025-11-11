@@ -1,4 +1,3 @@
-// src/app/library/_data.ts
 export type StoreKey = "kyobo" | "shop"; // 교보문고 | 내 독립몰(스마트스토어 등)
 
 export type Book = {
