@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 
-// 클라이언트에서 쓸 환경변수는 NEXT_PUBLIC 접두어만 노출됩니다.
+// 클라이언트에서 노출 가능한 환경변수만 사용됩니다.
 const CONTEST_SLUG = process.env.NEXT_PUBLIC_CONTEST_SLUG ?? "2025";
 
 // 상태 리터럴 유니온 고정
@@ -32,27 +32,31 @@ export default function AdminContestPage() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [loading, setLoading] = useState<boolean>(true);
 
-// 접근 가드: RPC로 관리자 여부 확인 (admins 테이블 직접 조회 X)
-useEffect(() => {
-  const run = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      router.replace("/");
-      return;
-    }
+  // 접근 가드: 관리자 여부 확인 (SECURITY DEFINER RPC 사용 가정)
+  useEffect(() => {
+    const run = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-    // RLS에 막히지 않는 SECURITY DEFINER 함수 호출
-    const { data: isAdmin, error } = await supabase.rpc("is_admin");
-    if (error || !isAdmin) {
-      router.replace("/");
-      return;
-    }
+      if (!user) {
+        setGate("denied");
+        router.replace("/");
+        return;
+      }
 
-    setGate("allowed");  // 허용되면 이후 effect에서 load()가 호출됩니다.
-  };
-  run();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, []);
+      const { data: isAdmin, error } = await supabase.rpc("is_admin");
+      if (error || !isAdmin) {
+        setGate("denied");
+        router.replace("/");
+        return;
+      }
+
+      setGate("allowed");
+    };
+    run();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // 목록 로딩 함수 (useCallback으로 고정)
   const load = useCallback(async () => {
@@ -72,7 +76,7 @@ useEffect(() => {
       return;
     }
 
-    // 2) 제출물 조회
+    // 2) 제출물 조회 + 관계 프로필(display_name)
     const { data, error } = await supabase
       .from("submissions")
       .select("id,title,body,status,created_at,profiles(display_name)")
@@ -82,10 +86,23 @@ useEffect(() => {
     if (error) {
       console.error(error);
       setRows([]);
-    } else {
-      setRows((data ?? []) as Row[]);
+      setLoading(false);
+      return;
     }
 
+    // ✅ 타입 안전 매핑: Supabase 응답을 화면용 Row로 변환
+    const mapped: Row[] = (data ?? []).map((d: any) => ({
+      id: String(d.id),
+      title: String(d.title ?? ""),
+      body: String(d.body ?? ""),
+      status: (d.status ?? "submitted") as Row["status"],
+      created_at: String(d.created_at ?? new Date().toISOString()),
+      profiles: d?.profiles
+        ? { display_name: d.profiles.display_name ?? null }
+        : null,
+    }));
+
+    setRows(mapped);
     setLoading(false);
   }, [supabase]);
 
@@ -97,7 +114,7 @@ useEffect(() => {
   // 필터링
   const filtered = useMemo(() => {
     if (statusFilter === "all") return rows;
-    return rows.filter(r => r.status === statusFilter);
+    return rows.filter((r) => r.status === statusFilter);
   }, [rows, statusFilter]);
 
   // 상태 업데이트
@@ -127,17 +144,13 @@ useEffect(() => {
             총 {rows.length}건 · 필터 {statusFilter !== "all" ? `"${statusFilter}"` : "전체"}
           </p>
         </div>
-        <button
-          onClick={load}
-          className="px-3 py-1 border rounded-md text-sm"
-          title="새로고침"
-        >
+        <button onClick={load} className="px-3 py-1 border rounded-md text-sm" title="새로고침">
           새로고침
         </button>
       </header>
 
       <div className="flex flex-wrap gap-2 mb-6">
-        {STATUSES.map(s => (
+        {STATUSES.map((s) => (
           <button
             key={s}
             onClick={() => setStatusFilter(s)}
@@ -151,12 +164,10 @@ useEffect(() => {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="p-6 border rounded-lg text-sm text-zinc-600">
-          조건에 맞는 제출물이 없습니다.
-        </div>
+        <div className="p-6 border rounded-lg text-sm text-zinc-600">조건에 맞는 제출물이 없습니다.</div>
       ) : (
         <ul className="space-y-3">
-          {filtered.map(r => (
+          {filtered.map((r) => (
             <li key={r.id} className="border rounded-lg p-4">
               <div className="flex items-start justify-between gap-4">
                 <div>
@@ -186,22 +197,13 @@ useEffect(() => {
               </details>
 
               <div className="mt-3 flex flex-wrap gap-2">
-                <button
-                  onClick={() => updateStatus(r.id, "eligible")}
-                  className="px-3 py-1 border rounded-md text-sm"
-                >
+                <button onClick={() => updateStatus(r.id, "eligible")} className="px-3 py-1 border rounded-md text-sm">
                   통과
                 </button>
-                <button
-                  onClick={() => updateStatus(r.id, "rejected")}
-                  className="px-3 py-1 border rounded-md text-sm"
-                >
+                <button onClick={() => updateStatus(r.id, "rejected")} className="px-3 py-1 border rounded-md text-sm">
                   탈락
                 </button>
-                <button
-                  onClick={() => updateStatus(r.id, "winner")}
-                  className="px-3 py-1 border rounded-md text-sm"
-                >
+                <button onClick={() => updateStatus(r.id, "winner")} className="px-3 py-1 border rounded-md text-sm">
                   수상
                 </button>
               </div>
