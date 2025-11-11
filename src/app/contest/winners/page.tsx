@@ -48,7 +48,7 @@ export default function WinnersPage() {
       return;
     }
 
-    // 3) Supabase 응답 → 화면용 Winner로 안전 매핑
+    // 3) 안전 매핑
     const mapped: Winner[] = (data ?? []).map((d: any) => ({
       id: String(d.id),
       title: String(d.title ?? ""),
