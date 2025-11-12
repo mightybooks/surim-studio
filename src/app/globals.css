@@ -1,41 +1,64 @@
 @import "tailwindcss";
 
+/* 1) 전역 디자인 토큰: 하나로 통일 */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --tone-discovery:#93A4B1; /* 발견 회청 */
-  --tone-care:#FFF2C5;      /* 돌봄 크림 */
+  /* 전역 라이트 토큰(기본) */
+  --bg:        #FAF6EF;   /* 아주 옅은 베이지 */
+  --bg-elev:   #FFFFFF;   /* 카드/상승면 */
+  --fg:        #1A1A1A;   /* 본문 글자색 */
+  --muted:     #6B6B6B;   /* 보조 텍스트 */
+  --border:    #EAE4D9;   /* 구분선 */
+
+  /* 기존 이름 호환용 매핑(읽기 전용) */
+  --background: var(--bg);
+  --foreground: var(--fg);
+
+  /* 팔레트(그대로 유지) */
+  --tone-discovery:#93A4B1; /* 발견 회청  */
+  --tone-care:#FFF2C5;      /* 돌봄 크림  */
   --tone-dawn:#CED7E0;      /* 위기 새벽빛 */
   --tone-dusk:#F2A65A;      /* 갈등 저녁주황 */
-  --tone-peace:#84A98C;     /* 결말 초록 */
+  --tone-peace:#84A98C;     /* 결말 초록   */
 }
 
+/* 2) Tailwind @theme 매핑은 기존대로, 변수만 참조 */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--bg);
+  --color-foreground: var(--fg);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* 3) 시스템 다크 자동 적용 차단: 이 블록은 제거! */
+/* @media (prefers-color-scheme: dark) { ... }  <= 삭제 */
+
+/* 4) 전역 레이아웃 기본값은 한 번만 선언 */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: Arial, Helvetica, sans-serif;
 }
 
+/* 미디어 기본 수축 */
+img, video, canvas, svg { max-width: 100%; height: auto; }
+
+/* 5) 수림지(다크) 전용 테마: 섹션 레이아웃에서 data-theme="zine" 부여 */
+[data-theme="zine"] {
+  color-scheme: dark;      /* 폼/스크롤바 등도 어둡게 */
+  --bg:      #0F0F10;
+  --bg-elev: #151618;
+  --fg:      #EDEDEE;
+  --muted:   #A1A1AA;
+  --border:  #27272A;
+}
+
+/* 6) 뉴스 본문 전용 타이포(유지) */
 @layer components {
-  /* 뉴스 본문 전용 타이포 */
   .news-body :where(h2) { @apply text-2xl font-semibold text-emerald-900 mt-10; }
   .news-body :where(h3) { @apply text-lg font-semibold text-emerald-900 mt-8; }
   .news-body :where(p)  { @apply leading-loose text-zinc-700; }
   .news-body :where(ul) { @apply my-4 list-disc pl-5; }
   .news-body :where(li) { @apply leading-relaxed; }
 }
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
-

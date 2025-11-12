@@ -16,15 +16,19 @@ export default function ClientNav() {
   ];
 
   return (
-    <ul className="flex gap-5 text-sm">
-      {navLinks.map(link => {
+    <ul className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2 text-sm sm:text-[0.95rem] max-w-full">
+      {navLinks.map((link) => {
         const active = pathname?.startsWith(link.href);
         return (
-          <li key={link.href}>
+          <li key={link.href} className="min-w-0">
             <Link
               href={link.href}
-              className={active ? "text-emerald-800 font-medium" : "text-zinc-700 hover:text-zinc-900"}
               aria-current={active ? "page" : undefined}
+              className={
+                active
+                  ? "font-medium text-emerald-900"
+                  : "text-[color:var(--fg)]/75 hover:text-[color:var(--fg)]"
+              }
             >
               {link.label}
             </Link>
