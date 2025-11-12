@@ -14,6 +14,9 @@ export const metadata = {
       "감정의 미립자를 기록하고 실험하는 1인 출판 스튜디오의 공식 웹사이트입니다.",
     images: ["/og-image.png"],
   },
+    icons: {
+    icon: "/favicon-v2.ico",
+  },
   twitter: {
     card: "summary_large_image",
     title: "수림 스튜디오 | 실험적 서사로 감정의 미립자를 기록하다",
