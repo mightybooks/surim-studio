@@ -11,6 +11,23 @@ export type NewsItem = {
 
 export const NEWS: NewsItem[] = [
   {
+    title: "홈페이지 메뉴 구성 변경과 보안 강화",
+    body:
+      "수림 스튜디오 홈페이지 내부 메뉴 구성을 변경하였습니다" +
+      "드롭바 형태로 구현하여 이용자들의 불편을 줄였습니다" +
+      "일부 기능은 관리자만이 보안키로 접근가능하도록 보안을 강화하였습니다",
+    category: "News",
+    published_at: "2025-11-14",
+  },
+  {
+    title: "2025년 대구서부도서관 가을학기 글쓰기 특강을 마쳤습니다",
+    body:
+      "25년 11월 13일. " +
+      "대구서부도서관에서 진행된 글쓰기 특강 8회차 과정을 모두 마쳤습니다.",
+    category: "News",
+    published_at: "2025-11-13",
+  },
+  {
     slug: "tosil-challenge",
     title: "〈토실토실〉돌봄의 에너지 캠페인 시작",
     body:

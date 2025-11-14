@@ -4,10 +4,45 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+type NavItem = {
+  href: string;
+  label: string;
+};
+
+type NavGroup = {
+  label: string; // ABOUT / WORKS / MEDIA
+  items: NavItem[];
+};
+
+const NAV_GROUPS: NavGroup[] = [
+  {
+    label: "ABOUT",
+    items: [
+      { href: "/about", label: "About" },
+      { href: "/brands", label: "Brands" },
+    ],
+  },
+  {
+    label: "WORKS",
+    items: [
+      { href: "/projects", label: "Projects" },
+      { href: "/surimzine", label: "SurimZine" },
+      // TODO: 실제 공모전 페이지 생기면 "/contest" 로 교체
+      { href: "/standby1", label: "Contest" },
+    ],
+  },
+  {
+    label: "MEDIA",
+    items: [
+      { href: "/news", label: "News" },
+      { href: "/blog", label: "Blog" },      
+    ],
+  },
+];
+
 export default function NavBar() {
   const pathname = usePathname();
 
-  // 공통 버튼 스타일(전역 변수 기반)
   const base =
     "inline-flex items-center justify-center rounded-full border border-[var(--border)] bg-[var(--bg-elev)] " +
     "px-4 py-2 text-[0.95rem] leading-none shadow-sm transition hover:bg-[#F5EEDC] " +
@@ -16,34 +51,41 @@ export default function NavBar() {
   const active =
     "bg-emerald-700 text-white border-emerald-700 hover:bg-emerald-700";
 
-  // 현재 경로와 일치/포함 판단
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
     return pathname?.startsWith(href);
   };
 
-  const links = [
-    { href: "/about", label: "About" },
-    { href: "/projects", label: "Projects" },
-    { href: "/news", label: "News" },
-    { href: "/brands", label: "Brands" },
-    { href: "/surimzine", label: "SurimZine" },
-    // 실제 경로가 /standby1인데 active 비교는 /contest로 되어 있었습니다. 일관되게 /standby1로 맞춥니다.
-    { href: "/standby1", label: "Contest" },
-  ];
-
   return (
-    <div className="mt-6 flex flex-wrap justify-center gap-3 rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] p-3 shadow-sm">
-      {links.map(({ href, label }) => (
-        <Link
-          key={href}
-          href={href}
-          className={`${base} ${isActive(href) ? active : ""}`}
-          aria-current={isActive(href) ? "page" : undefined}
-        >
-          {label}
-        </Link>
-      ))}
+    <div className="mt-6 rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] p-4 shadow-sm max-w-xl mx-auto">
+      {/* 항상 3단 세로 구조 */}
+      <div className="flex flex-col gap-4">
+        {NAV_GROUPS.map((group) => (
+          <div
+            key={group.label}
+            className="flex flex-col items-center gap-2"
+          >
+            {/* 그룹 라벨 */}
+            <div className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-[color:var(--fg)]/65">
+              {group.label}
+            </div>
+
+            {/* 그룹별 버튼들 */}
+            <div className="flex flex-wrap justify-center gap-2">
+              {group.items.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={isActive(item.href) ? "page" : undefined}
+                  className={`${base} ${isActive(item.href) ? active : ""}`}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
