@@ -11,6 +11,7 @@ export type NewsItem = {
 
 export const NEWS: NewsItem[] = [
   {
+    slug: "menu upgrade",
     title: "홈페이지 메뉴 구성 변경과 보안 강화",
     body:
       "수림 스튜디오 홈페이지 내부 메뉴 구성을 변경하였습니다" +
@@ -20,6 +21,7 @@ export const NEWS: NewsItem[] = [
     published_at: "2025-11-14",
   },
   {
+    slug: "daegu-west-library-writing-lecture-2025-fall",
     title: "2025년 대구서부도서관 가을학기 글쓰기 특강을 마쳤습니다",
     body:
       "25년 11월 13일. " +
