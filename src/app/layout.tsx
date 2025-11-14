@@ -4,6 +4,7 @@ import "./globals.css";
 import ClientNav from "@/components/ClientNav";
 import MobileDock from "@/components/MobileDock";
 import ScrollTopDesktop from "@/components/ScrollTopDesktop";
+import KakaoLoader from "@/components/KakaoLoader";
 
 export const metadata = {
   metadataBase: new URL("https://surimstudio.com"),
@@ -41,7 +42,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         {/* 하단 도킹바와 겹치지 않도록 모바일에서 여유 하단 패딩 부여 */}
         <main className="mx-auto max-w-6xl px-4 py-10 pb-[calc(4rem+env(safe-area-inset-bottom))] sm:pb-10">
-          {children}
+           <KakaoLoader />
+          {children}          
         </main>
 
         <footer className="text-center text-xs text-zinc-500 py-6 border-t border-[var(--border)] bg-[var(--bg)]">

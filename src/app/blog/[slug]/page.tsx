@@ -8,6 +8,7 @@ import type { Metadata } from "next";
 import { createClient } from "@/lib/supabaseClient";
 import ReactMarkdown from "react-markdown";
 import Image from "next/image";
+import ShareButtons from "@/components/ShareButtons";
 
 type Props = {
   params: { slug: string };
@@ -120,7 +121,7 @@ export default async function BlogPostPage({ params }: Props) {
             (DEBUG) hero_image_url 없음
           </p>
         )}
-
+        
         {/* 제목/메타 */}
         <header className="space-y-2">
           <h1 className="text-2xl font-semibold text-slate-900">
@@ -140,6 +141,9 @@ export default async function BlogPostPage({ params }: Props) {
               </span>
             ))}
           </div>
+          <div className="mt-6 border-t border-slate-200 pt-4">
+          <ShareButtons title={data.title} />
+        </div>
         </header>
 
         {/* 본문 마크다운 */}
@@ -174,8 +178,19 @@ export default async function BlogPostPage({ params }: Props) {
           >
             {data.content_md ?? ""}
           </ReactMarkdown>
+          </div>
+          
+         {/* 하단 공유 버튼 */}
+        <div className="mt-10 border-t border-slate-200 pt-4">
+          <ShareButtons title={data.title} />
         </div>
-      </article>
+
+        {/* 여기 밑에 "자체 댓글 기능은 우선 3월까지 막아둡니다" 고정 문구 */}
+        <p className="mt-6 text-[11px] text-slate-500">
+          자체 댓글 기능은 우선 3월까지 막아둡니다. 필요하시면 SNS나 이메일로
+          연락 주세요.
+        </p>        
+      </article>      
     </div>
   );
 }
