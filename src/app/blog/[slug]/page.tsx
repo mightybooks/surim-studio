@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabaseClient";
 import ReactMarkdown from "react-markdown";
+import Image from "next/image";
 
 type Props = {
   params: { slug: string };
@@ -60,18 +61,27 @@ export default async function BlogPostPage({ params }: Props) {
     ? new Date(data.published_at).toLocaleDateString("ko-KR")
     : undefined;
 
+    // 임시 강제: DB 말고 코드에서 직접 경로 지정
+  const heroUrl = "/blogimg/first01.webp";
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
       <article className="space-y-6">
         {/* 헤드 이미지 */}
-        {data.hero_image_url && (
-          <div className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)]">
-            <img
-              src={data.hero_image_url}
+        {heroUrl ? (
+          <div className="relative overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] h-64">
+            <Image
+              src={heroUrl}
               alt={data.title}
-              className="h-64 w-full object-cover"
+              fill
+              className="object-cover"
+              sizes="(min-width: 768px) 768px, 100vw"
             />
           </div>
+        ) : (
+          <p className="text-xs text-slate-400">
+            (DEBUG) hero_image_url 없음
+          </p>
         )}
 
         <header className="space-y-2">
@@ -94,9 +104,47 @@ export default async function BlogPostPage({ params }: Props) {
           </div>
         </header>
 
-        <div className="prose prose-sm sm:prose-base max-w-none prose-p:leading-relaxed">
-          <ReactMarkdown>{data.content_md}</ReactMarkdown>
+        {/* 본문 마크다운 */}
+        <div className="prose prose-sm sm:prose-base max-w-none whitespace-pre-wrap">
+          <ReactMarkdown
+            components={{
+              p({ node, ...props }) {
+                return (
+                  <p
+                    className="mb-4 leading-relaxed text-slate-800"
+                    {...props}
+                  />
+                );
+              },
+              h2({ node, ...props }) {
+                return (
+                  <h2
+                    className="mt-10 mb-4 text-xl font-semibold text-slate-900 border-t border-slate-200 pt-6"
+                    {...props}
+                  />
+                );
+              },
+              h3({ node, ...props }) {
+                return (
+                  <h3
+                    className="mt-8 mb-3 text-lg font-semibold text-slate-900"
+                    {...props}
+                  />
+                );
+              },
+            }}
+          >
+            {data.content_md ?? ""}
+          </ReactMarkdown>
         </div>
+
+        {/* 디버그용: hero_image_url 값 확인 */}
+        <p className="text-[11px] text-slate-400 break-all">
+          (DEBUG) hero_image_url(raw): [{String(data.hero_image_url ?? "null")}]
+        </p>
+        <p className="text-[11px] text-slate-400 break-all">
+          (DEBUG) heroUrl(trimmed): [{heroUrl}]
+        </p>
       </article>
     </div>
   );

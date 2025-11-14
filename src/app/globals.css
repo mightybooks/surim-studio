@@ -2,6 +2,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@tailwind typography;
 
 
 /* 1) 전역 디자인 토큰: 하나로 통일 */
