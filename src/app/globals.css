@@ -1,4 +1,8 @@
 @import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 
 /* 1) 전역 디자인 토큰: 하나로 통일 */
 :root {
