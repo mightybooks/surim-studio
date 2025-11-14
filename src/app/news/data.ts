@@ -10,6 +10,18 @@ export type NewsItem = {
 };
 
 export const NEWS: NewsItem[] = [
+    {
+    slug: "first-blogging-25-11-14",
+    title: "수림 스튜디오의 첫 블로그 글이 업데이트 되었습니다.",
+    body:
+      "첫 블로그 글이 안정적으로 생성되었습니다. " +
+      "글을 관리할 관리자 페이지가 신설되고 외부 공유 링크가 만들어졌습니다. " +
+      "댓글 기능은 아직 사용하실 수 없습니다.",
+    category: "News",
+    published_at: "2025-11-14",
+    cta: { href: "/blog/first-blogging-25-11-14", label: "블로그 보러가기" },
+    href: "/blog/first-blogging-25-11-14", // ← 클릭 시 바로 프로젝트 페이지로 이동
+  },
   {
     slug: "menu-upgrade99r",
     title: "홈페이지 메뉴 구성 변경과 보안 강화",
