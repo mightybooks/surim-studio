@@ -12,6 +12,42 @@ function slugifyFromTitle(title: string) {
     .replace(/\s+/g, "-"); // 한글은 그대로 두고, 공백만 하이픈 처리
 }
 
+// 대표 이미지 URL 정리 & 검증
+function normalizeHeroImageUrl(raw: string): { value: string | null; error?: string } {
+  let v = raw.trim();
+  if (!v) return { value: null };
+
+  // 1) http/https 로 시작하면 그대로 외부 URL 허용
+  if (/^https?:\/\//i.test(v)) {
+    return { value: v };
+  }
+
+  // 2) 과거 오타 보정: /publc/... -> /...
+  if (v.startsWith("/publc/")) {
+    v = v.replace("/publc/", "/");
+  }
+
+  // 3) /public/ 이라고 쓰면 /public 제거
+  if (v.startsWith("/public/")) {
+    v = v.replace("/public", "");
+  }
+
+  // 4) 앞에 / 없으면 붙여줌
+  if (!v.startsWith("/")) {
+    v = "/" + v;
+  }
+
+  // 5) 로컬 자원은 /blogimg/ 로만 허용
+  if (!v.startsWith("/blogimg/")) {
+    return {
+      value: null,
+      error: "대표 이미지는 /blogimg/… 또는 https://… 형식으로 입력해 주세요.",
+    };
+  }
+
+  return { value: v };
+}
+
 export default function AdminBlogNewPage() {
   const router = useRouter();
   const supabase = createClient();
@@ -53,6 +89,14 @@ export default function AdminBlogNewPage() {
       return;
     }
 
+    // 대표 이미지 URL 정리
+    const { value: normalizedHero, error: heroError } = normalizeHeroImageUrl(heroImageUrl);
+    if (heroError) {
+      setError(heroError);
+      setMessage(null);
+      return;
+    }
+
     setSaving(mode);
     setError(null);
     setMessage(null);
@@ -65,7 +109,7 @@ export default function AdminBlogNewPage() {
       title,
       subtitle: subtitle || null,
       content_md: contentMd,
-      hero_image_url: heroImageUrl || null,
+      hero_image_url: normalizedHero, // 여기서는 항상 깨끗한 값만 들어감
       tags,
       status: mode === "publish" ? "published" : "draft",
       updated_at: now,
@@ -75,7 +119,6 @@ export default function AdminBlogNewPage() {
       payload.published_at = now;
     }
 
-    // slug 중복을 피하려면 upsert를 쓰는 것도 가능
     const { error: dbError } = await supabase
       .from("blog_posts")
       .upsert(payload, { onConflict: "slug" });
@@ -173,10 +216,11 @@ export default function AdminBlogNewPage() {
             value={heroImageUrl}
             onChange={(e) => setHeroImageUrl(e.target.value)}
             className="w-full rounded-md border border-[var(--border)] bg-white px-3 py-2 text-sm"
-            placeholder="https://... 형식의 이미지 주소"
+            placeholder="/blogimg/first01.webp 또는 https://… 형식의 이미지 주소"
           />
           <p className="text-[11px] text-slate-500">
-            블로그 상단 헤드 이미지와 SNS 미리보기(og:image)에 사용됩니다.
+            로컬 이미지는 <code>/blogimg/파일명.webp</code> 형식으로,
+            외부 이미지는 <code>https://…</code> 전체 주소로 입력해 주세요.
           </p>
         </div>
 
@@ -193,8 +237,8 @@ export default function AdminBlogNewPage() {
             placeholder="예: 토실토실, 출판, 서사, 500자소설"
           />
           <p className="text-[11px] text-slate-500">
-            예: <code>토실토실, 출판, 서사</code> 처럼 입력하면
-            {" "}#토실토실 #출판 #서사 형태로 노출됩니다.
+            예: <code>토실토실, 출판, 서사</code> 처럼 입력하면{" "}
+            #토실토실 #출판 #서사 형태로 노출됩니다.
           </p>
         </div>
 

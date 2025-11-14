@@ -1,4 +1,8 @@
 // src/app/blog/[slug]/page.tsx
+
+// 개발 중에는 항상 최신 데이터 쓰도록 캐시 끔
+export const dynamic = "force-dynamic";
+
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabaseClient";
@@ -9,6 +13,34 @@ type Props = {
   params: { slug: string };
 };
 
+// 공통: hero_image_url 정리 로직
+function normalizeHeroUrl(raw: string | null | undefined): string | null {
+  const trimmed = (raw ?? "").trim();
+  if (!trimmed) return null;
+
+  let fixed = trimmed;
+
+  // 1) 과거 오타 보정: /publc/blogimg/ → /blogimg/
+  if (fixed.startsWith("/publc/blogimg/")) {
+    fixed = fixed.replace("/publc/blogimg/", "/blogimg/");
+  }
+
+  // 2) /public/... 형태라면 /public 제거
+  if (fixed.startsWith("/public/")) {
+    fixed = fixed.replace("/public", "");
+  }
+
+  // 3) /로 안 시작하면 강제로 붙이기
+  if (!fixed.startsWith("/")) {
+    fixed = "/" + fixed;
+  }
+
+  return fixed;
+}
+
+// ─────────────────────────────────────────────
+// 메타데이터 (OG 이미지 포함)
+// ─────────────────────────────────────────────
 export async function generateMetadata(
   { params }: Props
 ): Promise<Metadata> {
@@ -28,23 +60,28 @@ export async function generateMetadata(
     data.subtitle ??
     "수림 스튜디오 블로그 글입니다. 감정의 미립자를 기록하는 작은 출판 실험실.";
 
+  const heroUrl = normalizeHeroUrl(data.hero_image_url);
+
   return {
     title,
     description,
     openGraph: {
       title,
       description,
-      images: data.hero_image_url ? [data.hero_image_url] : [],
+      images: heroUrl ? [heroUrl] : [],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: data.hero_image_url ? [data.hero_image_url] : [],
+      images: heroUrl ? [heroUrl] : [],
     },
   };
 }
 
+// ─────────────────────────────────────────────
+// 본문 페이지
+// ─────────────────────────────────────────────
 export default async function BlogPostPage({ params }: Props) {
   const supabase = createClient();
   const { data, error } = await supabase
@@ -61,15 +98,15 @@ export default async function BlogPostPage({ params }: Props) {
     ? new Date(data.published_at).toLocaleDateString("ko-KR")
     : undefined;
 
-    // 임시 강제: DB 말고 코드에서 직접 경로 지정
-  const heroUrl = "/blogimg/first01.webp";
+  const heroUrl = normalizeHeroUrl(data.hero_image_url);
+  const tags: string[] = Array.isArray(data.tags) ? data.tags : [];
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
       <article className="space-y-6">
         {/* 헤드 이미지 */}
         {heroUrl ? (
-          <div className="relative overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] h-64">
+          <div className="relative h-64 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)]">
             <Image
               src={heroUrl}
               alt={data.title}
@@ -84,6 +121,7 @@ export default async function BlogPostPage({ params }: Props) {
           </p>
         )}
 
+        {/* 제목/메타 */}
         <header className="space-y-2">
           <h1 className="text-2xl font-semibold text-slate-900">
             {data.title}
@@ -93,7 +131,7 @@ export default async function BlogPostPage({ params }: Props) {
           )}
           <div className="flex flex-wrap gap-2 text-[11px] text-slate-500">
             {publishedDate && <span>{publishedDate}</span>}
-            {data.tags?.map((tag: string) => (
+            {tags.map((tag) => (
               <span
                 key={tag}
                 className="rounded-full border border-slate-200 px-2 py-0.5"
@@ -105,7 +143,7 @@ export default async function BlogPostPage({ params }: Props) {
         </header>
 
         {/* 본문 마크다운 */}
-        <div className="prose prose-sm sm:prose-base max-w-none whitespace-pre-wrap">
+        <div className="prose prose-sm max-w-none whitespace-pre-wrap sm:prose-base">
           <ReactMarkdown
             components={{
               p({ node, ...props }) {
@@ -119,7 +157,7 @@ export default async function BlogPostPage({ params }: Props) {
               h2({ node, ...props }) {
                 return (
                   <h2
-                    className="mt-10 mb-4 text-xl font-semibold text-slate-900 border-t border-slate-200 pt-6"
+                    className="mt-10 mb-4 border-t border-slate-200 pt-6 text-xl font-semibold text-slate-900"
                     {...props}
                   />
                 );
@@ -137,14 +175,6 @@ export default async function BlogPostPage({ params }: Props) {
             {data.content_md ?? ""}
           </ReactMarkdown>
         </div>
-
-        {/* 디버그용: hero_image_url 값 확인 */}
-        <p className="text-[11px] text-slate-400 break-all">
-          (DEBUG) hero_image_url(raw): [{String(data.hero_image_url ?? "null")}]
-        </p>
-        <p className="text-[11px] text-slate-400 break-all">
-          (DEBUG) heroUrl(trimmed): [{heroUrl}]
-        </p>
       </article>
     </div>
   );
