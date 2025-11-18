@@ -48,6 +48,26 @@ function normalizeHeroImageUrl(raw: string): { value: string | null; error?: str
   return { value: v };
 }
 
+type BlogSection = "log" | "insight" | "note";
+
+const SECTION_OPTIONS: { value: BlogSection; label: string; description: string }[] = [
+  {
+    value: "log",
+    label: "작업일지 (LOG)",
+    description: "프로젝트 진행 상황, 개발·제작 과정 등 기록용 글",
+  },
+  {
+    value: "insight",
+    label: "출판·글쓰기 (INSIGHT)",
+    description: "글쓰기, 1인출판, 독립출판, 비즈니스 관련 인사이트 글",
+  },
+  {
+    value: "note",
+    label: "단상 (NOTES)",
+    description: "짧은 생각, 메모, 가벼운 기록",
+  },
+];
+
 export default function AdminBlogNewPage() {
   const router = useRouter();
   const supabase = createClient();
@@ -58,6 +78,7 @@ export default function AdminBlogNewPage() {
   const [heroImageUrl, setHeroImageUrl] = useState("");
   const [tagsInput, setTagsInput] = useState("");
   const [contentMd, setContentMd] = useState("");
+  const [section, setSection] = useState<BlogSection>("log");
   const [saving, setSaving] = useState<"idle" | "draft" | "publish">("idle");
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -111,6 +132,7 @@ export default function AdminBlogNewPage() {
       content_md: contentMd,
       hero_image_url: normalizedHero, // 여기서는 항상 깨끗한 값만 들어감
       tags,
+      section, // ✅ 새로 추가된 섹션 필드
       status: mode === "publish" ? "published" : "draft",
       updated_at: now,
     };
@@ -146,8 +168,7 @@ export default function AdminBlogNewPage() {
       <header className="space-y-2">
         <h1 className="text-2xl font-semibold">새 블로그 글 작성</h1>
         <p className="text-sm text-slate-600">
-          수림 스튜디오 블로그에 게시할 글을 작성합니다. 제목과 본문, 슬러그만
-          필수입니다.
+          수림 스튜디오 블로그에 게시할 글을 작성합니다. 제목과 본문, 슬러그만 필수입니다.
         </p>
       </header>
 
@@ -178,6 +199,35 @@ export default function AdminBlogNewPage() {
             className="w-full rounded-md border border-[var(--border)] bg-white px-3 py-2 text-sm"
             placeholder="예: 출판사 대표의 솔직한 작업일지"
           />
+        </div>
+
+        {/* 섹션 선택 */}
+        <div className="space-y-1">
+          <label className="block text-xs font-medium text-slate-600">
+            섹션 (글 성격)
+          </label>
+          <div className="grid gap-2 md:grid-cols-3">
+            {SECTION_OPTIONS.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => setSection(opt.value)}
+                className={`rounded-lg border px-3 py-2 text-left text-xs ${
+                  section === opt.value
+                    ? "border-emerald-600 bg-emerald-50"
+                    : "border-[var(--border)] bg-white"
+                }`}
+              >
+                <div className="font-semibold">{opt.label}</div>
+                <div className="mt-1 text-[11px] text-slate-600">
+                  {opt.description}
+                </div>
+              </button>
+            ))}
+          </div>
+          <p className="text-[11px] text-slate-500">
+            목록 화면에서 필터링에 사용됩니다. 작업일지 / 출판·글쓰기 인사이트 / 단상 등을 구분하는 용도입니다.
+          </p>
         </div>
 
         {/* 슬러그 */}
@@ -237,8 +287,7 @@ export default function AdminBlogNewPage() {
             placeholder="예: 토실토실, 출판, 서사, 500자소설"
           />
           <p className="text-[11px] text-slate-500">
-            예: <code>토실토실, 출판, 서사</code> 처럼 입력하면{" "}
-            #토실토실 #출판 #서사 형태로 노출됩니다.
+            예: <code>토실토실, 출판, 서사</code> 처럼 입력하면 #토실토실 #출판 #서사 형태로 노출됩니다.
           </p>
         </div>
 

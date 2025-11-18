@@ -11,6 +11,17 @@ export type NewsItem = {
 
 export const NEWS: NewsItem[] = [
     {
+    slug: "update-blogging-25-11-18",
+    title: "블로그 섹션이 새롭게 정리되었습니다.",
+    body:
+      "작성되는 글의 성격 별로 섹션이 나뉘어졌습니다. " +
+      "작업일지(Log), 출판과 글쓰기(Insight), 단상(Note). " +
+      "이제 블로그 상단에서 원하는 섹션을 선택해 작업 기록만, 출판·글쓰기 이야기만, 혹은 잡생각만 골라 읽으실 수 있습니다. " +
+      "앞으로 출판·글쓰기 섹션에는 1인출판과 독립출판을 준비하시는 분들을 위한 글도 꾸준히 쌓아갈 예정입니다.",
+    category: "News",
+    published_at: "2025-11-18",
+    },  
+    {
     slug: "first-blogging-25-11-14",
     title: "수림 스튜디오의 첫 블로그 글이 업데이트 되었습니다.",
     body:
@@ -19,9 +30,7 @@ export const NEWS: NewsItem[] = [
       "댓글 기능은 아직 사용하실 수 없습니다.",
     category: "News",
     published_at: "2025-11-14",
-    cta: { href: "/blog/first-blogging-25-11-14", label: "블로그 보러가기" },
-    href: "/blog/first-blogging-25-11-14", // ← 클릭 시 바로 프로젝트 페이지로 이동
-  },
+    },
   {
     slug: "menu-upgrade99r",
     title: "홈페이지 메뉴 구성 변경과 보안 강화",
