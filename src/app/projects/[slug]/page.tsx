@@ -89,10 +89,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = `${data.title} – 수림 스튜디오`;
   const description = data.summary;
   const og = data.og || data.hero;
-  
-  <div style={{ padding: "8px", background: "red", color: "white", fontWeight: "bold" }}>
-        [DEBUG] 이건 정적 /projects/500chars 페이지입니다.
-      </div>
 
   return {
     title,
@@ -125,8 +121,11 @@ export default function ProjectDetailPage({ params }: Props) {
   return (
     <main className="max-w-4xl mx-auto px-6 py-12 space-y-12">
       {/* 브레드크럼 */}
+      <div className="mb-4 rounded-xl border border-red-500 bg-red-50 p-3 text-xs text-red-700">
+  PROD /projects/[slug] 테스트 배포입니다.
+</div>
       <nav className="text-sm text-zinc-500">
-        <Link href="/project" className="hover:underline">
+        <Link href="/projects" className="hover:underline">
           Projects
         </Link>
         <span className="mx-1">/</span>
