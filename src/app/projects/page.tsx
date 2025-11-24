@@ -59,7 +59,7 @@ const PROJECTS: Project[] = [
     thumb: "/projects/tosil_care_thumb.webp",
   },
   {
-    slug: "apppro500",
+    slug: "fiction500",
     title: "500자소설 프로젝트",
     summary: "초단편 500자 서사 실험...",
     status: "archive",
