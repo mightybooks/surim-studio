@@ -67,9 +67,15 @@ export default function TosiltosilProjectPage() {
         </Link>
         <Link
           href="/projects/tosiltosil-care"
-          className="px-6 py-3 rounded-xl border border-emerald-600 text-emerald-700 font-medium hover:bg-emerald-50"
+          className="px-6 py-3 rounded-xl bg-emerald-50 text-emerald-700 font-medium border border-emerald-600 hover:bg-emerald-100"
         >
           캠페인 참여하기
+        </Link>
+        <Link
+        href="/projects/tosiltosil/bookmaps"
+        className="px-6 py-3 rounded-xl bg-emerald-50 text-emerald-700 font-medium border border-emerald-600 hover:bg-emerald-100"
+        >
+        입고서점 확인
         </Link>
       </section>
 
