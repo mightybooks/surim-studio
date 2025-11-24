@@ -11,6 +11,18 @@ export type NewsItem = {
 
 export const NEWS: NewsItem[] = [
     {
+    slug: "tosil-book-maps",
+    title: "『토실토실 토끼를 안았습니다』전국 동네책방 입점 지도 업데이트를 시작했습니다. ",
+    body:
+      "전국 동네책방 입점 지도를 만들기 시작했습니다 " +
+      "현재는 서울 지역 19개 책방의 리스트가 업데이트 되었으며, " +
+      "매주 전국으로 더 확대되는 지도를 제공할 예정입니다. ",
+    category: "News",
+    published_at: "2025-11-24",
+    cta: { href: "/projects/tosiltosil/bookmaps", label: "입점 지도 보러가기" },
+    href: "/projects/tosiltosil/bookmaps", // ← 클릭 시 바로 프로젝트 페이지로 이동
+    },
+    {
     slug: "update-blogging-25-11-18",
     title: "블로그 섹션이 새롭게 정리되었습니다.",
     body:

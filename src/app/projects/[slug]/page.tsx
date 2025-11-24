@@ -100,7 +100,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: "article",
       locale: "ko_KR",
     },
-    alternates: { canonical: `/project/${params.slug}` },
+    alternates: { canonical: `/projects/${params.slug}` },
   };
 }
 
