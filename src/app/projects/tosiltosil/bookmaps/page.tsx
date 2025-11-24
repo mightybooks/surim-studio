@@ -3,7 +3,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { STORES_BY_REGION, type RegionKey, type TosiltosilStore } from "@/lib/tosiltosilStores";
+import {
+  STORES_BY_REGION,
+  type RegionKey,
+  type TosiltosilStore,
+} from "@/lib/tosiltosilStores";
 
 declare global {
   interface Window {
@@ -17,108 +21,195 @@ const REGIONS: { key: RegionKey; label: string; subtitle?: string; ready: boolea
   { key: "metro", label: "전국 광역시", subtitle: "추가 정리 예정", ready: false },
 ];
 
+type MarkerEntry = {
+  storeId: string;
+  marker: any;
+  position: any;
+  info: any;
+};
+
 export default function TosiltosilBookmapsPage() {
   const [region, setRegion] = useState<RegionKey>("seoul");
-  const mapRef = useRef<HTMLDivElement | null>(null);
   const [isMapReady, setIsMapReady] = useState(false);
 
-  const stores: TosiltosilStore[] = STORES_BY_REGION[region];
+  const mapRef = useRef<HTMLDivElement | null>(null);
+  const mapInstanceRef = useRef<any | null>(null);
+  const markersRef = useRef<MarkerEntry[]>([]);
 
-  useEffect(() => {
-  if (!mapRef.current) return;
+  const stores: TosiltosilStore[] = STORES_BY_REGION[region] ?? [];
 
-  const scriptId = "kakao-map-sdk";
+  // Kakao SDK 로더
+  const loadKakaoSdk = (onReady: () => void) => {
+    const scriptId = "kakao-map-sdk";
+    const existingScript = document.getElementById(scriptId) as HTMLScriptElement | null;
 
-  function initMap() {
-    try {
-      const kakao = window.kakao;
-      const mapCenter = new kakao.maps.LatLng(37.5665, 126.9780); // 서울 시청 근처
+    // 이미 SDK가 로드된 상태
+    if (existingScript && window.kakao && window.kakao.maps && window.kakao.maps.load) {
+      window.kakao.maps.load(onReady);
+      return;
+    }
+
+    // 스크립트는 있는데 아직 load 전이라면
+    if (existingScript && !existingScript.dataset.loaded) {
+      existingScript.addEventListener("load", () => {
+        existingScript.dataset.loaded = "true";
+        if (window.kakao && window.kakao.maps && window.kakao.maps.load) {
+          window.kakao.maps.load(onReady);
+        }
+      });
+      return;
+    }
+
+    // 최초 로드
+    const script = document.createElement("script");
+    script.id = scriptId;
+    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${
+      process.env.NEXT_PUBLIC_KAKAO_JS_KEY
+    }&autoload=false&libraries=services&v=${Date.now()}`;
+    script.async = true;
+    script.onload = () => {
+      script.dataset.loaded = "true";
+      if (window.kakao && window.kakao.maps && window.kakao.maps.load) {
+        window.kakao.maps.load(onReady);
+      } else {
+        console.error("카카오맵 load 함수를 찾을 수 없습니다.");
+        setIsMapReady(true);
+      }
+    };
+    script.onerror = () => {
+      console.error("카카오맵 SDK 로드 실패");
+      setIsMapReady(true);
+    };
+
+    document.head.appendChild(script);
+  };
+
+  // 지도/마커 초기화 또는 갱신
+  const initOrUpdateMap = (regionKey: RegionKey) => {
+    if (!mapRef.current) return;
+    if (!window.kakao || !window.kakao.maps || !window.kakao.maps.LatLng) {
+      console.error("카카오맵 SDK가 아직 준비되지 않았습니다.");
+      return;
+    }
+
+    const kakao = window.kakao;
+
+    // 지도 인스턴스 없으면 생성
+    if (!mapInstanceRef.current) {
+      const center = new kakao.maps.LatLng(37.5665, 126.9780); // 서울 시청 근처
       const map = new kakao.maps.Map(mapRef.current, {
-        center: mapCenter,
+        center,
         level: 8,
       });
 
-      // 서울만 사용 중이니, 지금은 seoul만 그립니다.
-      const seoulStores = STORES_BY_REGION["seoul"];
-      if (!seoulStores || seoulStores.length === 0) {
-        setIsMapReady(true);
-        return;
-      }
+      // 인터랙션 활성화
+      map.setDraggable(true);
+      map.setZoomable(true);
 
-      const geocoder = new kakao.maps.services.Geocoder();
-      const bounds = new kakao.maps.LatLngBounds();
+      // 컨트롤 추가
+      const mapTypeControl = new kakao.maps.MapTypeControl();
+      map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
 
-      seoulStores.forEach((store) => {
-        geocoder.addressSearch(
-          store.address,
-          (result: any[], status: string) => {
-            if (status !== kakao.maps.services.Status.OK) {
-              console.warn("Geocode 실패:", store.name, store.address);
-              return;
-            }
+      const zoomControl = new kakao.maps.ZoomControl();
+      map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
 
-            const { x, y } = result[0];
-            const position = new kakao.maps.LatLng(y, x);
-
-            const marker = new kakao.maps.Marker({
-              map,
-              position,
-            });
-
-            const info = new kakao.maps.InfoWindow({
-              content:
-                `<div style="padding:6px 8px;font-size:12px;white-space:nowrap;">` +
-                `${store.name}</div>`,
-            });
-
-            kakao.maps.event.addListener(marker, "click", () => {
-              info.open(map, marker);
-            });
-
-            bounds.extend(position);
-            map.setBounds(bounds);
-          }
-        );
-      });
-
-      setIsMapReady(true);
-    } catch (e) {
-      console.error("카카오맵 초기화 중 오류:", e);
-      setIsMapReady(true);
+      mapInstanceRef.current = map;
     }
-  }
 
-  const existingScript = document.getElementById(scriptId);
+    const map = mapInstanceRef.current;
 
-  if (existingScript && window.kakao && window.kakao.maps) {
-    // 이미 SDK가 로드된 경우
-    window.kakao.maps.load(() => {
-      initMap();
+    // 기존 마커 제거
+    if (markersRef.current.length > 0) {
+      markersRef.current.forEach((entry) => {
+        if (entry.marker) entry.marker.setMap(null);
+        if (entry.info) entry.info.close();
+      });
+      markersRef.current = [];
+    }
+
+    const regionStores = STORES_BY_REGION[regionKey] ?? [];
+    if (regionStores.length === 0) {
+      setIsMapReady(true);
+      return;
+    }
+
+    const geocoder = new kakao.maps.services.Geocoder();
+    const bounds = new kakao.maps.LatLngBounds();
+
+    regionStores.forEach((store) => {
+      // 주소가 너무 길어 오류나는 걸 방지: 대괄호 앞까지만 사용
+      const query = (store.address || "").split("[")[0].trim();
+      if (!query) return;
+
+      geocoder.addressSearch(query, (result: any[], status: string) => {
+        if (status !== kakao.maps.services.Status.OK) {
+          console.warn("Geocode 실패:", store.name, query);
+          return;
+        }
+
+        const { x, y } = result[0];
+        const position = new kakao.maps.LatLng(y, x);
+
+        const marker = new kakao.maps.Marker({
+          map,
+          position,
+          clickable: true,
+        });
+
+        const info = new kakao.maps.InfoWindow({
+          content: `
+            <div style="padding:8px 10px;font-size:12px;line-height:1.4;white-space:nowrap;">
+              <strong>${store.name}</strong><br />
+              <span>${query}</span>
+            </div>
+          `,
+        });
+
+        // 마커 클릭 시: 중앙 이동 + 인포윈도우
+        kakao.maps.event.addListener(marker, "click", () => {
+          markersRef.current.forEach((entry) => entry.info?.close());
+          map.setCenter(position);
+          map.setLevel(5);
+          info.open(map, marker);
+        });
+
+        markersRef.current.push({
+          storeId: store.id,
+          marker,
+          position,
+          info,
+        });
+
+        bounds.extend(position);
+        map.setBounds(bounds);
+      });
     });
-    return;
-  }
 
-  // 최초 1회 로드
-  const script = document.createElement("script");
-  script.id = scriptId;
-  script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${
-    process.env.NEXT_PUBLIC_KAKAO_JS_KEY
-  }&autoload=false&libraries=services`;
-  script.async = true;
-  script.onload = () => {
-    window.kakao.maps.load(() => {
-      initMap();
-    });
-  };
-  script.onerror = () => {
-    console.error("카카오맵 SDK 로드 실패");
     setIsMapReady(true);
   };
 
-  document.head.appendChild(script);
+  // region 변경 시 지도/마커 갱신
+  useEffect(() => {
+    if (!mapRef.current) return;
 
-  // cleanup은 지금 단계에서는 생략해도 무방
-  }, []); // ★ region 의존성 제거 (지금은 서울만 쓰므로 1회만 실행)
+    loadKakaoSdk(() => {
+      initOrUpdateMap(region);
+    });
+  }, [region]);
+
+  // 리스트 클릭 → 해당 마커 포커스
+  const handleStoreClick = (storeId: string) => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+
+    const target = markersRef.current.find((entry) => entry.storeId === storeId);
+    if (!target) return;
+
+    markersRef.current.forEach((entry) => entry.info?.close());
+    map.setCenter(target.position);
+    map.setLevel(5);
+    target.info.open(map, target.marker);
+  };
 
   return (
     <main className="mx-auto max-w-6xl px-6 py-12 space-y-10">
@@ -169,22 +260,24 @@ export default function TosiltosilBookmapsPage() {
 
       {/* 지도 + 리스트 */}
       <section className="grid gap-6 md:grid-cols-[2fr,1.2fr] items-start">
+        {/* 지도 영역 */}
         <div
           ref={mapRef}
-          className="h-[420px] md:h-[480px] w-full rounded-2xl border border-zinc-200 bg-zinc-50 overflow-hidden"
+          className="h-[420px] md:h-[480px] w-full rounded-2xl border border-zinc-200 bg-zinc-50 overflow-hidden relative"
         >
           {!isMapReady && (
-            <div className="flex h-full items-center justify-center text-sm text-zinc-500">
+            <div className="absolute inset-0 flex items-center justify-center text-sm text-zinc-500">
               지도를 불러오는 중입니다…
             </div>
           )}
           {isMapReady && stores.length === 0 && (
-            <div className="flex h-full items-center justify-center text-sm text-zinc-500">
+            <div className="absolute inset-0 flex items-center justify-center text-sm text-zinc-500 bg-white/70 backdrop-blur">
               선택하신 지역의 입고 정보는 준비 중입니다.
             </div>
           )}
         </div>
 
+        {/* 리스트 영역 */}
         <div className="max-h-[480px] w-full overflow-y-auto rounded-2xl border border-zinc-200 bg-white p-4 text-sm">
           {stores.length === 0 ? (
             <p className="text-zinc-500">
@@ -195,7 +288,8 @@ export default function TosiltosilBookmapsPage() {
               {stores.map((store) => (
                 <li
                   key={store.id}
-                  className="border-b border-zinc-100 pb-3 last:border-b-0 last:pb-0"
+                  className="border-b border-zinc-100 pb-3 last:border-b-0 last:pb-0 cursor-pointer hover:bg-emerald-50/40 rounded-md px-2 -mx-2 transition-colors"
+                  onClick={() => handleStoreClick(store.id)}
                 >
                   <div className="font-medium text-zinc-900">{store.name}</div>
                   <div className="mt-0.5 text-zinc-700">{store.address}</div>
