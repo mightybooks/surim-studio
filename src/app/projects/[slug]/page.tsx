@@ -45,7 +45,7 @@ const PROJECT_DETAIL: Record<string, ProjectDetail> = {
     ],
     cta: [
       { label: "책 정보 보기", href: "/books/tosiltosil", variant: "primary" },
-      { label: "캠페인 참여하기", href: "/project/tosiltosil-care", variant: "outline" },
+      { label: "캠페인 참여하기", href: "/projects/tosiltosil-care", variant: "outline" },
     ],
   },
 

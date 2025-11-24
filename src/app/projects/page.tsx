@@ -1,4 +1,4 @@
-// src/app/project/page.tsx
+// src/app/projects/page.tsx
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
