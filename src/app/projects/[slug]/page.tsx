@@ -89,6 +89,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = `${data.title} – 수림 스튜디오`;
   const description = data.summary;
   const og = data.og || data.hero;
+  
+  <div style={{ padding: "8px", background: "red", color: "white", fontWeight: "bold" }}>
+        [DEBUG] 이건 정적 /projects/500chars 페이지입니다.
+      </div>
 
   return {
     title,
