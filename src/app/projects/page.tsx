@@ -59,13 +59,13 @@ const PROJECTS: Project[] = [
     thumb: "/projects/tosil_care_thumb.webp",
   },
   {
-    slug: "500chars",
+    slug: "apppro500",
     title: "500자소설 프로젝트",
     summary: "초단편 500자 서사 실험...",
-    status: "planned",
+    status: "archive",
     tags: ["서사실험", "문체연구"],
     thumb: "/projects/500novel_thumb.webp",
-    // href 없이 둠 → /projects/500chars 로 이동
+    // href 없이 둠 → /projects/apppro500 로 이동
   },
     // 필요 시 자유롭게 추가
 ];
