@@ -1,4 +1,4 @@
-// src/app/projects/apppro500/page.tsx
+// src/app/projects/fiction500/page.tsx
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description:
     "초단편 500자 서사 실험. 101편 연재와 문체 이론 정리, 단행본 발간까지의 여정.",
   alternates: {
-    canonical: "/projects/apppro500",
+    canonical: "/projects/fiction500",
   },
   openGraph: {
     title: "500자소설 프로젝트 – 수림 스튜디오",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function apppro500() {
+export default function () {
   return (
     <main className="max-w-4xl mx-auto px-6 py-12 space-y-12">
       <nav className="text-sm text-zinc-500">
@@ -34,9 +34,9 @@ export default function apppro500() {
       {/* 본문 – 필요하면 지금 쓰고 싶은 내용으로 교체 */}
       <section className="prose prose-zinc max-w-none news-body">
         <p>
-          스레드 500자 제약을 서사 완결 규칙으로 전환해 실험했던 기록입니다. 완결된
-          101편의 데이터로 문체 이론을 정리하고, 단행본 발간까지 이어간 과정을
-          아카이브 형식으로 정리할 예정입니다.
+          현재는 관련 앱 개발중이며, 12월 중에 공개될 예정입니다.
+          앱 이용자들의 결과물이 이곳에 쌓이게 될 예정이며,
+          작품들 중 일부가 카드뷰 형식으로 랜덤으로 등장합니다.
         </p>
         {/* …여기에 지금 원하시는 설명들 넣으시면 됩니다 */}
       </section>
