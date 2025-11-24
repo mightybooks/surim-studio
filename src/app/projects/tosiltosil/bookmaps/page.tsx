@@ -22,7 +22,7 @@ const REGIONS: { key: RegionKey; label: string; subtitle?: string; ready: boolea
 ];
 
 type MarkerEntry = {
-  storeId: string;
+  storeId: TosiltosilStore["id"];  // ← 여기만 변경
   marker: any;
   position: any;
   info: any;
@@ -198,7 +198,7 @@ export default function TosiltosilBookmapsPage() {
   }, [region]);
 
   // 리스트 클릭 → 해당 마커 포커스
-  const handleStoreClick = (storeId: string) => {
+    const handleStoreClick = (storeId: TosiltosilStore["id"]) => {
     const map = mapInstanceRef.current;
     if (!map) return;
 
@@ -209,7 +209,7 @@ export default function TosiltosilBookmapsPage() {
     map.setCenter(target.position);
     map.setLevel(5);
     target.info.open(map, target.marker);
-  };
+    };
 
   return (
     <main className="mx-auto max-w-6xl px-6 py-12 space-y-10">
