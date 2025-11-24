@@ -40,15 +40,6 @@ const PROJECTS: Project[] = [
     thumb: "/projects/tosiltosil_thumb.webp",
   },
   {
-    slug: "500chars",
-    title: "500자소설 프로젝트",
-    summary: "초단편 500자 서사 실험...",
-    status: "archive",
-    tags: ["서사실험", "문체연구"],
-    thumb: "/projects/500novel_thumb.webp",
-    // href 생략 → /projects/500chars 로 감
-  },
-  {
     slug: "500novel",
     title: "500자소설 앱",
     summary:
