@@ -11,6 +11,16 @@ export type NewsItem = {
 
 export const NEWS: NewsItem[] = [
     {
+    slug: "bukgudoseokwan",
+    title: "25년 12월 4일, 11일. 이틀에 걸쳐 대구 북구태전도서관에서 특강이 열립니다. ",
+    body:
+      "문수림의 장르불문 관통하는 글쓰기 특강이 대구 북구태전도서관에서 열립니다. " +
+      "25년 12월 4일과 11일. 목요일 저녁 7시~9시. 매 회차 2시간씩 2회에 걸친 특강입니다. " +
+      "현재 대구 북구태전도서관 홈페이지를 통해서 신청이 가능합니다. ",
+    category: "News",
+    published_at: "2025-11-26",
+    },
+    {
     slug: "tosil-book-maps",
     title: "『토실토실 토끼를 안았습니다』전국 동네책방 입점 지도 업데이트를 시작했습니다. ",
     body:
