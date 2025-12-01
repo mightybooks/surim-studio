@@ -40,14 +40,29 @@ const PROJECTS: Project[] = [
     thumb: "/projects/tosiltosil_thumb.webp",
   },
   {
-    slug: "500novel",
+    slug: "500_fiction",
+    title: "500자 소설 프로젝트",
+    summary: "과연 500자 안에 얼마나 밀도 있는 서사 생성이 가능할까? 개인 창작 실험에서 시작된 독자 참여형 프로젝트",
+    status: "active",
+    tags: ["캠페인", "500자", "출판"],
+    thumb: "/projects/500_fiction_thumb.webp",
+  },
+  {
+    slug: "surimitosilly",
+    title: "수리미와 토실이",
+    summary: "수림 스튜디오 마스코트 캐릭터, 수리미와 토실이 탄생과 활동",
+    status: "active",
+    tags: ["캠페인", "500자", "출판"],
+    thumb: "/projects/surimitosilly_hero.webp",
+  },
+  {
+    slug: "500fiction_app",
     title: "500자소설 앱",
     summary:
       "독자 참여형 초단편 생성/평가 웹앱. 작품 공유 → 프로젝트 카테고리 연동까지 목표.",
     status: "planned",
     tags: ["웹앱", "참여"],
-    thumb: "/projects/500novel_app_thumb.webp",
-    href: "/news/500novel", 
+    thumb: "/projects/500fiction_app_thumb.webp",    
   },
   {
     slug: "tosiltosil-care",
@@ -59,13 +74,12 @@ const PROJECTS: Project[] = [
     thumb: "/projects/tosil_care_thumb.webp",
   },
   {
-    slug: "fiction500",
-    title: "500자소설 프로젝트",
+    slug: "500fiction_archive",
+    title: "500자소설 독자 참여 아카이브",
     summary: "초단편 500자 서사 실험...",
     status: "archive",
     tags: ["서사실험", "문체연구"],
-    thumb: "/projects/500novel_thumb.webp",
-    // href 없이 둠 → /projects/apppro500 로 이동
+    thumb: "/projects/500fiction_archive_thumb.webp",
   },
     // 필요 시 자유롭게 추가
 ];

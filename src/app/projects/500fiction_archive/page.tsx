@@ -1,4 +1,4 @@
-// src/app/projects/fiction500/page.tsx
+// src/app/projects/500fiction_archive/page.tsx
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -6,15 +6,15 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "500자소설 프로젝트 – 수림 스튜디오",
   description:
-    "초단편 500자 서사 실험. 101편 연재와 문체 이론 정리, 단행본 발간까지의 여정.",
+    "독자 참여로 확대된 500자소설 아카이브",
   alternates: {
-    canonical: "/projects/fiction500",
+    canonical: "/projects/500fiction_archive",
   },
   openGraph: {
     title: "500자소설 프로젝트 – 수림 스튜디오",
     description:
-      "초단편 500자 서사 실험. 101편 연재와 문체 이론 정리, 단행본 발간까지의 여정.",
-    images: ["/covers/500chars-hero.jpg"],
+      "초단편 500자 서사 실험. 독자 참여를 아카이브로 확장",
+    images: ["/covers/500fiction_archive_hero.webp"],
     type: "article",
     locale: "ko_KR",
   },
@@ -28,7 +28,7 @@ export default function () {
           Projects
         </Link>
         <span className="mx-1">/</span>
-        <span className="text-zinc-700">500자소설 프로젝트</span>
+        <span className="text-zinc-700">500자소설 아카이브</span>
       </nav>
 
       {/* 본문 – 필요하면 지금 쓰고 싶은 내용으로 교체 */}
@@ -43,10 +43,10 @@ export default function () {
 
       <section className="flex flex-col md:flex-row gap-4 justify-center">
         <Link
-          href="/news/500novel"
+          href="/projects/500_fiction"
           className="px-6 py-3 rounded-xl border border-emerald-600 text-emerald-700 font-medium hover:bg-emerald-50 text-center"
         >
-          관련 뉴스 읽기
+          관련 프로젝트 읽기
         </Link>
       </section>
 

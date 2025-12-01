@@ -157,6 +157,22 @@ export const TOSILTOSIL_SEOUL_STORES: TosiltosilStore[] = [
     phone: "0507-1398-1880",
     region: "seoul",
   },
+  {
+    id: 20,
+    name: "안도북스",
+    address:
+      "서울 마포구 월드컵북로6길 87 2층 201호",
+    phone: "0507-1379-5437",
+    region: "seoul",
+  },
+  {
+    id: 21,
+    name: "소요서가",
+    address:
+      "청계천로 160 청계상가 3층 바열 309-310호",
+    phone: "02-2272-1517",
+    region: "seoul",
+  },
 ];
 
 // 앞으로 경기·광역시 추가 시 이쪽에 배열 확장
