@@ -91,25 +91,25 @@ export default function ficionnovel500ProjectPage() {
       {/* CTA */}
       <section className="flex flex-col md:flex-row gap-4 justify-center text-center">
         <Link
-          href="/projects/500_ficion/sample"
+          href="/projects/500_fiction/sample"
           className="px-6 py-3 rounded-xl bg-emerald-600 text-white font-medium hover:bg-emerald-700"
         >
           작품 미리보기
         </Link>
         <Link
-          href="/library/500ficion"
+          href="/library/500fiction"
           className="px-6 py-3 rounded-xl bg-emerald-50 text-emerald-700 font-medium border border-emerald-600 hover:bg-emerald-100"
         >
           책 정보 보기
         </Link>
         <Link
-          href="/projects/500ficion_app"
+          href="/projects/500fiction_app"
           className="px-6 py-3 rounded-xl bg-emerald-50 text-emerald-700 font-medium border border-emerald-600 hover:bg-emerald-100"
         >
           앱 둘러보기
         </Link>
         <Link
-        href="/projects/500_ficion/bookmaps"
+        href="/projects/500_fiction/bookmaps"
         className="px-6 py-3 rounded-xl bg-emerald-50 text-emerald-700 font-medium border border-emerald-600 hover:bg-emerald-100"
         >
         입고서점 확인

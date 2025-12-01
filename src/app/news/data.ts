@@ -11,6 +11,16 @@ export type NewsItem = {
 
 export const NEWS: NewsItem[] = [
     {
+    slug: "maps-character-update",
+    title: "브랜드 뉴스. 마스코트 캐릭터 수리미와 토실이 탄생과 활동 내용이 업데이트 되었습니다. ",
+    body:
+      "수림 스튜디오의 마스코트 캐릭터 수리미와 토실이를 소개합니다. " +
+      "캐릭터들의 탄생 과정과 활동 내용이 업데이트 되었습니다. " +
+      "그 외 추가로 입고서점 지도의 일부 확대, 블로그 글의 목로보기 등이 업데이트 되었습니다. ",
+    category: "News",
+    published_at: "2025-12-01",
+    },
+    {
     slug: "daegu-bukgu-doseokwan",
     title: "25년 12월 4일, 11일. 이틀에 걸쳐 대구 북구태전도서관에서 특강이 열립니다. ",
     body:
