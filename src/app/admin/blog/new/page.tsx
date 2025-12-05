@@ -48,7 +48,7 @@ function normalizeHeroImageUrl(raw: string): { value: string | null; error?: str
   return { value: v };
 }
 
-type BlogSection = "log" | "insight" | "note";
+type BlogSection = "log" | "insight" | "note" | "class" ;
 
 const SECTION_OPTIONS: { value: BlogSection; label: string; description: string }[] = [
   {
@@ -65,6 +65,11 @@ const SECTION_OPTIONS: { value: BlogSection; label: string; description: string 
     value: "note",
     label: "단상 (NOTES)",
     description: "짧은 생각, 메모, 가벼운 기록",
+  },
+  {
+    value: "class",
+    label: "강연활동 (CLASS)",
+    description: "강연활동 기록, 특강 소식 전달",
   },
 ];
 

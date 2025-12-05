@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabaseClient";
 
 export const revalidate = 60; // 1분마다 재검증
 
-type BlogSection = "log" | "insight" | "note";
+type BlogSection = "log" | "insight" | "note" | "class" ;
 
 type BlogPost = {
   slug: string;
@@ -21,6 +21,7 @@ const SECTION_LABELS: Record<BlogSection, string> = {
   log: "작업일지",
   insight: "출판·글쓰기",
   note: "단상",
+  class: "강연활동"
 };
 
 const FILTER_TABS: { value: "all" | BlogSection; label: string }[] = [
@@ -28,6 +29,7 @@ const FILTER_TABS: { value: "all" | BlogSection; label: string }[] = [
   { value: "log", label: "작업일지" },
   { value: "insight", label: "출판·글쓰기" },
   { value: "note", label: "단상" },
+  { value: "class", label: "강연활동" },
 ];
 
 type PageProps = {
@@ -42,7 +44,7 @@ export default async function BlogPage({ searchParams }: PageProps) {
   const sectionParam =
     typeof rawSection === "string" ? rawSection : Array.isArray(rawSection) ? rawSection[0] : undefined;
 
-  const allowedSections: BlogSection[] = ["log", "insight", "note"];
+  const allowedSections: BlogSection[] = ["log", "insight", "note", "class",];
   const activeSection: "all" | BlogSection = allowedSections.includes(
     sectionParam as BlogSection,
   )
@@ -82,7 +84,7 @@ export default async function BlogPage({ searchParams }: PageProps) {
         <div className="space-y-1">
           <h1 className="text-2xl font-semibold">Blog</h1>
           <p className="text-sm text-slate-600">
-            수림 스튜디오의 작업일지, 출판·글쓰기 인사이트, 단상을 기록하는 공간입니다.
+            수림 스튜디오의 작업일지, 출판·글쓰기 인사이트, 단상, 강연활동을 기록하는 공간입니다.
           </p>
         </div>
 
