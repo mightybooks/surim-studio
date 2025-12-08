@@ -97,7 +97,19 @@ export default function BrandsPage() {
         <p className="leading-loose text-zinc-600">
           종합교양서적 브랜드로 위 세 브랜드를 총괄관리하는 출판사업의 모태입니다.
         </p>
-      </section>
+        <p className="leading-loose text-zinc-600">
+            출판과 관련하여 더 자세한 내용이 궁금하시다면 아래 버튼을 눌러 확인하실 수 있습니다.
+        </p>
+          <a
+            href="https://mightybooks.cafe24.com/default/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center rounded-xl bg-emerald-500 px-5 py-3 
+             text-sm font-medium text-white shadow hover:bg-emerald-700 transition mt-4"
+          >
+            마이티북스 바로가기
+          </a>
+        </section>    
     </main>
   );
 }
