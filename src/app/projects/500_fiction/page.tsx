@@ -97,19 +97,19 @@ export default function ficionnovel500ProjectPage() {
           작품 미리보기
         </Link>
         <Link
-          href="/library/500fiction"
-          className="px-6 py-3 rounded-xl bg-emerald-50 text-emerald-700 font-medium border border-emerald-600 hover:bg-emerald-100"
-        >
-          책 정보 보기
-        </Link>
-        <Link
           href="/projects/500fiction_app"
           className="px-6 py-3 rounded-xl bg-emerald-50 text-emerald-700 font-medium border border-emerald-600 hover:bg-emerald-100"
         >
           앱 둘러보기
         </Link>
         <Link
-        href="/projects/500_fiction/bookmaps"
+          href="/library/500fiction"
+          className="px-6 py-3 rounded-xl bg-emerald-50 text-emerald-700 font-medium border border-emerald-600 hover:bg-emerald-100"
+        >
+          책 정보 보기
+        </Link>
+        <Link
+        href="#"
         className="px-6 py-3 rounded-xl bg-emerald-50 text-emerald-700 font-medium border border-emerald-600 hover:bg-emerald-100"
         >
         입고서점 확인
