@@ -88,33 +88,55 @@ export default function ficionnovel500ProjectPage() {
         </ul>
       </article>
 
-      {/* CTA */}
-      <section className="flex flex-col md:flex-row gap-4 justify-center text-center">
-        <Link
-          href="/projects/500_fiction/sample"
-          className="px-6 py-3 rounded-xl bg-emerald-600 text-white font-medium hover:bg-emerald-700"
-        >
-          작품 미리보기
-        </Link>
-        <Link
-          href="/projects/500fiction_app"
-          className="px-6 py-3 rounded-xl bg-emerald-50 text-emerald-700 font-medium border border-emerald-600 hover:bg-emerald-100"
-        >
-          앱 둘러보기
-        </Link>
-        <Link
-          href="/library/500fiction"
-          className="px-6 py-3 rounded-xl bg-emerald-50 text-emerald-700 font-medium border border-emerald-600 hover:bg-emerald-100"
-        >
-          책 정보 보기
-        </Link>
-        <Link
-        href="#"
-        className="px-6 py-3 rounded-xl bg-emerald-50 text-emerald-700 font-medium border border-emerald-600 hover:bg-emerald-100"
-        >
-        입고서점 확인
-        </Link>
-      </section>
+      <aside className="mt-10 rounded-2xl border border-zinc-200 p-5 bg-white/60">
+        <div className="flex items-center gap-4">
+          <div className="relative w-14 h-14 overflow-hidden rounded-full">
+            <Image src="/profile/moonsurim.png" alt="문수림" fill className="object-cover" />
+          </div>
+          <div>
+            <p className="font-medium text-zinc-800">문수림</p>
+            <p className="text-sm text-zinc-500">수림 스튜디오 총괄자 · 소설가</p>
+          </div>
+        </div>
+      </aside>
+
+          {/* CTA */}
+          <section className="rounded-2xl border border-emerald-100 p-6 bg-emerald-50/60">
+            <h3 className="text-lg font-semibold text-emerald-900 mb-2">더 읽기</h3>
+            <p className="text-zinc-700 mb-4">
+              500자소설의 앱, 아카이브, 책으로 확장되는 여정을 확인하세요.
+            </p>
+
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/projects/500_fiction/sample"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 transition"
+              >
+                작품 미리보기
+              </Link>
+              
+              <Link
+                href="/projects/500fiction_app"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500 text-white hover:bg-emerald-600 transition"
+              >
+                앱 둘러보기
+              </Link>
+              
+              <Link
+                href="/library/500fiction"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-400 text-white hover:bg-emerald-500 transition"
+              >
+                책 보러가기(준비중)
+              </Link>
+
+              <Link
+                href="#"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-300 text-white hover:bg-emerald-500 transition"
+              >
+                입고서점 확인(준비중)
+              </Link>
+            </div>
+          </section>
 
       {/* 푸터 */}
       <footer className="text-center text-xs text-zinc-400">

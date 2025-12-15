@@ -95,7 +95,7 @@ export const NEWS: NewsItem[] = [
     href: "/projects/tosiltosil", // ← 클릭 시 바로 프로젝트 페이지로 이동
   },
   {
-    slug: "500chars-beta",
+    slug: "500fiction_archive",
     title: "500자소설 아카이브 베타 오픈",
     body:
       "앱에서 생성된 결과물의 선별 수록 페이지를 공개합니다. " +
@@ -103,16 +103,16 @@ export const NEWS: NewsItem[] = [
       "현재 관련 앱 개발중입니다.",
     category: "Update",
     published_at: "2025-11-05",
-    cta: { href: "/projects/500chars", label: "아카이브 허브" },
+    cta: { href: "/projects/500fiction_archive", label: "아카이브 허브" },
   },
   {
-    slug: "500novel",
+    slug: "500_fiction",
     title: "500자소설 단행본 출시 임박",
     body:
       "SNS 스레드에서 연재하던 '500자소설쓰기'가 곧 마감됩니다. " +
       "최초 기획 101편 중 현재 89편의 원고가 모여 편집 작업에 착수한 상태입니다.",
     category: "News",
     published_at: "2025-11-10",
-    cta: { href: "/news/500novel", label: "프로젝트 보러가기" },
+    cta: { href: "/projects/500_fiction", label: "프로젝트 보러가기" },
   },
 ].sort((a, b) => (b.published_at || "").localeCompare(a.published_at || ""));
