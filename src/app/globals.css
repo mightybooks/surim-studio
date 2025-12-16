@@ -74,3 +74,20 @@ article ul,
   padding-left: 1.2rem;
   margin-left: 0;
 }
+
+/* 7) 돌봄앱 아카이브 카드 */
+@keyframes floatSlow {
+  0% {
+    transform: translateY(0px) rotate(-4deg);
+  }
+  50% {
+    transform: translateY(-14px) rotate(4deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(-4deg);
+  }
+}
+
+.archive-blur-card {
+  animation: floatSlow 14s ease-in-out infinite;
+}
