@@ -81,6 +81,14 @@ const PROJECTS: Project[] = [
     tags: ["서사실험", "문체연구"],
     thumb: "/projects/500fiction_archive_thumb.webp",
   },
+    {
+    slug: "tosiltosil_archive",
+    title: "돌봄에너지 확산 응원 아카이브",
+    summary: "돌봄에너지 자가측정 앱을 사용한 이용자들의 응원메시지 모음",
+    status: "archive",
+    tags: ["캠페인", "에너지확산"],
+    thumb: "/projects/tosiltosil_archive_thumb.webp",
+  },
     // 필요 시 자유롭게 추가
 ];
 
