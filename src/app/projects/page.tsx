@@ -82,7 +82,7 @@ const PROJECTS: Project[] = [
     thumb: "/projects/500fiction_archive_thumb.webp",
   },
     {
-    slug: "tosiltosil_archive",
+    slug: "tosiltosil-archive",
     title: "돌봄에너지 확산 응원 아카이브",
     summary: "돌봄에너지 자가측정 앱을 사용한 이용자들의 응원메시지 모음",
     status: "archive",

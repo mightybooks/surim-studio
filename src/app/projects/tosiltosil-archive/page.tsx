@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "토실토실 돌봄에너지 확산 프로젝트 – 수림 스튜디오",
   description: "참여로 확산되는 돌봄에너지 아카이브",
   alternates: {
-    canonical: "/projects/tosiltosil_archive",
+    canonical: "/projects/tosiltosil-archive",
   },
   openGraph: {
     title: "토실토실 돌봄에너지 확산 프로젝트 – 수림 스튜디오",
