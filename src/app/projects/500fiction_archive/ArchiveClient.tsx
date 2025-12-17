@@ -86,7 +86,7 @@ export default function ArchiveClient({
       </section>
 
       {/* ================= 3층 : 본문 ================= */}
-        <section>
+        <section className="mb-20">
         <FictionViewer entry={entries[activeIndex] ?? null} />
         </section>
 
