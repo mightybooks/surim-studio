@@ -1,3 +1,5 @@
+// src/app/api/archive/500-fiction/route.ts
+
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
@@ -5,6 +7,12 @@ const supabase = createClient(
   process.env.SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
+
+function normalizeOgImageKey(value: string) {
+  return value
+    .replace(/^.*\//, "")   // 경로 제거
+    .replace(/\.png$/, ""); // 확장자 제거
+}
 
 export async function POST(req: Request) {
   try {
@@ -39,7 +47,7 @@ export async function POST(req: Request) {
         {
           title,
           content,
-          og_image_key,
+          og_image_key: normalizeOgImageKey(og_image_key),
           email,
           created_at,
         },
