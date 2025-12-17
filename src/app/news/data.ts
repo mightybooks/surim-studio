@@ -11,6 +11,16 @@ export type NewsItem = {
 
 export const NEWS: NewsItem[] = [
     {
+    slug: "webapp-complete-500tosil",
+    title: "웹앱 2종 개발 완료 및 아카이브 시스템 구축 완료 ",
+    body:
+      "500자 챌린지 앱과 돌봄에너지 자가측정 앱이 완성되었습니다. " +
+      "두 앱 모두 각각의 결과물을 수림 스튜디오 홈페이지로 공유할 수 있고, " +
+      "수림 스튜디오로 들어온 결과물들은 차례대로 누적되어 랜덤하게 사용자들에게 노출됩니다. ",
+    category: "News",
+    published_at: "2025-12-17",
+    },
+    {
     slug: "maps-character-update",
     title: "브랜드 뉴스. 마스코트 캐릭터 수리미와 토실이 탄생과 활동 내용이 업데이트 되었습니다. ",
     body:
