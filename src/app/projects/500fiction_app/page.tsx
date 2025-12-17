@@ -251,10 +251,11 @@ export default function Fiction500AppPage() {
      {/* 최종 CTA */}
       <section className="flex flex-col items-center justify-center gap-4 text-center md:flex-row">
         <Link
-          href="#"
+          href="https://500challenge.vercel.app/"
+          target="_blank"
           className="rounded-xl bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow hover:bg-emerald-700"
         >
-          지금 500자소설 앱 열기
+          500자 챌린지 앱 열기
         </Link>
 
         <Link

@@ -162,7 +162,8 @@ export default function Fiction500SamplePage() {
       {/* CTA */}
       <section className="text-center mt-20">
         <a
-          href="#"
+          href="https://500challenge.vercel.app/"
+          target="_blank"
           className="inline-block px-6 py-3 rounded-xl bg-violet-600 text-white font-medium hover:bg-violet-700"
         >
           나도 500자 소설 쓰러 가기

@@ -116,14 +116,14 @@ export default function ficionnovel500ProjectPage() {
               </Link>
               
               <Link
-                href="/projects/500fiction_app"
+                href="/projects/500fiction_app"                
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500 text-white hover:bg-emerald-600 transition"
               >
-                앱 둘러보기
+                앱 알아보기
               </Link>
               
               <Link
-                href="/library/500fiction"
+                href="#"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-400 text-white hover:bg-emerald-500 transition"
               >
                 책 보러가기(준비중)
