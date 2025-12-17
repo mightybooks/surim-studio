@@ -125,7 +125,7 @@ export default function TosiltosilProjectPage() {
       {/* CTA */}
       <section className="flex flex-col md:flex-row gap-4 justify-center text-center">
         <Link
-          href="/library/tosilbook"
+          href="https://a.co/d/gZqqwVW"
           target="_blank"
           className="px-6 py-3 rounded-xl bg-emerald-600 text-white font-medium hover:bg-emerald-700"
         >
