@@ -259,24 +259,24 @@ export default function Fiction500AppPage() {
         </Link>
 
         <Link
+          href="/projects/500_fiction/500fiction_archive"
+          className="rounded-xl border border-emerald-500 bg-emerald-50 px-6 py-3 text-sm font-medium text-emerald-800 hover:bg-emerald-100"
+        >
+          참여자 작품 아카이브
+        </Link>
+
+        <Link
           href="/projects/500_fiction/sample"
           className="rounded-xl border border-emerald-500 bg-emerald-50 px-6 py-3 text-sm font-medium text-emerald-800 hover:bg-emerald-100"
         >
-          500자 샘플 읽어보기
+          문수림의 500자 샘플
         </Link>
 
         <Link
           href="/projects/500_fiction"
-          className="rounded-xl border border-emerald-500 bg-emerald-50 px-6 py-3 text-sm font-medium text-emerald-800 hover:bg-emerald-100"
-        >
-          500자 프로젝트 배경 더 읽기
-        </Link>
-
-        <Link
-          href="/"
           className="rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50"
         >
-          수림 스튜디오 홈으로
+          500자 프로젝트 배경 더 읽기
         </Link>
       </section>
 

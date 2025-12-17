@@ -112,6 +112,13 @@ export default function TosiltosilCarePage() {
           책 보러가기
         </Link>
         <Link
+        href="https://dolbom-mu.vercel.app/"
+        target="_blank"
+        className="px-6 py-3 rounded-xl bg-emerald-50 text-emerald-700 font-medium border border-emerald-600 hover:bg-emerald-100"
+        >
+        앱 이용하기
+        </Link>
+        <Link
           href="/projects/tosiltosil-archive"
           className="px-6 py-3 rounded-xl bg-emerald-50 text-emerald-700 font-medium border border-emerald-600 hover:bg-emerald-100"
         >

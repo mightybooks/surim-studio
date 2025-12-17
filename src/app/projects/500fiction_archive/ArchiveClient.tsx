@@ -91,18 +91,27 @@ export default function ArchiveClient({
         </section>
 
       {/* ================= CTA ================= */}
-      <section className="mt-20 flex flex-col md:flex-row gap-4 justify-center">
+      <section className="flex flex-col items-center justify-center gap-4 text-center md:flex-row">
+        <Link
+          href="https://500challenge.vercel.app/"
+          target="_blank"
+          className="rounded-xl bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow hover:bg-emerald-700"
+        >
+          500자 챌린지 앱 열기
+        </Link>
+
         <Link
           href="/projects/500_fiction"
-          className="
-            px-6 py-3 rounded-xl
-            border border-emerald-600
-            text-emerald-700 font-medium
-            hover:bg-emerald-50
-            text-center
-          "
+          className="rounded-xl border border-emerald-500 bg-emerald-50 px-6 py-3 text-sm font-medium text-emerald-800 hover:bg-emerald-100"
         >
-          관련 프로젝트 읽기
+          500자 프로젝트 배경 더 읽기
+        </Link>
+
+        <Link
+          href="/"
+          className="rounded-xl border border-emerald-500 bg-emerald-50 px-6 py-3 text-sm font-medium text-emerald-800 hover:bg-emerald-100"
+        >
+          수림 스튜디오 홈으로
         </Link>
       </section>
 

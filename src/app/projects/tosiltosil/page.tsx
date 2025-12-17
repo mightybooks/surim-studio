@@ -127,7 +127,7 @@ export default function TosiltosilProjectPage() {
           href="/projects/tosiltosil-care"
           className="px-6 py-3 rounded-xl bg-emerald-50 text-emerald-700 font-medium border border-emerald-600 hover:bg-emerald-100"
         >
-          앱 보러가기
+          앱 알아보기
         </Link>
         <Link
         href="/projects/tosiltosil/bookmaps"
