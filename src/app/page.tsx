@@ -14,9 +14,26 @@ export default function Home() {
   since 2025
 </p>
 
-     <section className="text-center">
-      {/* ... 타이틀/설명 ... */}
-     <NavBar />
+    <section className="text-center">
+      {/* 500자 챌린지 바로가기 버튼 */}
+      <a
+        href="https://500challenge.vercel.app/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center justify-center
+                  mb-6
+                  rounded-full border border-emerald-200
+                  px-6 py-2.5
+                  text-sm font-medium text-emerald-900
+                  bg-emerald-50/60
+                  hover:bg-emerald-100/70
+                  transition-colors"
+      >
+        ✍️ 500자 챌린지 바로가기
+      </a>
+
+      {/* 기존 네비게이션 */}
+      <NavBar />
     </section>
 
       {/* 글로벌 안내 */}
