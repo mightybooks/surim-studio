@@ -8,7 +8,7 @@ export default function ArchiveTopCards({
 }: {
   items: ArchiveItem[];
 }) {
-  return (
+  return (    
     <section className="flex justify-center gap-6 flex-wrap md:flex-nowrap">
       {items.map((item) => {
         const meta = RESULT_MAP[item.result_type];

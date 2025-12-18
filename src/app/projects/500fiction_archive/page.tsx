@@ -66,7 +66,8 @@ export default async function FictionArchivePage() {
   const shuffled = shuffleArray(data);
 
   // 2️⃣ 항상 22장 덱 보장
-  const deckEntries = buildDeck(shuffled, 22);
+  const deckEntries = shuffled;
+  const deckSize = deckEntries.length;
 
   // 3️⃣ 카드용 데이터 (이미지 전용)
   const cards: ArcanaCard[] = deckEntries.map((entry) => ({
@@ -84,7 +85,7 @@ export default async function FictionArchivePage() {
   }));
 
   // 5️⃣ 최초 진입 카드 (서버에서 1회 결정)
-  const initialIndex = Math.floor(Math.random() * 22);
+  const initialIndex = Math.floor(Math.random() * deckSize);
 
   return (
     <main className="mx-auto max-w-6xl px-6 py-16">

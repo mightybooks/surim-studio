@@ -1,4 +1,4 @@
-// src/app/projects/tosiltosil_archive/page.tsx
+// src/app/projects/tosiltosil-archive/page.tsx
 import type { Metadata } from "next";
 import Link from "next/link";
 import ArchiveShowcase from "@/components/archive/ArchiveShowcase";
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   const res = await fetch(
-    `${process.env.DOLBOM_APP_URL}/api/archives?token=${process.env.ARCHIVE_API_TOKEN}&limit=20&hasMessage=true`,
+    `${process.env.DOLBOM_APP_URL}/api/archives?token=${process.env.ARCHIVE_API_TOKEN}&limit=100`,
     { cache: "no-store" }
   );
 
@@ -61,9 +61,7 @@ export default async function Page() {
       </section>
 
       {/* 아카이브 쇼케이스 */}
-      {archives.length > 0 && (
-        <ArchiveShowcase archives={archives} />
-      )}
+      <ArchiveShowcase archives={archives} />
 
       {/* 관련 링크 */}
       <section className="flex justify-center">
