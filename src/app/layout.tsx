@@ -5,6 +5,15 @@ import ClientNav from "@/components/ClientNav";
 import MobileDock from "@/components/MobileDock";
 import ScrollTopDesktop from "@/components/ScrollTopDesktop";
 import KakaoLoader from "@/components/KakaoLoader";
+import { supabaseServerPublic } from "@/lib/supabase/server-public";
+
+const supabase = supabaseServerPublic();
+const {
+  data: { user },
+} = await supabase.auth.getUser();
+
+console.log("server user:", user?.id);
+
 
 export const metadata = {
   metadataBase: new URL("https://surimstudio.com"),

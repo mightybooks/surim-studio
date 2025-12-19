@@ -1,79 +1,99 @@
+// components/auth/LoginForm.tsx
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabaseClient";
+import { useRouter } from "next/navigation";
+import { supabaseBrowser } from "@/lib/supabase/client";
+import AuthCard from "@/components/auth/AuthCard";
 
-export default function LoginForm() {
-  const supabase = createClient();
+export default function LoginForm() {  
+  const router = useRouter();
+  const supabase = supabaseBrowser();
 
   const [email, setEmail] = useState("");
-  const [sending, setSending] = useState(false);
-  const [sent, setSent] = useState(false);
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState<string | null>(null);
 
-  const base = process.env.NEXT_PUBLIC_SITE_URL!; // 로컬/배포 공통 기반 URL
-
-  async function onSubmit(e: React.FormEvent) {
+  async function onLogin(e: React.FormEvent) {
     e.preventDefault();
-    if (sending) return;
-    setSending(true);
+    if (loading) return;
+    setLoading(true);
     setErrMsg(null);
 
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: `${base}/account`,
-      },
-    });
-
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
-      setErrMsg(`로그인 메일 전송 실패: ${error.message}`);
-      setSending(false);
+      setErrMsg("이메일 또는 비밀번호를 확인해 주세요.");
+      setLoading(false);
       return;
     }
 
-    setSent(true);
-    setSending(false);
+    router.push("/");
+    router.refresh();
   }
 
-  if (sent) {
-    return (
-      <div className="max-w-sm text-sm">
-        <p>로그인 링크를 이메일로 보냈습니다.</p>
-        <p className="mt-1">받은편지함에 없다면 스팸함도 확인해 주세요. 슬픈 현실입니다.</p>
-      </div>
-    );
+  async function onLogout() {
+    await supabase.auth.signOut();
+    router.push("/login");
+    router.refresh();
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-3 max-w-sm">
-      <label className="block text-sm">
-        이메일
-        <input
-          className="w-full border rounded px-3 py-2 mt-1"
-          type="email"
-          inputMode="email"
-          autoComplete="email"
-          placeholder="you@example.com"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </label>
+    <AuthCard
+      title="로그인"
+      footer={
+        <>
+          <span>아직 계정이 없으신가요? </span>
+          <a href="/signup" className="underline">회원가입</a>
+        </>
+      }
+    >
+      <form onSubmit={onLogin} className="space-y-3">
+        <label className="block text-sm">
+          이메일 (로그인 ID)
+          <input
+            className="mt-1 w-full rounded border px-3 py-2"
+            type="email"
+            autoComplete="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </label>
 
-      <button
-        type="submit"
-        disabled={sending}
-        className="w-full rounded px-3 py-2 border disabled:opacity-60"
-      >
-        {sending ? "전송 중..." : "매직링크 보내기"}
-      </button>
+        <label className="block text-sm">
+          비밀번호
+          <input
+            className="mt-1 w-full rounded border px-3 py-2"
+            type="password"
+            autoComplete="current-password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </label>
 
-      {errMsg && <p className="text-red-600 text-sm">{errMsg}</p>}
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full rounded bg-black px-3 py-2 text-white disabled:opacity-60"
+        >
+          {loading ? "로그인 중..." : "로그인"}
+        </button>
 
-      <p className="text-xs text-gray-500">
-        비밀번호는 없습니다. 잊을 것도, 털릴 것도 줄이는 것이 인생의 지혜죠.
-      </p>
-    </form>
+        {errMsg && <p className="text-sm text-red-600">{errMsg}</p>}
+      </form>
+
+      {/* 테스트용 로그아웃 */}
+      <div className="pt-3">
+        <button
+          type="button"
+          onClick={onLogout}
+          className="w-full rounded border px-3 py-2 text-sm"
+        >
+          (테스트) 로그아웃
+        </button>
+      </div>
+    </AuthCard>
   );
 }

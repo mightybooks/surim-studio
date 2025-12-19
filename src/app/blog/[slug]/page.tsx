@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { createClient } from "@/lib/supabaseClient";
+import { supabaseServerPublic } from "@/lib/supabase/server-public";
 import ReactMarkdown from "react-markdown";
 import Image from "next/image";
 import ShareButtons from "@/components/ShareButtons";
@@ -45,7 +45,7 @@ function normalizeHeroUrl(raw: string | null | undefined): string | null {
 // 메타데이터 (OG 이미지 포함)
 // ─────────────────────────────────────────────
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const supabase = createClient();
+  const supabase = supabaseServerPublic();
   const { data } = await supabase
     .from("blog_posts")
     .select("title, subtitle, hero_image_url, status")
@@ -84,8 +84,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 // 본문 페이지
 // ─────────────────────────────────────────────
 export default async function BlogPostPage({ params }: Props) {
-  const supabase = createClient();
-
+  const supabase = supabaseServerPublic();
+  
   // 1) 현재 글 정보 가져오기
   const { data: post, error } = await supabase
     .from("blog_posts")

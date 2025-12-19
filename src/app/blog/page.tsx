@@ -1,6 +1,6 @@
 // src/app/blog/page.tsx
 import Link from "next/link";
-import { createClient } from "@/lib/supabaseClient";
+import { supabaseServerPublic } from "@/lib/supabase/server-public";
 
 export const revalidate = 60; // 1분마다 재검증
 
@@ -37,7 +37,7 @@ type PageProps = {
 };
 
 export default async function BlogPage({ searchParams }: PageProps) {
-  const supabase = createClient();
+  const supabase = supabaseServerPublic();
 
   // ?section=log | insight | note
   const rawSection = searchParams?.section;

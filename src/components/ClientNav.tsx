@@ -2,8 +2,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { supabaseBrowser } from "@/lib/supabase/client";
 
 type NavItem = {
   href: string;
@@ -11,7 +12,7 @@ type NavItem = {
 };
 
 type NavGroup = {
-  label: string; // ABOUT / WORKS / MEDIA
+  label: string;
   items: NavItem[];
 };
 
@@ -29,7 +30,6 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { href: "/projects", label: "Projects" },
       { href: "/surimzine", label: "SurimZine" },
-      // TODO: 나중에 실제 공모전 페이지가 생기면 "/contest" 로 교체
       { href: "/standby1", label: "Contest" },
     ],
   },
@@ -42,14 +42,50 @@ const NAV_GROUPS: NavGroup[] = [
   },
 ];
 
+const MY_GROUP: NavGroup = {
+  label: "MY",
+  items: [
+    { href: "/my", label: "내 정보" },
+    { href: "/my/fundings", label: "참여 중인 펀딩" },
+    { href: "/my/events", label: "참여 중인 이벤트" },
+    { href: "/logout", label: "로그아웃" },
+  ],
+};
+
 export default function ClientNav() {
   const pathname = usePathname();
+  const router = useRouter(); 
+  const supabase = supabaseBrowser(); 
+
   const [openGroup, setOpenGroup] = useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const groupsToRender = isLoggedIn
+    ? [...NAV_GROUPS, MY_GROUP]
+    : NAV_GROUPS;
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
     return pathname?.startsWith(href);
-  };
+  };  
+  
+  useEffect(() => {
+    // 초기 세션 체크
+    supabase.auth.getSession().then(({ data }) => {
+      setIsLoggedIn(!!data.session);
+    });
+
+    // 로그인 / 로그아웃 실시간 감지
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [supabase]);
 
   // 경로가 바뀌면 드롭다운 닫기
   useEffect(() => {
@@ -82,8 +118,10 @@ export default function ClientNav() {
 
   return (
     <ul className="relative flex max-w-full flex-wrap items-center justify-end gap-x-6 gap-y-2 text-sm sm:text-[0.95rem]">
-      {NAV_GROUPS.map((group) => {
-        const groupActive = group.items.some((item) => isActive(item.href));
+      {groupsToRender.map((group) => {
+        const groupActive = group.items.some((item) =>
+          isActive(item.href),
+        );
         const isOpen = openGroup === group.label;
 
         return (
@@ -114,11 +152,28 @@ export default function ClientNav() {
                 // 드롭다운 내부 클릭 시에는 닫히지 않도록
                 onClick={(e) => e.stopPropagation()}
               >
-                {group.items.map((item) => (
+               {group.items.map((item) =>
+                item.label === "로그아웃" ? (
+                  <button
+                    key="logout"
+                    type="button"
+                    onClick={async () => {
+                      await supabase.auth.signOut();
+                      setIsLoggedIn(false);
+                      setOpenGroup(null);
+                      router.push("/");
+                      router.refresh();
+                    }}
+                    className="block w-full truncate px-4 py-2 text-left text-[color:var(--fg)]/75 hover:bg-[#F5EEDC]"
+                  >
+                    로그아웃
+                  </button>
+                ) : (
                   <Link
                     key={item.href}
                     href={item.href}
                     aria-current={isActive(item.href) ? "page" : undefined}
+                    onClick={() => setOpenGroup(null)}
                     className={`block truncate px-4 py-2 ${
                       isActive(item.href)
                         ? "font-semibold text-emerald-900"
@@ -127,12 +182,29 @@ export default function ClientNav() {
                   >
                     {item.label}
                   </Link>
-                ))}
+                ),
+              )}                
               </div>
             )}
           </li>
         );
       })}
-    </ul>
-  );
+    {!isLoggedIn && (
+      <li className="relative min-w-0">
+        <Link
+        href="/login"
+        className={[
+        "cursor-pointer rounded-full px-3 py-1 text-[0.8rem] font-semibold uppercase tracking-[0.18em]",
+        "transition-colors duration-150 border",
+        isActive("/login")
+        ? "bg-slate-900 text-white border-transparent"
+        : "text-[color:var(--fg)]/80 hover:text-slate-900 hover:bg-[#E8F0FF] hover:border-[#C5D9FF]",
+        ].join(" ")}
+        >
+        LOGIN
+       </Link>
+     </li>
+    )}
+  </ul>
+ );
 }

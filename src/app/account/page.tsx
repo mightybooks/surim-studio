@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { createClient } from "@/lib/supabaseClient";
+import { supabaseBrowser } from "@/lib/supabase/client";
 
 type Profile = {
   id: string;
@@ -11,7 +11,7 @@ type Profile = {
 };
 
 export default function AccountPage() {
-  const supabase = createClient();
+  const supabase = supabaseBrowser();
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);

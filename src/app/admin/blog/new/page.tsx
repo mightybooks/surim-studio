@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabaseClient";
+import { supabaseBrowser } from "@/lib/supabase/client";
 
 function slugifyFromTitle(title: string) {
   return title
@@ -75,7 +75,7 @@ const SECTION_OPTIONS: { value: BlogSection; label: string; description: string 
 
 export default function AdminBlogNewPage() {
   const router = useRouter();
-  const supabase = createClient();
+  const supabase = supabaseBrowser();
 
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
