@@ -31,19 +31,30 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-       <html lang="ko">
+    <html lang="ko">
+      <head>
+        {process.env.NODE_ENV === "production" && (
+          <script
+            defer
+            src="https://cloud.umami.is/script.js"
+            data-website-id="d518b050-1977-468c-b343-84b487e20492"
+          />
+        )}
+      </head>
+
       <body className="min-h-screen bg-[var(--bg)] text-[var(--fg)]">
         <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--bg)]">
           <nav className="mx-auto flex max-w-screen-md items-center justify-between px-4 py-3">
-            <Link href="/" className="font-semibold text-emerald-900">SULIM STUDIO</Link>
+            <Link href="/" className="font-semibold text-emerald-900">
+              SULIM STUDIO
+            </Link>
             <ClientNav />
           </nav>
         </header>
 
-        {/* 하단 도킹바와 겹치지 않도록 모바일에서 여유 하단 패딩 부여 */}
         <main className="mx-auto max-w-6xl px-4 py-10 pb-[calc(4rem+env(safe-area-inset-bottom))] sm:pb-10">
-           <KakaoLoader />
-          {children}          
+          <KakaoLoader />
+          {children}
         </main>
 
         <footer className="text-center text-xs text-zinc-500 py-6 border-t border-[var(--border)] bg-[var(--bg)]">
@@ -53,10 +64,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </footer>
 
-        {/* ▼ 여기 두 줄만 실제로 추가됩니다 */}
-        <MobileDock />   {/* 모바일 하단 고정 미니 네비 */}  
-        <ScrollTopDesktop />   {/* 데스크탑에서만 등장 */}       
-        {/* ▲ 추가 끝 */}
+        <MobileDock />
+        <ScrollTopDesktop />
       </body>
     </html>
   );
