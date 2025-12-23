@@ -16,13 +16,13 @@ export const metadata: Metadata = {
   alternates: { canonical: "/projects" },
 };
 
-type Status = "active" | "planned" | "archive";
+type Status = "active" | "planned" | "archive" | "application" ;
 
 type Project = {
   slug: string;
   title: string;
   summary: string;
-  status: "active" | "planned" | "archive";
+  status: "active" | "planned" | "archive" | "application" ;
   tags: string[];
   thumb?: string;
   href?: string; // ← 있으면 이 경로로 이동
@@ -60,7 +60,7 @@ const PROJECTS: Project[] = [
     title: "500자소설 앱",
     summary:
       "독자 참여형 초단편 생성/평가 웹앱. 작품 공유 → 프로젝트 카테고리 연동까지 목표.",
-    status: "planned",
+    status: "application",
     tags: ["웹앱", "참여"],
     thumb: "/projects/500fiction_app_thumb.webp",    
   },
@@ -69,7 +69,7 @@ const PROJECTS: Project[] = [
     title: "토실토실 돌봄에너지 앱",
     summary:
       "나의 돌봄에너지를 키우고, 확산해 보자! → 돌봄에너지 자가 측정 앱",
-    status: "planned",
+    status: "application",
     tags: ["캠페인", "참여"],
     thumb: "/projects/tosil_care_thumb.webp",
   },
@@ -96,7 +96,8 @@ const PROJECTS: Project[] = [
 const groups: { key: Status; label: string; desc: string }[] = [
   { key: "active", label: "진행중", desc: "현재 운영 중인 프로젝트" },
   { key: "planned", label: "예정", desc: "준비 및 개발 예정" },
-  { key: "archive", label: "아카이브", desc: "완료·중단·기록 목적" },
+  { key: "application", label: "웹앱", desc: "사용자들 이용, 공유 목적" },
+  { key: "archive", label: "아카이브", desc: "완료·중단·기록 목적" },  
 ];
 
 export default function ProjectIndexPage() {
@@ -191,11 +192,16 @@ function StatusBadge({ status }: { status: Status }) {
       className:
         "bg-amber-500/90 text-white border border-white/30 shadow-sm",
     },
+    application: {
+      label: "웹앱",
+      className:
+        "bg-purple-600/70 text-white border border-white/30 shadow-sm",
+    },
     archive: {
       label: "아카이브",
       className:
         "bg-zinc-700/80 text-white border border-white/30 shadow-sm",
-    },
+    },    
   };
 
   const { label, className } = map[status];
