@@ -36,15 +36,16 @@ export async function GET(req: Request) {
   // returnTo도 함께 저장
   res.cookies.set("naver_oauth_state", state, {
     httpOnly: true,
-    secure: origin.startsWith("https://"),
-    sameSite: "lax",
+    secure: true,
+    sameSite: "none",
     path: "/",
     maxAge: 60 * 10,
   });
+
   res.cookies.set("naver_return_to", returnTo, {
     httpOnly: true,
-    secure: origin.startsWith("https://"),
-    sameSite: "lax",
+    secure: true,
+    sameSite: "none",
     path: "/",
     maxAge: 60 * 10,
   });
