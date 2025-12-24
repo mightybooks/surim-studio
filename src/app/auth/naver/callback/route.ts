@@ -1,12 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
-import { cookies } from "next/headers";
-import { createServerClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@supabase/supabase-js";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-function getOrigin(req: Request) {
+function getOrigin(req: NextRequest) {
   const url = new URL(req.url);
   return `${url.protocol}//${url.host}`;
 }
@@ -17,31 +16,24 @@ function hmacPassword(naverId: string) {
 }
 
 function synthEmail(naverId: string) {
-  // 충돌 방지/식별용: 내부 도메인
   return `naver_${naverId}@oauth.surimstudio.local`;
 }
 
-if (!process.env.NAVER_CLIENT_SECRET) {
-  throw new Error("NAVER_CLIENT_SECRET is missing");
-}
-
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   const url = new URL(req.url);
   const origin = getOrigin(req);
 
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
 
-  const cookieStore = cookies();
-  const savedState = cookieStore.get("naver_oauth_state")?.value;
-  const returnTo = cookieStore.get("naver_return_to")?.value || "/my";
+  const savedState = req.cookies.get("naver_oauth_state")?.value;
+  const returnTo = req.cookies.get("naver_return_to")?.value || "/my";
 
-  // state 검증
   if (!code || !state || !savedState || state !== savedState) {
     return NextResponse.redirect(`${origin}/login?error=naver_state_mismatch`);
   }
 
-  // code -> token 교환
+  /** 1. token 교환 */
   const tokenRes = await fetch("https://nid.naver.com/oauth2/token", {
     method: "POST",
     headers: { "content-type": "application/x-www-form-urlencoded" },
@@ -52,7 +44,7 @@ export async function GET(req: Request) {
       code,
       state,
       redirect_uri: `${origin}/auth/naver/callback`,
-    }).toString(),
+    }),
     cache: "no-store",
   });
 
@@ -60,15 +52,14 @@ export async function GET(req: Request) {
     return NextResponse.redirect(`${origin}/login?error=naver_token_failed`);
   }
 
-  const tokenJson = await tokenRes.json();
-  const accessToken = tokenJson.access_token as string | undefined;
-  if (!accessToken) {
+  const { access_token } = await tokenRes.json();
+  if (!access_token) {
     return NextResponse.redirect(`${origin}/login?error=naver_no_access_token`);
   }
 
-  // profile 조회
+  /** 2. 프로필 조회 */
   const profileRes = await fetch("https://openapi.naver.com/v1/nid/me", {
-    headers: { authorization: `Bearer ${accessToken}` },
+    headers: { Authorization: `Bearer ${access_token}` },
     cache: "no-store",
   });
 
@@ -77,8 +68,7 @@ export async function GET(req: Request) {
   }
 
   const profileJson = await profileRes.json();
-  const resp = profileJson?.response;
-  const naverId = resp?.id as string | undefined;
+  const naverId = profileJson?.response?.id;
   if (!naverId) {
     return NextResponse.redirect(`${origin}/login?error=naver_no_id`);
   }
@@ -86,23 +76,22 @@ export async function GET(req: Request) {
   const email = synthEmail(naverId);
   const password = hmacPassword(naverId);
 
-  // Supabase (Route Handler Client) - 쿠키 세션 세팅 가능
-  const supabase = createServerClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  { cookies: cookies() }
-);
+  /** 3. Supabase 로그인 */
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    { auth: { persistSession: false } }
+  );
 
-  // 먼저 로그인 시도
-  let signIn = await supabase.auth.signInWithPassword({ email, password });
+  let { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
 
-  // 없으면 생성 후 재시도
-  if (signIn.error) {    
-    const { createClient } = await import("@supabase/supabase-js");
-
+  if (error) {
     const admin = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!, // 반드시 서버 env에만
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
       { auth: { persistSession: false } }
     );
 
@@ -113,23 +102,40 @@ export async function GET(req: Request) {
       user_metadata: {
         provider: "naver",
         naver_id: naverId,
-        nickname: resp?.nickname ?? null,
-        name: resp?.name ?? null,
-        profile_image: resp?.profile_image ?? null,
       },
     });
 
-    // 다시 로그인
-    signIn = await supabase.auth.signInWithPassword({ email, password });
+    ({ data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    }));
 
-    if (signIn.error) {
+    if (error || !data.session) {
       return NextResponse.redirect(`${origin}/login?error=supabase_signin_failed`);
     }
   }
 
-  // state/returnTo 쿠키 정리
+  /** 4. 세션 쿠키 직접 세팅 */
   const res = NextResponse.redirect(`${origin}${returnTo}`);
+
+  res.cookies.set("sb-access-token", data.session!.access_token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+    path: "/",
+    maxAge: data.session!.expires_in,
+  });
+
+  res.cookies.set("sb-refresh-token", data.session!.refresh_token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 7,
+  });
+
   res.cookies.set("naver_oauth_state", "", { path: "/", maxAge: 0 });
   res.cookies.set("naver_return_to", "", { path: "/", maxAge: 0 });
+
   return res;
 }
