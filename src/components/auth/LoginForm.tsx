@@ -16,7 +16,7 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState<string | null>(null);
 
-  type OAuthProvider = "google" | "kakao" | "naver";
+  type OAuthProvider = "google" | "kakao"
 
   /* =========================
      이메일 / 비밀번호 로그인
@@ -52,7 +52,7 @@ export default function LoginForm() {
     await supabase.auth.signInWithOAuth({
       provider: provider as Provider,
       options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+        redirectTo: `${window.location.origin}/auth/callback`,
       },
     });
   }
@@ -118,14 +118,6 @@ export default function LoginForm() {
           className="w-full rounded border px-3 py-2 text-sm"
         >
           카카오로 계속하기
-        </button>
-
-        <button
-          type="button"
-          onClick={() => (window.location.href = "/auth/naver?next=/my")}
-          className="w-full rounded border px-3 py-2 text-sm"
-        >
-          네이버로 계속하기
         </button>
 
         <button
