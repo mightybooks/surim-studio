@@ -54,8 +54,7 @@ export async function GET(req: NextRequest) {
       client_id: process.env.NAVER_CLIENT_ID!,
       redirect_uri: `${origin}/auth/naver/callback`,
       state,
-      // 필요 시 scope 추가 가능. 우선 최소로 갑니다.
-      // scope: "profile",
+      scope: "profile",
     }).toString();
 
   return NextResponse.redirect(authorizeUrl);
