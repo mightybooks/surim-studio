@@ -1,17 +1,14 @@
 // src/app/my/page.tsx
-import { redirect } from "next/navigation";
-import { supabaseServerPublic } from "@/lib/supabase/server-public";
+import { supabaseServer } from "@/lib/supabase/server";
 
 export default async function MyPage() {
-  const supabase = supabaseServerPublic();
+  const supabase = supabaseServer();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // 로그인 안 했으면 로그인 페이지로
-  if (!user) {
-    redirect("/login");
-  }
+  // middleware가 보호하지만, 안전 가드
+  if (!user) return null;
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-10 space-y-10">
@@ -22,7 +19,6 @@ export default async function MyPage() {
         </p>
       </header>
 
-      {/* 계정 정보 */}
       <section className="space-y-2">
         <h2 className="text-sm font-semibold uppercase tracking-wide">
           Account
@@ -35,7 +31,6 @@ export default async function MyPage() {
         </div>
       </section>
 
-      {/* 참여 중인 펀딩 */}
       <section className="space-y-2">
         <h2 className="text-sm font-semibold uppercase tracking-wide">
           Fundings
@@ -45,7 +40,6 @@ export default async function MyPage() {
         </div>
       </section>
 
-      {/* 참여 중인 이벤트 */}
       <section className="space-y-2">
         <h2 className="text-sm font-semibold uppercase tracking-wide">
           Events

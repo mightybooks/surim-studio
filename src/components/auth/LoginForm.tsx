@@ -3,10 +3,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabaseBrowser } from "@/lib/supabase/client";
 import AuthCard from "@/components/auth/AuthCard";
+import { supabaseBrowser } from "@/lib/supabase/client";
+import type { Provider } from "@supabase/supabase-js";
 
-export default function LoginForm() {  
+export default function LoginForm() {
   const router = useRouter();
   const supabase = supabaseBrowser();
 
@@ -15,13 +16,23 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState<string | null>(null);
 
+  type OAuthProvider = "google" | "kakao" | "naver";
+
+  /* =========================
+     이메일 / 비밀번호 로그인
+     ========================= */
   async function onLogin(e: React.FormEvent) {
     e.preventDefault();
     if (loading) return;
+
     setLoading(true);
     setErrMsg(null);
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
     if (error) {
       setErrMsg("이메일 또는 비밀번호를 확인해 주세요.");
       setLoading(false);
@@ -32,10 +43,18 @@ export default function LoginForm() {
     router.refresh();
   }
 
-  async function onLogout() {
-    await supabase.auth.signOut();
-    router.push("/login");
-    router.refresh();
+  /* =========================
+     OAuth 로그인
+     ========================= */
+  async function signInWithOAuth(provider: OAuthProvider) {
+    setErrMsg(null);
+
+    await supabase.auth.signInWithOAuth({
+      provider: provider as Provider,
+      options: {
+        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+      },
+    });
   }
 
   return (
@@ -44,10 +63,15 @@ export default function LoginForm() {
       footer={
         <>
           <span>아직 계정이 없으신가요? </span>
-          <a href="/signup" className="underline">회원가입</a>
+          <a href="/signup" className="underline">
+            회원가입
+          </a>
         </>
       }
     >
+      {/* =========================
+          이메일 로그인 폼
+          ========================= */}
       <form onSubmit={onLogin} className="space-y-3">
         <label className="block text-sm">
           이메일 (로그인 ID)
@@ -84,14 +108,32 @@ export default function LoginForm() {
         {errMsg && <p className="text-sm text-red-600">{errMsg}</p>}
       </form>
 
-      {/* 테스트용 로그아웃 */}
-      <div className="pt-3">
+      {/* =========================
+          OAuth 로그인 영역
+          ========================= */}
+      <div className="pt-6 space-y-2">
         <button
           type="button"
-          onClick={onLogout}
+          onClick={() => signInWithOAuth("kakao")}
           className="w-full rounded border px-3 py-2 text-sm"
         >
-          (테스트) 로그아웃
+          카카오로 계속하기
+        </button>
+
+        <button
+          type="button"
+          onClick={() => (window.location.href = "/auth/naver?next=/my")}
+          className="w-full rounded border px-3 py-2 text-sm"
+        >
+          네이버로 계속하기
+        </button>
+
+        <button
+          type="button"
+          onClick={() => signInWithOAuth("google")}
+          className="w-full rounded border px-3 py-2 text-sm"
+        >
+          구글로 계속하기
         </button>
       </div>
     </AuthCard>
