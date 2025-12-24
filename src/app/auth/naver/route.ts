@@ -40,7 +40,11 @@ export async function GET(req: NextRequest) {
   // state payload에 returnTo까지 포함 (쿠키 저장 없음)
   const payload = { v: 1, exp, nonce, returnTo };
   const payloadB64 = b64urlEncode(JSON.stringify(payload));
-  const sig = hmacSign(payloadB64, process.env.AUTH_BRIDGE_SECRET);
+  const secret = process.env.AUTH_BRIDGE_SECRET;
+    if (!secret) {
+      throw new Error("AUTH_BRIDGE_SECRET is missing");
+    }
+  const sig = hmacSign(payloadB64, secret);
   const state = `${payloadB64}.${sig}`;
 
   const authorizeUrl =
