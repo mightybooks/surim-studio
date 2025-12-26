@@ -39,17 +39,25 @@ export async function POST(req: Request) {
   // pending 저장 (verified는 초기화)
   const { error: upsertErr } = await supabase
     .from("profiles")
-    .upsert({
-      id: user.id,
-      contact_email_pending: email,
-      contact_email_verified_at: null,
-      contact_email_requested_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    }, { onConflict: "id" });
+    .upsert(
+      {
+        id: user.id,
+        role: "user", // ✅ 반드시 명시
+        contact_email_pending: email,
+        contact_email_verified_at: null,
+        contact_email_requested_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "id" }
+    );
 
-  if (upsertErr) {
-    return NextResponse.json({ error: "DB_UPSERT_FAILED" }, { status: 500 });
-  }
+    if (upsertErr) {
+    console.error("contact email upsert failed", upsertErr);
+    return NextResponse.json(
+        { error: "DB_UPSERT_FAILED" },
+        { status: 500 }
+    );
+    }
 
   const origin = new URL(req.url).origin;
   const verifyUrl = `${origin}/auth/contact-email/verify?token=${encodeURIComponent(token)}`;
