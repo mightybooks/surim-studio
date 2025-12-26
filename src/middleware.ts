@@ -13,18 +13,15 @@ function isProtectedPath(pathname: string) {
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // 1) 보호 대상이 아니면 통과
   if (!isProtectedPath(pathname)) {
     return NextResponse.next();
   }
 
-  // 2) Supabase 세션 동기화 + 유저 확인
   const { supabase, res } = createSupabaseMiddlewareClient(req);
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // 3) 로그인 안 했으면 /login으로
   if (!user) {
     const url = req.nextUrl.clone();
     url.pathname = "/login";
@@ -32,23 +29,21 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // 🔥 4) /admin 은 관리자만 허용
+  // ✅ admins 테이블 기준 관리자 판별
   if (pathname.startsWith("/admin")) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
+    const { data: admin } = await supabase
+      .from("admins")
+      .select("user_id")
+      .eq("user_id", user.id)
       .single();
 
-    // ⭐ 핵심: profile 없거나 admin 아니면 무조건 차단
-    if (!profile || profile.role !== "admin") {
+    if (!admin) {
       const url = req.nextUrl.clone();
       url.pathname = "/";
       return NextResponse.redirect(url);
     }
   }
 
-  // 5) 통과
   return res;
 }
 

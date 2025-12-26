@@ -1,9 +1,13 @@
 // src/app/admin/blog/new/page.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { supabaseBrowser } from "@/lib/supabase/client";
+import { insertAtCursor } from "@/lib/editor/insertAtCursor";
+import { uploadHeroImage } from "@/lib/storage/uploadHeroImage";
+import { uploadContentImage } from "@/lib/storage/uploadContentImage";
+import { editorButtonClass } from "./editorButtonStyle";
 
 function slugifyFromTitle(title: string) {
   return title
@@ -88,6 +92,8 @@ export default function AdminBlogNewPage() {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
   const handleGenerateSlug = () => {
     if (!title.trim()) return;
     const nextSlug = slugifyFromTitle(title);
@@ -102,6 +108,51 @@ export default function AdminBlogNewPage() {
       .filter(Boolean);
   };
 
+  function insertSimple(text: string) {
+     console.log("insertSimple called");
+  if (!textareaRef.current) return;
+
+  insertAtCursor(
+    textareaRef.current,
+    contentMd,
+    text,
+    setContentMd
+  );
+}
+  async function handleInsertImage() {
+   if (!textareaRef.current) return;
+
+   if (!slug.trim()) {
+    alert("슬러그를 먼저 입력해 주세요.");
+    return;
+   }
+
+   const input = document.createElement("input");
+   input.type = "file";
+   input.accept = "image/*";
+
+   input.onchange = async () => {
+   const file = input.files?.[0];
+   if (!file) return;
+
+   const result = await uploadContentImage(supabase, file, slug);
+
+   if ("error" in result) {
+       alert(result.error);
+       return;
+     }
+
+    insertAtCursor(
+     textareaRef.current!,
+     contentMd,
+     `\n\n![](${result.url})\n\n`,
+     setContentMd
+     );
+    };
+
+    input.click();
+  }
+
   const handleSave = async (mode: "draft" | "publish") => {
     if (!title.trim() || !contentMd.trim()) {
       setError("제목과 본문은 반드시 입력해야 합니다.");
@@ -113,7 +164,7 @@ export default function AdminBlogNewPage() {
       setError("슬러그를 생성하거나 직접 입력해 주세요.");
       setMessage(null);
       return;
-    }
+   }
 
     // 대표 이미지 URL 정리
     const { value: normalizedHero, error: heroError } = normalizeHeroImageUrl(heroImageUrl);
@@ -167,6 +218,34 @@ export default function AdminBlogNewPage() {
       router.push(`/blog/${encodeURIComponent(slug)}`);
     }
   };
+
+    async function handleHeroUpload() {
+    if (!slug.trim()) {
+      alert("슬러그를 먼저 입력해 주세요.");
+      return;
+    }
+
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (!file) return;
+
+      const result = await uploadHeroImage(supabase, file, slug);
+
+      if ("error" in result) {
+        alert(result.error);
+        return;
+      }
+
+      // 업로드 성공 → hero_image_url 자동 세팅
+      setHeroImageUrl(result.url);
+    };
+
+    input.click();
+  }
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 space-y-6">
@@ -266,13 +345,23 @@ export default function AdminBlogNewPage() {
           <label className="block text-xs font-medium text-slate-600">
             대표 이미지 URL (선택)
           </label>
+          <div className="flex gap-2">
           <input
             type="text"
             value={heroImageUrl}
             onChange={(e) => setHeroImageUrl(e.target.value)}
-            className="w-full rounded-md border border-[var(--border)] bg-white px-3 py-2 text-sm"
-            placeholder="/blogimg/first01.webp 또는 https://… 형식의 이미지 주소"
+            className="flex-1 rounded-md border border-[var(--border)] bg-white px-3 py-2 text-sm"
+            placeholder="/blogimg/first01.webp 또는 https://… 또는 업로드 버튼 사용"
           />
+
+          <button
+            type="button"
+            onClick={handleHeroUpload}
+            className="rounded-md border border-[var(--border)] bg-[var(--bg-elev)] px-3 py-2 text-xs"
+          >
+            업로드
+          </button>
+        </div>
           <p className="text-[11px] text-slate-500">
             로컬 이미지는 <code>/blogimg/파일명.webp</code> 형식으로,
             외부 이미지는 <code>https://…</code> 전체 주소로 입력해 주세요.
@@ -301,18 +390,57 @@ export default function AdminBlogNewPage() {
           <label className="block text-xs font-medium text-slate-600">
             본문 (Markdown)
           </label>
+
+          {/* 🔧 여기: 툴바 */}
+          <div className="mb-2 flex flex-wrap gap-1 rounded-lg border border-slate-200 bg-slate-50 p-2">
+            <button
+              type="button"
+              className={editorButtonClass}
+              onClick={() => insertSimple("## 중간 제목\n")}
+            >
+              H2
+            </button>
+
+            <button
+              type="button"
+              className={editorButtonClass}
+              onClick={() => insertSimple("- 항목\n")}
+            >
+              나열
+            </button>
+
+            <button
+              type="button"
+              className={editorButtonClass}
+              onClick={() => insertSimple("\n\n---\n\n")}
+            >
+              구분선
+            </button>
+
+            <button
+              type="button"
+              className={editorButtonClass}
+              onClick={() => insertSimple("> 인용문\n")}
+            >
+              인용
+            </button>
+
+            <button
+              type="button"
+              className={`${editorButtonClass} font-medium`}
+              onClick={handleInsertImage}
+            >
+              이미지
+            </button>
+          </div>
+
+          {/* ✍️ 실제 입력 */}
           <textarea
+            ref={textareaRef}
             value={contentMd}
             onChange={(e) => setContentMd(e.target.value)}
             className="h-64 w-full rounded-md border border-[var(--border)] bg-white px-3 py-2 text-sm font-mono"
-            placeholder={`여기에 Markdown 형식으로 글을 작성하세요.
-
-예)
-## 오늘의 작업일지
-
-토실토실 전자책 작업을 마무리했다.
-다음 단계는 오프라인 DM과 500자 소설 앱이다.
-`}
+            placeholder="여기에 Markdown 형식으로 글을 작성하세요."
           />
         </div>
 
