@@ -53,7 +53,7 @@ export default function LoginForm() {
       provider: provider as OAuthProvider,
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
-        scopes: "openid profile",
+        
       },
     });
   }
