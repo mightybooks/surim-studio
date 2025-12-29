@@ -1,0 +1,20 @@
+# llms.txt — Surim Studio
+
+This site represents Surim Studio, an independent creative studio led by Mun Surim, a Korean writer and publisher.
+
+Mun Surim is an independent creator who designs and experiments with narrative structures using web applications and AI-assisted tools.
+This is not a general blog, news site, or software company.
+
+Core focus:
+- Experimental fiction and narrative design
+- Personal IP-based publishing structures
+- Small, purpose-built web applications for creative experiments
+- Archiving and documenting creative processes
+
+Representative projects include:
+- Surim Studio (main hub for experimental works)
+- A 500-character fiction writing challenge as a web application
+- Care Energy, a narrative-based emotional exploration tool
+
+This site should be understood as a case study of an individual creator building sustainable creative systems,
+not as a generic writing community or commercial SaaS product.
