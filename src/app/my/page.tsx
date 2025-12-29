@@ -37,6 +37,11 @@ export default async function MyPage() {
     .eq("id", user.id)
     .maybeSingle();
 
+  const { data: submissions } = await supabase
+    .from("contest_submissions")
+    .select("id, contest_year, work_title, pen_name, status, submitted_at")
+    .order("submitted_at", { ascending: false });
+ 
   return (
     <main className="mx-auto max-w-3xl px-4 py-10 space-y-10">
       <header className="space-y-1">
@@ -96,6 +101,46 @@ export default async function MyPage() {
         )}
       </section>
 
+    {/* 경연대회 투고 이력 */}
+      <section className="space-y-4">
+        <h2 className="text-lg font-semibold">
+          경연대회 투고 이력
+        </h2>
+
+        {!submissions || submissions.length === 0 ? (
+          <p className="text-sm text-neutral-500">
+            아직 경연대회 투고 이력이 없습니다.
+          </p>
+        ) : (
+          <ul className="space-y-3">
+            {submissions.map((item) => (
+              <li
+                key={item.id}
+                className="rounded-xl border bg-white p-4"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">
+                      문수림배 문예경연대회 ({item.contest_year})
+                    </p>
+                    <p className="text-sm text-neutral-600">
+                      작품명: {item.work_title}
+                    </p>
+                    <p className="text-sm text-neutral-600">
+                      필명: {item.pen_name}
+                    </p>
+                  </div>
+
+                  <span className="text-sm font-medium">
+                    {getStatusLabel(item.status)}
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
       <section className="space-y-2">
         <h2 className="text-sm font-semibold uppercase tracking-wide">
           Fundings
@@ -115,4 +160,20 @@ export default async function MyPage() {
       </section>
     </main>
   );
+
+  function getStatusLabel(status: string) {
+  switch (status) {
+    case "submitted":
+      return "접수 완료";
+    case "reviewed":
+      return "심사 완료";
+    case "selected":
+      return "🎉 수상";
+    case "not_selected":
+      return "참여 기록";
+    default:
+      return "기록 확인 중";
+  }
+}
+
 }

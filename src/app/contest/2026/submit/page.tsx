@@ -5,6 +5,7 @@ import { useState } from "react";
 export default function ContestSubmitPage() {
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -93,25 +94,58 @@ export default function ContestSubmitPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">
+        <label className="block text-sm font-medium mb-1">
             원고 파일
-          </label>
-          <input
+        </label>
+
+        {/* 숨긴 파일 input */}
+        <input
+            id="manuscript-file"
             type="file"
             name="file"
             required
             accept=".hwp,.hwpx,.pdf,.doc"
-            className="block w-full text-sm"
-          />
-          <p className="mt-1 text-xs text-neutral-500">
+            className="hidden"
+            onChange={(e) => {
+            const file = e.target.files?.[0];
+            setFileName(file ? file.name : null);
+            }}
+        />
+
+        {/* 버튼처럼 보이는 label */}
+        <label
+            htmlFor="manuscript-file"
+            className="inline-flex cursor-pointer items-center rounded-xl border border-neutral-300 bg-white px-4 py-2 text-sm font-medium hover:bg-neutral-50"
+        >
+            원고 파일 선택
+        </label>
+
+        {/* 선택된 파일명 표시 */}
+        {fileName && (
+            <p className="mt-2 text-sm text-neutral-700">
+            선택된 파일: <strong>{fileName}</strong>
+            </p>
+        )}
+
+        <p className="mt-1 text-xs text-neutral-500">
             허용 형식: hwp, hwpx, pdf, doc (txt 불가)
-          </p>
+        </p>
         </div>
 
         <button
-          type="submit"
-          disabled={submitting}
-          className="rounded-xl bg-neutral-900 px-6 py-3 text-white disabled:opacity-50"
+        type="submit"
+        disabled={submitting || !fileName}
+        className="
+            inline-flex items-center justify-center
+            rounded-xl px-6 py-3
+            font-medium text-white
+            bg-emerald-700
+            transition-all duration-200 ease-out
+            hover:bg-emerald-600 hover:-translate-y-0.5 hover:shadow-md
+            active:translate-y-0 active:shadow-sm
+            disabled:bg-neutral-300 disabled:text-neutral-500
+            disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none
+        "
         >
           {submitting ? "투고 중…" : "투고하기"}
         </button>
