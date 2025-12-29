@@ -2,91 +2,78 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-
-type NavItem = {
-  href: string;
-  label: string;
-};
-
-type NavGroup = {
-  label: string; // ABOUT / WORKS / MEDIA
-  items: NavItem[];
-};
-
-const NAV_GROUPS: NavGroup[] = [
-  {
-    label: "ABOUT",
-    items: [
-      { href: "/about", label: "About" },
-      { href: "/brands", label: "Brands" },
-      { href: "/findus", label: "Find Us" },
-    ],
-  },
-  {
-    label: "WORKS",
-    items: [
-      { href: "/projects", label: "Projects" },
-      { href: "/surimzine", label: "SurimZine" },
-      // TODO: 실제 공모전 페이지 생기면 "/contest" 로 교체
-      { href: "/standby1", label: "Contest" },
-    ],
-  },
-  {
-    label: "MEDIA",
-    items: [
-      { href: "/news", label: "News" },
-      { href: "/blog", label: "Blog" },      
-    ],
-  },
-];
+import { useEffect, useState } from "react";
+import { supabaseBrowser } from "@/lib/supabase/client";
 
 export default function NavBar() {
-  const pathname = usePathname();
+  const [user, setUser] = useState<any>(null);
+
+   useEffect(() => {
+    const supabase = supabaseBrowser();
+
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user);
+    });
+  }, []);
+  const isEmailVerified = !!user?.email_confirmed_at;
 
   const base =
-    "inline-flex items-center justify-center rounded-full border border-[var(--border)] bg-[var(--bg-elev)] " +
-    "px-4 py-2 text-[0.95rem] leading-none shadow-sm transition hover:bg-[#F5EEDC] " +
-    "focus:outline-none focus:ring-2 focus:ring-emerald-600/30";
-
-  const active =
-    "bg-emerald-700 text-white border-emerald-700 hover:bg-emerald-700";
-
-  const isActive = (href: string) => {
-    if (href === "/") return pathname === "/";
-    return pathname?.startsWith(href);
-  };
+    "inline-flex items-center justify-center rounded-full border " +
+    "px-6 py-2.5 text-sm font-medium transition-colors " +
+    "bg-emerald-50/60 text-emerald-900 border-emerald-200 " +
+    "hover:bg-emerald-100/70";
 
   return (
-    <div className="mt-6 rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] p-4 shadow-sm max-w-xl mx-auto">
-      {/* 항상 3단 세로 구조 */}
-      <div className="flex flex-col gap-4">
-        {NAV_GROUPS.map((group) => (
-          <div
-            key={group.label}
-            className="flex flex-col items-center gap-2"
-          >
-            {/* 그룹 라벨 */}
-            <div className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-[color:var(--fg)]/65">
-              {group.label}
-            </div>
+    <div className="mt-8 flex flex-col items-center gap-2">
+      {!user && (
+        <>
+          <p className="text-sm text-zinc-500">
+            로그인이 모든 활동의 시작입니다.
+          </p>
+          <Link href="/login" className={base}>
+            로그인과 메일 인증
+          </Link>
+        </>
+      )}
 
-            {/* 그룹별 버튼들 */}
-            <div className="flex flex-wrap justify-center gap-2">
-              {group.items.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  aria-current={isActive(item.href) ? "page" : undefined}
-                  className={`${base} ${isActive(item.href) ? active : ""}`}
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+      {user && !isEmailVerified && (
+        <>
+          <p className="text-sm text-zinc-500">
+            메일 인증을 완료해야 활동을 시작할 수 있습니다.
+          </p>
+          <Link href="/mypage" className={base}>
+            마이페이지
+          </Link>
+        </>
+      )}
+
+      {user && isEmailVerified && (
+        <>
+          <p className="text-sm text-zinc-500">
+            메일 인증을 하셨다면, 활동 기록을 확인해 보세요.
+          </p>
+          <Link href="/mypage" className={base}>
+            마이페이지
+          </Link>
+        </>
+      )}
+
+      <Link href="/contest/2026" className={base}>
+       문수림배 제3회 문예경연대회
+      </Link>
+
+      <Link
+        href="https://500challenge.vercel.app/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className={base}
+      >
+        500자 챌린지 쓰러가기
+      </Link>
+
+      <Link href="/blog" className={base}>
+        블로그 글 보러가기
+      </Link>
     </div>
   );
 }

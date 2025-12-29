@@ -67,9 +67,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </main>
 
         <footer className="text-center text-xs text-zinc-500 py-6 border-t border-[var(--border)] bg-[var(--bg)]">
-          <div className="mx-auto max-w-6xl px-4">
+          <div className="mx-auto max-w-6xl px-4 space-y-1">
             <div>ⓒ 수림 스튜디오 · 마이티북스</div>
-            <div className="mt-2">문의: surimstudio@gmail.com</div>
+            <div>사업자등록번호: 558-28-01574</div>
+            <div>통신판매업신고: 2023-대구동구-0140</div>
+            <div className="pt-1">문의: surimstudio@gmail.com</div>
           </div>
         </footer>
 

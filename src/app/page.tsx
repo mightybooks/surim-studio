@@ -40,39 +40,17 @@ export default function Home() {
 </p>
 
     <section className="text-center">
-      {/* 500자 챌린지 바로가기 버튼 */}
-      <a
-        href="https://500challenge.vercel.app/"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center justify-center
-                  mb-6
-                  rounded-full border border-emerald-200
-                  px-6 py-2.5
-                  text-sm font-medium text-emerald-900
-                  bg-emerald-50/60
-                  hover:bg-emerald-100/70
-                  transition-colors"
-      >
-        ✍️ 500자 챌린지 바로가기
-      </a>
-
       {/* 기존 네비게이션 */}
       <NavBar />
     </section>
 
-      {/* 글로벌 안내 */}
-      <div className="w-full">
-        <div className="max-w-4xl mx-auto px-6 py-3 space-y-1" >
-          <p className="flex items-center justify-center text-xs text-zinc-600 space-y-4 mt-4" >
-            안녕하세요, 세계의 친구들. 수림스튜디오에 오신 걸 환영합니다.<br/>
-            아직은 일부 페이지만 영어로 서비스 되고 있습니다.<br/>
-            전체 다국어 서비스는 시간이 더 필요합니다.<br/>
-          </p>
-          <p className="flex items-center justify-center text-[11px] text-zinc-400 space-y-4 mt-4">
-            Hello, friends around the world. Welcome to Surim Studio.<br/>
-            Currently, only some pages are available in English.<br/>
-            Full multilingual support will take more time.<br/>
+     {/* 글로벌 안내 (EN only) */}
+      <div className="w-full mt-6">
+        <div className="max-w-4xl mx-auto px-6 py-3">
+          <p className="text-[11px] text-zinc-500 text-center leading-relaxed">
+            This site is maintained primarily in Korean.<br />
+            Some pages are available in English.<br />
+            Full multilingual support is still in progress.
           </p>
         </div>
       </div>

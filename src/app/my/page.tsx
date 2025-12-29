@@ -81,6 +81,17 @@ export default async function MyPage() {
             <p className="text-xs text-[color:var(--fg)]/60">
               인증된 이메일은 변경할 수 없습니다.
             </p>
+           {/* 2층 진입 */}
+            <div className="pt-2">
+              <a
+                href="https://open.kakao.com/o/guwemdsg"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm font-medium text-[color:var(--fg)] hover:underline"
+              >
+                문수림과 함께 하는 책쓰기 커뮤니티 바로가기
+              </a>
+            </div>
           </div>
         ) : profile?.contact_email_pending ? (
           // ⏳ 인증 대기
