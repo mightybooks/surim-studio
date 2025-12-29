@@ -11,7 +11,7 @@ export default function ContactEmailForm() {
     setLoading(true);
     setMsg(null);
     try {
-      const res = await fetch("/api/contact-email/request", {
+      const res = await fetch("/auth/contact-email/request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
