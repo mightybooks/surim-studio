@@ -21,6 +21,11 @@ function normalizeHeroUrl(raw: string | null | undefined): string | null {
   const trimmed = (raw ?? "").trim();
   if (!trimmed) return null;
 
+  // ✅ 절대 URL은 그대로 반환 (Supabase public URL 포함)
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+    return trimmed;
+  }
+
   let fixed = trimmed;
 
   // 1) 과거 오타 보정: /publc/blogimg/ → /blogimg/
@@ -33,7 +38,7 @@ function normalizeHeroUrl(raw: string | null | undefined): string | null {
     fixed = fixed.replace("/public", "");
   }
 
-  // 3) /로 안 시작하면 강제로 붙이기
+  // 3) /로 안 시작하면 붙이기 (상대경로만 대상)
   if (!fixed.startsWith("/")) {
     fixed = "/" + fixed;
   }
