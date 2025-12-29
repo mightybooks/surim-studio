@@ -63,6 +63,7 @@ export async function POST(req: Request) {
     );
 
   if (upsertErr) {
+    
     console.error("contact email upsert failed", upsertErr);
     return NextResponse.json(
       { error: "DB_UPSERT_FAILED" },
@@ -72,7 +73,7 @@ export async function POST(req: Request) {
 
   // 2️⃣ verify URL
   const origin = new URL(req.url).origin;
-  const verifyUrl = `${origin}/auth/contact-email/verify?token=${encodeURIComponent(
+  const verifyUrl = `${origin}/api/contact-email/verify?token=${encodeURIComponent(
     token
   )}`;
 
