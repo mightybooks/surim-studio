@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { supabaseServer } from "@/lib/supabase/server";
 
+console.log("CONTACT EMAIL VERIFY ROUTE HIT");
+
 function verifySig(payloadB64: string, sig: string, secret: string) {
   const expected = crypto.createHmac("sha256", secret).update(payloadB64).digest("base64url");
   return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(sig));
