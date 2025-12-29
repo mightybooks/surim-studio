@@ -58,7 +58,8 @@ export async function GET(req: Request) {
         contact_email_verified_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       })
-      .eq("id", user.id);
+      .eq("id", user.id)
+      .is("contact_email_verified_at", null);
 
     if (error) {
       return NextResponse.redirect(new URL("/my?email_verify=server_error", url.origin));
