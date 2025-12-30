@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArcanaDeck } from "@/components/500challenge/ArcanaDeck";
 import { FictionViewer } from "@/components/500challenge/FictionViewer";
 import type { FictionEntry } from "@/components/500challenge/types";
+import PostEngagement from "@/components/engagement/PostEngagement";
 
 type ArcanaCard = { id: string; ogImageSrc: string };
 
@@ -19,6 +20,7 @@ export default function ArchiveClient({
   initialIndex: number;
 }) {
   const [activeIndex, setActiveIndex] = useState(initialIndex);
+  const currentEntry = entries[activeIndex];
 
   const moveTo = (next: number) => {
     setActiveIndex(next);
@@ -89,6 +91,13 @@ export default function ArchiveClient({
         <section className="mb-20">
         <FictionViewer entry={entries[activeIndex] ?? null} />
         </section>
+
+      {/* 👇 여기! */}
+      <PostEngagement
+        targetType="archive"
+        targetId={currentEntry.id}
+        mode="archive"
+      />
 
       {/* ================= CTA ================= */}
       <section className="flex flex-col items-center justify-center gap-4 text-center md:flex-row">

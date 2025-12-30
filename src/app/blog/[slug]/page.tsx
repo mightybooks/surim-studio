@@ -11,6 +11,7 @@ import Image from "next/image";
 import ShareButtons from "@/components/ShareButtons";
 import { getPrevNextPost } from "@/lib/postsNav";
 import { PostNavigation } from "@/components/PostNavigation";
+import PostEngagement from "@/components/engagement/PostEngagement";
 
 type Props = {
   params: { slug: string };
@@ -201,16 +202,16 @@ export default async function BlogPostPage({ params }: Props) {
           </ReactMarkdown>
         </div>
 
+        {/* 👇 여기서 Client Wrapper만 호출 */}
+         <PostEngagement
+         targetType="blog"
+         targetId={post.id}
+        />
+
         {/* 하단 공유 버튼 */}
         <div className="mt-10 border-t border-slate-200 pt-4">
           <ShareButtons title={post.title} />
         </div>
-
-        {/* 고정 안내 문구 */}
-        <p className="mt-6 text-[11px] text-slate-500">
-          자체 댓글 기능은 우선 3월까지 막아둡니다. 필요하시면 SNS나 이메일로
-          연락 주세요.
-        </p>
       </article>
 
       {/* 하단 네비게이션: 이전 글 / 다음 글 / 목록 */}

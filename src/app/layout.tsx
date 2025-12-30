@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
-import Link from "next/link";                 // ✅ 추가
+import Link from "next/link";  
 import "./globals.css";
 import ClientNav from "@/components/ClientNav";
 import MobileDock from "@/components/MobileDock";
 import ScrollTopDesktop from "@/components/ScrollTopDesktop";
 import KakaoLoader from "@/components/KakaoLoader";
 import { supabaseServerPublic } from "@/lib/supabase/server-public";
+import DisableContextMenu from "@/components/DisableContextMenu";
+import ProtectContent from "@/components/ProtectContent";
 
 const supabase = supabaseServerPublic();
 const {
@@ -51,7 +53,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         )}
       </head>
 
-      <body className="min-h-screen bg-[var(--bg)] text-[var(--fg)]">
+      <body className="min-h-screen bg-[var(--bg)] text-[var(--fg)]"
+            data-admin={user?.email === "surimstudio@gmail.com" ? "true" : "false"}>
         <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--bg)]">
           <nav className="mx-auto flex max-w-screen-md items-center justify-between px-4 py-3">
             <Link href="/" className="font-semibold text-emerald-900">
@@ -66,6 +69,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
 
+        <ProtectContent />
+
         <footer className="text-center text-xs text-zinc-500 py-6 border-t border-[var(--border)] bg-[var(--bg)]">
           <div className="mx-auto max-w-6xl px-4 space-y-1">
             <div>ⓒ 수림 스튜디오 · 마이티북스</div>
@@ -77,6 +82,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         <MobileDock />
         <ScrollTopDesktop />
+        <DisableContextMenu />
       </body>
     </html>
   );
