@@ -45,7 +45,7 @@ export default async function Contest2026Page() {
       <h2 className="text-xl font-semibold mb-4">모집 및 응모</h2>
         <ul className="list-disc pl-5 space-y-1">
         <li>모집 분야: 단편 소설</li>
-        <li>응모 분량: 원고지 50~80매</li>
+        <li>응모 분량: 원고지 40~80매</li>
         <li>응모 기간: 2026.01.01 ~ 02.22</li>
         <li>응모 방법: 이메일 인증 후 접수</li>
         </ul>
@@ -72,7 +72,7 @@ export default async function Contest2026Page() {
     <div className="rounded-2xl p-6 bg-indigo-100/70 border-indigo-200">
         <h2 className="text-xl font-semibold mb-4">심사 및 기타</h2>
        <ul className="list-disc pl-5 space-y-1">
-        <li>대상(1편): 상금 50,000원 및 기념 상장</li>
+        <li>대상(1편): 1204회 로또 4등 당첨금 전액 50,000원 및 기념 상장</li>
         <li>기타 수상작: 기념 상장</li>
         <li>수상작 전편: 『월간 수림지』 창간호 수록</li>
       </ul>
