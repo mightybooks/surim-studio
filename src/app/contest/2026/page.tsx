@@ -2,6 +2,7 @@
 import { supabaseServer } from "@/lib/supabase/server";
 import Link from "next/link";
 import type { Metadata } from "next";
+import InAppBrowserNotice from "@/components/InAppBrowserNotice";
 
 export const metadata: Metadata = {
   title: "문수림배 제3회 문예경연대회 공모 요강 | Sulim Studio",
@@ -115,6 +116,7 @@ export default async function Contest2026Page() {
       </section>
 
         <section className="mt-12 space-y-4">
+        <InAppBrowserNotice />  
         {user ? (
             <>
             <Link

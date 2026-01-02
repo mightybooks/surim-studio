@@ -1,6 +1,7 @@
 // src/app/my/page.tsx
 import { supabaseServer } from "@/lib/supabase/server";
 import ContactEmailForm from "@/components/my/ContactEmailForm";
+import { redirect } from "next/navigation";
 
 const providerLabelMap: Record<string, string> = {
   naver: "네이버",
@@ -16,7 +17,9 @@ export default async function MyPage() {
   } = await supabase.auth.getUser();
 
   // ✅ 반드시 먼저
-  if (!user) return null;
+   if (!user) {
+    redirect("/login?error=auth_required");
+  }
 
   const { error: ensureProfileError } = await supabase
     .from("profiles")

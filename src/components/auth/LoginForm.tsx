@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import AuthCard from "@/components/auth/AuthCard";
 import { supabaseBrowser } from "@/lib/supabase/client";
 import type { Provider } from "@supabase/supabase-js";
+import InAppBrowserNotice from "@/components/InAppBrowserNotice";
+
 
 export default function LoginForm() {
   const router = useRouter();
@@ -59,6 +61,7 @@ export default function LoginForm() {
   }
 
   return (
+
     <AuthCard
       title="로그인"
       footer={
@@ -70,6 +73,8 @@ export default function LoginForm() {
         </>
       }
     >
+      <InAppBrowserNotice />
+
       {/* =========================
           이메일 로그인 폼
           ========================= */}
