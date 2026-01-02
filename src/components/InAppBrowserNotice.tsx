@@ -7,24 +7,36 @@ function isInAppBrowser() {
 
   const ua = navigator.userAgent || "";
 
+// 1. 명시적 인앱 브라우저
   const inAppPatterns = [
     /KAKAOTALK/i,
-    /Instagram/i,
-    /Threads/i,
+    /Instagram/i,    
     /FBAN/i,
     /FBAV/i,
+    /FB_IAB/i,
   ];
 
   if (inAppPatterns.some((p) => p.test(ua))) {
     return true;
   }
 
+// 2. Android WebView (Threads 포함)
   if (
-    typeof (window as any).navigator.standalone === "boolean" &&
-    (window as any).navigator.standalone === false
+    /Android/i.test(ua) &&
+    /wv/i.test(ua)
   ) {
     return true;
   }
+
+// 3. iOS WebView 감지 (Threads 핵심)
+    const isIOS = /iPhone|iPad|iPod/i.test(ua);
+    const isSafari =
+    /Safari/i.test(ua) &&
+    !/CriOS|FxiOS|EdgiOS|OPiOS|FBAN|FBAV|Instagram/i.test(ua);
+
+    if (isIOS && !isSafari) {
+    return true;
+    }
 
   return false;
 }
