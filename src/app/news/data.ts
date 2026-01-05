@@ -11,6 +11,16 @@ export type NewsItem = {
 
 export const NEWS: NewsItem[] = [
     {
+    slug: "web-complete2025-surim",
+    title: "제3회 문수림배 문예경연대회 개최 및 로그인 시스템 구축 완료 ",
+    body:
+      "제3회 문수림배 문예경연대회가 개최되었습니다. " +
+      "원고 투고는 수림 스튜디오 홈페이지를 통해 26년 1월 1일부터 2월 22일까지 온라인으로 접수를 받습니다. " +
+      "아울러 앞으로 있을 각종 이벤트를 위해 소셜로그인 연동 시스템도 구축완료 되었음을 알립니다. ",
+    category: "News",
+    published_at: "2026-01-05",
+    },
+    {
     slug: "webapp-complete-500tosil",
     title: "웹앱 2종 개발 완료 및 아카이브 시스템 구축 완료 ",
     body:
