@@ -133,7 +133,9 @@ export default async function Contest2026Page() {
                 투고하기
             </Link>
             <p className="text-sm text-neutral-500">
-                로그인된 계정으로 바로 투고할 수 있습니다.
+                로그인된 계정으로 바로 투고할 수 있습니다.<br/>
+                파일의 용량이 20MB를 넘어선다면 투고 과정에서 오류가 발생할 수 있습니다.<br/>
+                이 경우에는 surimstudio@gamil.com 으로 직접 메일을 보내주세요.
             </p>
             </>
         ) : (
@@ -152,7 +154,9 @@ export default async function Contest2026Page() {
                 로그인하고 투고하기
             </Link>
             <p className="text-sm text-neutral-500">
-                투고를 위해서는 로그인 및 이메일 인증이 필요합니다.
+                투고를 위해서는 로그인 및 이메일 인증이 필요합니다.<br/>
+                파일의 용량이 20MB를 넘어선다면 투고 과정에서 오류가 발생할 수 있습니다.<br/>
+                이 경우에는 surimstudio@gamil.com 으로 직접 메일을 보내주세요.
             </p>
             </>
         )}
