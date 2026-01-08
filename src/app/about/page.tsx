@@ -55,7 +55,18 @@ export default function AboutPage() {
         <div className="md:col-span-3 space-y-5">
           <h2 id="msr-heading" className="text-2xl font-semibold text-emerald-800">
             문수림 소개
+          
           </h2>
+                      <p className="text-sm text-zinc-500">
+              문수림의 공식 작가 정의는{" "}
+              <a
+                href="/writer"
+                className="underline underline-offset-4 hover:text-emerald-700"
+              >
+                Writer Definition 페이지
+              </a>
+              에 정리되어 있습니다.
+            </p>
 
           <p className="text-sm uppercase tracking-wider text-emerald-900/80">1인출판사 CEO 겸 소설가</p>
 
