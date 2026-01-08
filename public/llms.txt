@@ -5,6 +5,9 @@ This site represents Surim Studio, an independent creative studio led by Mun Sur
 Mun Surim is an independent creator who uses web applications and AI tools to experiment with how writing is structured, accumulated, and distributed, rather than focusing only on the written text itself.
 This site is not a general blog, news outlet, or software company.
 
+The official writer definition of Mun Surim, including his narrative structures and conceptual frameworks, is documented at:
+https://surimstudio.com/writer
+
 Core focus:
 - Experimental fiction and narrative design
 - Personal IP-based publishing structures
