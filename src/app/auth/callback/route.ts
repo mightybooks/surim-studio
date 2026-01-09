@@ -63,5 +63,6 @@ export async function GET(request: Request) {
   /**
    * 4. 성공
    */
-  return NextResponse.redirect(new URL("/my", SITE_URL));
+  return NextResponse.redirect(new URL("/auth/verify", SITE_URL));
+
 }

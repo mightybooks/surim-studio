@@ -5,11 +5,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import AuthCard from "@/components/auth/AuthCard";
 import { supabaseBrowser } from "@/lib/supabase/client";
-import type { Provider } from "@supabase/supabase-js";
 import InAppBrowserNotice from "@/components/InAppBrowserNotice";
+import type { Provider } from "@supabase/supabase-js";
 
-
-export default function LoginForm() {
+export default function LoginForm({
+  fromVerify,
+}: {
+  fromVerify?: boolean;
+}) {
   const router = useRouter();
   const supabase = supabaseBrowser();
 
@@ -17,8 +20,6 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState<string | null>(null);
-
-  type OAuthProvider = "google" | "kakao" | "keycloak"
 
   /* =========================
      이메일 / 비밀번호 로그인
@@ -48,31 +49,37 @@ export default function LoginForm() {
   /* =========================
      OAuth 로그인
      ========================= */
-  async function signInWithOAuth(provider: OAuthProvider) {
+  async function signInWithOAuth(provider: Provider) {
     setErrMsg(null);
 
     await supabase.auth.signInWithOAuth({
-      provider: provider as OAuthProvider,
+      provider,
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
-        
       },
     });
   }
 
-  return (
+    return (
+      <AuthCard
+        title="로그인"
+        footer={
+          <>
+            <span>아직 계정이 없으신가요? </span>
+            <a href="/signup" className="underline">
+              회원가입
+            </a>
+          </>
+        }
+      >
+        {fromVerify && (
+          <p className="mb-4 text-sm text-green-700">
+            이메일 인증이 완료되었습니다.
+            <br />
+            로그인하시면 바로 이용하실 수 있습니다.
+          </p>
+        )}
 
-    <AuthCard
-      title="로그인"
-      footer={
-        <>
-          <span>아직 계정이 없으신가요? </span>
-          <a href="/signup" className="underline">
-            회원가입
-          </a>
-        </>
-      }
-    >
       <InAppBrowserNotice />
 
       {/* =========================
