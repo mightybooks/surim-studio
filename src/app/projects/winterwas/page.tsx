@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import Image from "next/image";
 
 export const metadata: Metadata = {
@@ -92,7 +93,7 @@ export default function WinterWasProjectPage() {
           <li>마지막 문장은 반드시 단독으로 “겨울이었다.”로 끝난다.</li>
         </ul>
 
-        <h3>4. 이 프로젝트가 아닌 것</h3>
+        <h3>4. 해석은 오롯이 독자의 몫</h3>
         <p>
           이 프로젝트는 치유를 목적으로 하지 않는다.
           심리 진단이나 자기계발을 제공하지도 않는다.
@@ -100,7 +101,7 @@ export default function WinterWasProjectPage() {
         <p>
           또한 위로를 전제한 서사나
           감정의 해소를 목표로 하지 않는다.
-          결과는 제공되지 않으며,
+          결과는 제공되지 않으며,<br/>
           해석은 독자에게 전적으로 남겨진다.
         </p>
 
@@ -128,25 +129,48 @@ export default function WinterWasProjectPage() {
         </p>
       </article>
 
-      {/* 작성자 블록 */}
-      <aside className="mt-10 rounded-2xl border border-zinc-200 p-5 bg-white/60">
+    <section className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+    {/* 작성자 블록 */}
+    <aside className="rounded-2xl border border-zinc-200 p-5 bg-white/60">
         <div className="flex items-center gap-4">
-          <div className="relative w-14 h-14 overflow-hidden rounded-full">
+        <div className="relative w-14 h-14 overflow-hidden rounded-full">
             <Image
-              src="/profile/moonsurim.png"
-              alt="문수림"
-              fill
-              className="object-cover"
+            src="/profile/moonsurim.png"
+            alt="문수림"
+            fill
+            className="object-cover"
             />
-          </div>
-          <div>
+        </div>
+        <div>
             <p className="font-medium text-zinc-800">문수림</p>
             <p className="text-sm text-zinc-500">
-              수림 스튜디오 총괄자 · 소설가
+            수림 스튜디오 총괄자 · 소설가
             </p>
-          </div>
         </div>
-      </aside>
+        </div>
+    </aside>
+
+    {/* 작품 감상 배너 */}
+    <Link
+        href="/projects/winterwas/works"
+        className="
+        block rounded-2xl border border-zinc-200
+        bg-white/60 p-5
+        transition
+        hover:bg-zinc-100
+        hover:shadow-sm
+        "
+    >
+        <div className="h-full flex flex-col justify-center">
+        <p className="text-base font-medium text-zinc-800">
+            작품 감상
+        </p>
+        <p className="text-sm text-zinc-500 mt-1">
+            겨울이었다 프로젝트의 개별 작품들
+        </p>
+        </div>
+    </Link>
+    </section>
 
       {/* 푸터 */}
       <footer className="text-center text-xs text-zinc-400">

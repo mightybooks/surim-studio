@@ -1,12 +1,6 @@
 import Link from "next/link";
 
-type Work = {
-  slug: string;
-  date: string; // YYYY.MM.DD
-  tags: string[]; // 1~3개, 클릭 불가
-};
-
-const works: Work[] = [
+const works = [
   {
     slug: "winter-001",
     date: "2026.01.05",
@@ -20,51 +14,63 @@ const works: Work[] = [
   {
     slug: "winter-003",
     date: "2026.01.09",
-    tags: ["탄산", "로고송", "귀환불가"],
+    tags: ["탄산", "맥도날드", "귀환불가"],
   },
   {
     slug: "winter-004",
     date: "2026.01.11",
-    tags: ["바람", "민둥산", "파열음"],
+    tags: ["바람", "민둥산", "패인얼음"],
   },
 ];
 
-export default function WinterWasWorksPage() {
+export default function WinterWorksPage() {
   return (
-    <main className="max-w-4xl mx-auto px-6 py-16 space-y-12">
-      <header className="space-y-2">
-        <h1 className="text-2xl font-semibold text-zinc-800">《겨울이었다》 기록</h1>
-        <p className="text-sm text-zinc-500">동일한 규칙 아래 생산된 텍스트들</p>
-      </header>
+    <main className="max-w-5xl mx-auto px-6 py-16">
+      <h1 className="text-2xl font-semibold mb-2">《겨울이었다》 기록</h1>
+      <p className="text-sm text-zinc-500 mb-10">
+        동일한 규칙 아래 생산된 텍스트들
+      </p>
 
-      {/* PC 2열 / 모바일 1열 */}
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-12">
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {works.map((work) => (
-          <article key={work.slug} className="space-y-2">
-            {/* 제목(고정) */}
-            <Link
-              href={`/projects/winterwas/works/${work.slug}`}
-              className="block text-lg text-zinc-800 hover:text-zinc-900 transition"
-            >
-              겨울이었다
-            </Link>
+          <Link
+            key={work.slug}
+            href={`/projects/winterwas/works/${work.slug}`}
+            className="
+              block rounded-2xl border border-zinc-200/60
+              bg-white/70 p-6
+              transition
+              hover:bg-zinc-100
+              hover:shadow-sm
+              hover:-translate-y-0.5
+            "
+          >
+            <div className="space-y-3">
+              <div>
+                <p className="text-lg font-medium text-zinc-800">
+                  {work.slug}
+                </p>
+                <p className="text-xs text-zinc-500">
+                  {work.date}
+                </p>
+              </div>
 
-            {/* 메타(작고 흐리게) */}
-            <div className="text-xs text-zinc-400">
-              {work.slug} · {work.date}
+              <div className="flex flex-wrap gap-2">
+                {work.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-xs text-zinc-500 bg-zinc-200/60 px-2 py-0.5 rounded"
+                  >
+                    #{tag}
+                  </span>
+                ))}
+              </div>
             </div>
-
-            {/* 태그(클릭 불가) */}
-            <div className="flex flex-wrap gap-2 text-xs text-zinc-500">
-              {work.tags.map((tag) => (
-                <span key={tag}>#{tag}</span>
-              ))}
-            </div>
-          </article>
+          </Link>
         ))}
       </section>
 
-      <footer className="pt-10 text-center text-xs text-zinc-400">
+      <footer className="mt-16 text-center text-xs text-zinc-400">
         © 2026 수림 스튜디오. All rights reserved.
       </footer>
     </main>
