@@ -141,7 +141,7 @@ export default function AboutPage() {
         </section>
 
         {/* 전자책 외부 특강 */}
-        <section className="grid grid-cols-1 md:grid-cols-5 gap-8 items-start">
+        <section className="space-y-6">
         <div className="space-y-3">
           <h3 className="text-lg font-semibold text-emerald-900">전자책·디지털북 특강</h3>
           <ul className="list-disc list-inside text-zinc-700 leading-8">
