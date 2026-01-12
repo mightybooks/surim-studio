@@ -106,7 +106,7 @@ export default function AboutPage() {
           <div className="md:col-span-2">
             <div className="relative aspect-[3/4] w-full max-w-sm mx-auto">
               <Image
-                src="/profile/moonsurim.png"
+                src="/profile/moonsurim2.jpg"
                 alt="문수림 사진"
                 fill
                 sizes="(max-width: 768px) 60vw, 320px"
