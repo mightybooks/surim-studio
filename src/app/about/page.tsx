@@ -5,146 +5,143 @@ import ReadingProgress from "@/components/ReadingProgress";
 
 export default function AboutPage() {
   return (
-     <>
+    <>
       <ReadingProgress />
-    <main className="max-w-4xl mx-auto p-8 space-y-14">
-      {/* 헤더 */}
-      <header className="text-center space-y-4">
-        <h1 className="text-3xl font-semibold text-emerald-900">About</h1>
-        <p className="text-lg font-medium text-emerald-800 tracking-wide">
-          수림 스튜디오
-        </p>
-        <p className="text-zinc-600 italic">
-          기계가 장악한 시대에 인간의 감정과 서사를 되살리는 실험
-        </p>
-      </header>
+      <main className="max-w-4xl mx-auto p-8 space-y-16">
 
-      {/* 스튜디오 소개 */}
-      <section className="space-y-6">
-        <p className="text-zinc-700 leading-loose">
-          수림 스튜디오는 작가이자 출판사 대표인 문수림의 콘텐츠 창작 허브입니다.
-        </p>
-        <p className="text-zinc-700 leading-loose">
-          AI 시대에도 창작자 문수림의 도전은 계속됩니다.
-          <br />
-          실험적인 글쓰기와 감정 서사의 확장을 보여드립니다.
-        </p>
-        <p className="text-zinc-700 leading-loose">
-          매월 발행되는 《월간 수림지》는 그런 도전의 과정과 팬들과의 소통을 담고
-          있습니다.
-        </p>
-      </section>
+        {/* 헤더 */}
+        <header className="text-center space-y-4">
+          <h1 className="text-3xl font-semibold text-emerald-900">About</h1>
+          <p className="text-lg font-medium text-emerald-800 tracking-wide">
+            수림 스튜디오
+          </p>
+          <p className="text-zinc-600 italic">
+            기계가 장악한 시대에 인간의 감정과 서사는 어떻게 살아남을 수 있을까
+          </p>
+        </header>
 
-      <hr className="border-zinc-200" />
-
-      {/* 문수림 소개: 2단 그리드, 좌 이미지 우 텍스트 */}
-      <section aria-labelledby="msr-heading" className="grid grid-cols-1 md:grid-cols-5 gap-8 items-start">
-        <div className="md:col-span-2">
-          <div className="relative aspect-[3/4] w-full max-w-sm mx-auto">
-            <Image
-              src="/profile/moonsurim.png" // public/profile/ 에 실제 이미지를 두세요
-              alt="문수림 사진"
-              fill
-              sizes="(max-width: 768px) 60vw, 320px"
-              className="rounded-2xl object-cover shadow"
-              priority
-            />
-          </div>
-        </div>
-
-        <div className="md:col-span-3 space-y-5">
-          <h2 id="msr-heading" className="text-2xl font-semibold text-emerald-800">
-            문수림 소개
-          
+        {/* 질문 블록 */}
+        <section className="space-y-6">
+          <h2 className="text-2xl font-semibold text-emerald-800">
+            우리가 출발한 질문들
           </h2>
-                      <p className="text-sm text-zinc-500">
-              문수림의 공식 작가 정의는{" "}
-              <a
-                href="/writer"
-                className="underline underline-offset-4 hover:text-emerald-700"
-              >
-                Writer Definition 페이지
-              </a>
-              에 정리되어 있습니다.
-            </p>
-
-          <p className="text-sm uppercase tracking-wider text-emerald-900/80">1인출판사 CEO 겸 소설가</p>
-
-          <blockquote className="text-zinc-700 leading-relaxed border-l-4 border-emerald-300 pl-4">
-            “첨단의 자본주의 아래 기계화가 뿌리를 내리고 있는 오늘, 나는 여전히 인간의 감성과 서사를 위해 실험을 한다.”
-          </blockquote>
 
           <p className="text-zinc-700 leading-loose">
-            “AI 시대, 저작권에 대한 대중의 인식 경계선은 모호해지며 필연적으로 AI 생성물이 과잉 공급된다. 이 과정에서 창작자가 살아남는 방법은 무엇일까?”
+            수림 스튜디오는 하나의 결론이 아니라, 몇 개의 질문에서 출발했습니다.
+            AI가 글을 생산하고 추천 알고리즘이 독서를 매개하는 환경에서,
+            창작자는 더 이상 “잘 쓰는 사람”만으로 존재하기 어렵습니다.
           </p>
 
-          <ul className="text-zinc-700 leading-8 list-disc list-inside">
-            <li>작품 창작의 연속성과 일관성 확보로 기본적인 저작권 방어</li>
-            <li>고유한 문체 확립을 통한 차별화</li>
-            <li>AI 생성 도구의 적절한 활용</li>
+          <ul className="list-disc list-inside text-zinc-700 leading-8">
+            <li>분량 제한은 창작을 방해하는 조건일까, 아니면 훈련 가능한 단위가 될 수 있을까.</li>
+            <li>감정을 직접 설명하지 않고도, 서사는 독자에게 도달할 수 있을까.</li>
+            <li>검색과 추천이 독서를 결정하는 시대에, 작가는 어떤 방식으로 호출되는 존재가 될 수 있을까.</li>
+            <li>작품·플랫폼·독자 참여를 하나의 창작 구조로 설계하는 것은 가능한가.</li>
           </ul>
-        </div>
-      </section>
 
-      {/* 문체 이론 */}
-      <section aria-labelledby="style-heading" className="space-y-6">
-        <h2 id="style-heading" className="text-2xl font-semibold text-emerald-800">
-          정서적 미립자 확산형 서술 구조
-        </h2>
-        <p className="text-zinc-700 leading-loose">
-          문수림은 스스로의 작품을 냉정하게 분석하여 규칙성을 추출했습니다. 완성도 이전에
-          지속 가능한 창작과 정체성 유지를 위해 스타일과 톤의 일정 수준을 확보했고,
-          그렇게 정식화한 개념이 ‘정서적 미립자 확산형 서술 구조’, ‘저강도 곡선’, ‘Aggro to
-          Art’입니다.
-        </p>
-        <p className="text-zinc-700 leading-loose">
-          특히 ‘정서적 미립자 확산형 서술 구조’는 감정을 직접 서술하지 않고, 정지된 행동과
-          공간의 리듬으로 감정의 밀도를 드러내는 방식입니다. 시간의 정지 속에서 인물의 내면은
-          주변 사물과 공간, 리듬에 반사되며 감정은 언어가 아닌 잔상으로 남습니다. (정지 → 공간화 → 여운)
-        </p>
+          <p className="text-zinc-700 leading-loose">
+            수림 스튜디오는 이 질문들을 이론이 아니라 실제 실험으로 다루기 위해 만들어졌습니다.
+          </p>
+        </section>
 
-        {/* 예문 카드 */}
-        <figure className="rounded-2xl border border-zinc-200 p-5 bg-white shadow-sm">
-          <figcaption className="text-sm text-zinc-500 mb-3">예문 — 《20에서 30까지》 중 「그 여자의 편지, 쌍곡선을 그리다」</figcaption>
-          <div className="space-y-3 text-zinc-700 leading-relaxed">
-            <p>철민이 눈을 떴다. 버스는 여전히 대구를 향해 달리고 있다. <span className="text-zinc-500">(정지)</span></p>
-            <p>철민이 이마에 맺힌 식은땀을 닦는다. 이미 십여 개월이나 지났으면서도 그날에 관한 꿈은 꾸면 꿀수록 더 선명해진다. 이제 버스가 도착하기만 하면, 이 꿈과도 작별할 수가 있으리라. 철민은 품속에서 그 여자가 보내어준 답장을 꺼내든다.</p>
-            <p>버스가 너무 느려, 철민이 다시 라이터를 꺼내서 매만진다. <span className="text-zinc-500">(공간화)</span></p>
-            <p>파란 불꽃이 피어보기도 전에 사라진다. <span className="text-zinc-500">(여운)</span></p>
+        <hr className="border-zinc-200" />
+
+        {/* 실험 플랫폼 소개 */}
+        <section className="space-y-6">
+          <h2 className="text-2xl font-semibold text-emerald-800">
+            수림 스튜디오는 무엇을 하는 곳인가
+          </h2>
+
+          <p className="text-zinc-700 leading-loose">
+            수림 스튜디오는 작가 문수림이 운영하는 창작 실험 플랫폼이자
+            콘텐츠 아카이빙 허브입니다.
+          </p>
+
+          <p className="text-zinc-700 leading-loose">
+            이곳에서 글은 단발성 결과물이 아니라,
+            반복 가능한 창작 단위로 설계되고 공개된 상태로 축적되며
+            독자와의 상호작용 속에서 다시 검증됩니다.
+          </p>
+
+          <p className="text-zinc-700 leading-loose">
+            매월 발행되는 《월간 수림지》는 이 실험의 결과와 과정을 기록하는 장치입니다.
+            완성된 작품뿐 아니라, 시도와 실패, 설계의 흔적까지 함께 담습니다.
+          </p>
+        </section>
+
+        {/* 방법론 */}
+        <section className="space-y-6">
+          <h2 className="text-2xl font-semibold text-emerald-800">
+            실험을 가능하게 한 방법론
+          </h2>
+
+          <p className="text-zinc-700 leading-loose">
+            수림 스튜디오는 감정을 직접 설명하지 않고,
+            정지된 행동과 공간의 리듬을 통해 감정의 밀도를 드러내는
+            ‘정서적 미립자 확산형 서술 구조’를 핵심 방법론으로 삼습니다.
+          </p>
+
+          <p className="text-zinc-700 leading-loose">
+            서사는 사건을 빠르게 전개하지 않습니다.
+            대신 시간은 잠시 멈추고,
+            감정은 언어가 아닌 잔상으로 남습니다.
+          </p>
+
+          <figure className="rounded-2xl border border-zinc-200 p-5 bg-white shadow-sm">
+            <figcaption className="text-sm text-zinc-500 mb-3">
+              예문 — 《20에서 30까지》 중 「그 여자의 편지, 쌍곡선을 그리다」
+            </figcaption>
+            <div className="space-y-3 text-zinc-700 leading-relaxed">
+              <p>철민이 눈을 떴다. 버스는 여전히 대구를 향해 달리고 있다.</p>
+              <p>버스가 너무 느려, 철민은 다시 라이터를 꺼내서 매만진다.</p>
+              <p>파란 불꽃이 피어보기도 전에 사라진다.</p>
+            </div>
+          </figure>
+        </section>
+
+        <hr className="border-zinc-200" />
+
+        {/* 문수림 사례 */}
+        <section className="grid grid-cols-1 md:grid-cols-5 gap-8 items-start">
+          <div className="md:col-span-2">
+            <div className="relative aspect-[3/4] w-full max-w-sm mx-auto">
+              <Image
+                src="/profile/moonsurim.png"
+                alt="문수림 사진"
+                fill
+                sizes="(max-width: 768px) 60vw, 320px"
+                className="rounded-2xl object-cover shadow"
+                priority
+              />
+            </div>
           </div>
-        </figure>
-      </section>
 
-      {/* 연혁/포트폴리오 */}
-      <section aria-labelledby="history-heading" className="space-y-6">
-        <h2 id="history-heading" className="text-2xl font-semibold text-emerald-800">
-          지나온 발자취
-        </h2>
+          <div className="md:col-span-3 space-y-5">
+            <h2 className="text-2xl font-semibold text-emerald-800">
+              이 실험을 밀어붙인 하나의 사례
+            </h2>
 
-        {/* 대표작 */}
-        <div className="space-y-3">
-          <h3 className="text-lg font-semibold text-emerald-900">대표작</h3>
-          <ul className="list-disc list-inside text-zinc-700 leading-8">
-            <li>단편소설집, 동화집: <em>20에서 30까지</em>, <em>괜찮아, 아빠도 쉽진 않더라</em></li>
-            <li>교양서: <em>장르불문 관통하는 글쓰기</em>, <em>세일즈맨 불황탈출 마스터키</em></li>
-            <li>기관 웹진 연재: <em>무림지존, 취업준비생이 되다</em> (고용노동부 웹진, 2024 연재 종료), <em>레어템 한의약으로 이세계 정복</em> (한국한의학진흥원 웹진, 2025 연재 종료)</li>
-          </ul>
-        </div>
+            <p className="text-zinc-700 leading-loose">
+              이 질문들과 실험을 가장 오래, 가장 집요하게 밀어붙여 온 사례가 있습니다.
+              그 사람이 바로 문수림입니다.
+            </p>
 
-        {/* 특강 */}
-        <div className="space-y-3">
-          <h3 className="text-lg font-semibold text-emerald-900">글쓰기·출판 관련 특강</h3>
-          <ul className="list-disc list-inside text-zinc-700 leading-8">
-            <li>2017 대구 동성아트홀 글쓰기 특강</li>
-            <li>2018 김천의료원 특강, 충북대 인문대학 특강, 대구 신세계 아카데미 문학교실 개설</li>
-            <li>2019~ 대구대학교 꿈드림 특강단 활동</li>
-            <li>2023 대구 달성도서관 글쓰기 특강, 저자 북토크</li>
-            <li>2024 대구 달성도서관·2·28기념학생도서관 글쓰기 특강</li>
-            <li>2025 대구 달성도서관 글쓰기 특강, 인천시교육청북구도서관 온라인 특강, 대구 서부도서관 글쓰기 특강</li>
-          </ul>
-        </div>
+            <p className="text-zinc-700 leading-loose">
+              문수림의 공식적인 작가 정의와 호출 기준은
+              별도의 Writer Definition 페이지에 정리되어 있습니다.
+            </p>
+
+            <a
+              href="/writer"
+              className="underline underline-offset-4 text-emerald-800 hover:text-emerald-600"
+            >
+              Writer Definition 페이지로 이동
+            </a>
+          </div>
+        </section>
 
         {/* 전자책 외부 특강 */}
+        <section className="grid grid-cols-1 md:grid-cols-5 gap-8 items-start">
         <div className="space-y-3">
           <h3 className="text-lg font-semibold text-emerald-900">전자책·디지털북 특강</h3>
           <ul className="list-disc list-inside text-zinc-700 leading-8">
