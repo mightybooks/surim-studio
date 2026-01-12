@@ -56,6 +56,14 @@ const PROJECTS: Project[] = [
     thumb: "/projects/surimitosilly_hero.webp",
   },
   {
+    slug: "winterwas",
+    title: "겨울이었다",
+    summary: "이미 끝난 사건 이후의 세계를 기록하는 감정 서술형 마이크로 픽션 실험",
+    status: "active",
+    tags: ["겨울이었다", "구조화", "패턴"],
+    thumb: "/projects/winterwas_hero.webp",
+  },
+  {
     slug: "500fiction_app",
     title: "500자소설 앱",
     summary:
