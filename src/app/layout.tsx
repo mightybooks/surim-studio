@@ -74,9 +74,36 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <footer className="text-center text-xs text-zinc-500 py-6 border-t border-[var(--border)] bg-[var(--bg)]">
           <div className="mx-auto max-w-6xl px-4 space-y-1">
             <div>ⓒ 수림 스튜디오 · 마이티북스</div>
-            <div>사업자등록번호: 558-28-01574</div>
+
+            <a
+              href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=5582801574"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              사업자정보확인
+            </a>
+            <div>대표자: 이경민</div>
             <div>통신판매업신고: 2023-대구동구-0140</div>
-            <div className="pt-1">문의: surimstudio@gmail.com</div>
+
+            <div className="pt-1">
+              <a href="/legal/guide" className="hover:underline">이용안내</a>
+              {" · "}
+              <a href="/legal/terms" className="hover:underline">이용약관</a>
+              {" · "}
+              <a href="/legal/privacy" className="hover:underline">개인정보처리방침</a>
+            </div>
+
+            <div className="pt-1">
+              일반 문의: surimstudio@gmail.com · 010-5148-9433
+            </div>
+
+            <div>
+              개인정보처리 담당자: novelstudylab@naver.com
+            </div>
+
+            <div>
+              주소: 대구광역시 동구 동호로7길 66, 1층 102호
+            </div>
           </div>
         </footer>
 
