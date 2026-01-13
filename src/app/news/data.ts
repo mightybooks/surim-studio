@@ -11,6 +11,16 @@ export type NewsItem = {
 
 export const NEWS: NewsItem[] = [
     {
+    slug: "shop-ready-mall",
+    title: "결제 시스템 도입을 준비중입니다 ",
+    body:
+      "홈페이지의 정상적인 운영을 위해 결제 시스템을 도입중입니다 " +
+      "포트원을 통해 진행중에 있으며 승인 심사를 받고 있습니다 " +
+      "심사 승인과 함께 결제 시스템 구축이 바로 진행될 수 있도록 만전을 기하고 있습니다.  ",
+    category: "News",
+    published_at: "2026-01-14",
+    },
+    {
     slug: "web-complete2025-surim",
     title: "제3회 문수림배 문예경연대회 개최 및 로그인 시스템 구축 완료 ",
     body:

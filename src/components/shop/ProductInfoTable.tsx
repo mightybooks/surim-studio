@@ -1,20 +1,28 @@
-export default function ProductInfoTable({ product }: any) {
-  const items = product?.info ?? [
-    { label: "구성", value: "—" },
-    { label: "규격", value: "—" },
-  ];
+// src/components/shop/ProductInfoTable.tsx
 
+export default function ProductInfoTable({ product }: any) {
   return (
-    <div>
-      <h2 className="text-sm font-semibold">구성/규격</h2>
-      <div className="mt-2 rounded-xl border">
-        {items.map((it: any, idx: number) => (
-          <div key={idx} className="flex gap-4 border-b last:border-b-0 p-3 text-sm">
-            <div className="w-24 text-zinc-500">{it.label}</div>
-            <div className="flex-1 text-zinc-800">{it.value}</div>
+    <section>
+      <h2 className="text-sm font-semibold mb-3">구성 / 규격</h2>
+
+      <div className="rounded-xl border divide-y bg-white">
+        <div className="flex p-4 text-sm">
+          <div className="w-24 text-zinc-500">구성</div>
+          <div className="flex-1">{product.composition}</div>
+        </div>
+
+        <div className="flex p-4 text-sm">
+          <div className="w-24 text-zinc-500">규격</div>
+          <div className="flex-1">{product.spec}</div>
+        </div>
+        
+        {product.type === "BOOK" && product.isbn && (
+          <div className="flex p-4 text-sm">
+            <div className="w-24 text-zinc-500">ISBN</div>
+            <div className="flex-1">{product.isbn}</div>
           </div>
-        ))}
+        )}
       </div>
-    </div>
+    </section>
   );
 }

@@ -1,10 +1,16 @@
-export default function GoodsDetailPage() {
-  return (
-    <div className="p-6">
-      <h1 className="text-xl font-semibold">GOODS 상세</h1>
-      <p className="mt-2 text-sm text-zinc-600">
-        상품 상세 페이지 더미
-      </p>
-    </div>
-  );
+import ProductDetailPage from "@/components/shop/ProductDetailPage";
+
+export default function Page() {
+  const product = {
+    type: "GOODS",
+    name: "8컷 콘티노트 7권 1세트",
+    price: 21000,
+    delivery: "택배 / 1~3영업일",
+    thumbnail: "/productlist/8cut_list.webp",
+    detailImage: "/productdetail/8cut_detail.webp",
+    composition: "노트 1권",
+    spec: "B5 / 무선제본 36매 / 평량 120g",
+  };
+
+  return <ProductDetailPage product={product} />;
 }

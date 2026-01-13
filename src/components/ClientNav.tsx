@@ -41,6 +41,14 @@ const NAV_GROUPS: NavGroup[] = [
       { href: "/blog", label: "Blog" },
     ],
   },
+  {
+    label: "SHOP",
+    items: [
+      { href: "/shop/surimji", label: "SurimZine" },
+      { href: "/shop/books/tosil", label: "Books" },
+      { href: "/shop/goods/8cut", label: "Goods" },
+    ],
+  },
 ];
 
 const MY_GROUP: NavGroup = {

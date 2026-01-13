@@ -1,12 +1,18 @@
+// src/app/shop/books/[slug]/page.tsx
+
 import ProductDetailPage from "@/components/shop/ProductDetailPage";
 
 export default function Page() {
   const product = {
     type: "BOOK",
-    name: "문수림의 500자 소설",
-    price: 12000,
+    name: "토실토실 토끼를 안았습니다",
+    price: 20000,
     delivery: "택배 / 1~3영업일",
-    description: "도서 1종 더미 설명입니다.",
+    thumbnail: "/productlist/tosiltosil_list.webp",
+    detailImage: "/productdetail/tosiltosil_detail.webp",
+    composition: "도서 1권",
+    spec: "128×188mm / 284p",
+    isbn: "979-11-994493-0-5",
   };
 
   return <ProductDetailPage product={product} />;
