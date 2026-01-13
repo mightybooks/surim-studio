@@ -74,17 +74,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <footer className="text-center text-xs text-zinc-500 py-6 border-t border-[var(--border)] bg-[var(--bg)]">
           <div className="mx-auto max-w-6xl px-4 space-y-1">
             <div>ⓒ 수림 스튜디오 · 마이티북스</div>
-
+            
             <a
               href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=5582801574"
               target="_blank"
               rel="noopener noreferrer"
             >
-              사업자정보확인
-            </a>
-            <div>대표자: 이경민</div>
+              사업자정보확인: 558-28-01574
+            </a>            
             <div>통신판매업신고: 2023-대구동구-0140</div>
-
+            
             <div className="pt-1">
               <a href="/legal/guide" className="hover:underline">이용안내</a>
               {" · "}
@@ -98,7 +97,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </div>
 
             <div>
-              개인정보처리 담당자: novelstudylab@naver.com
+              개인정보처리 담당자: 대표자 이경민 · novelstudylab@naver.com
             </div>
 
             <div>
