@@ -53,7 +53,9 @@ export default function ConfirmForm() {
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const res = await fetch(`/api/orders/${orderId}`);
+        const res = await fetch(`/api/orders/${orderId}`, {
+        credentials: "include",
+      });
         if (!res.ok) {
           alert("주문 정보를 불러올 수 없습니다.");
           return;
