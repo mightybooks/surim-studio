@@ -71,13 +71,27 @@ export default function ConfirmForm() {
   /* -----------------------------
      중복 결제 방지 (결제완료면 이동)
   ----------------------------- */
-  useEffect(() => {
-    if (!order) return;
+    useEffect(() => {
+    if (!orderId) return;
 
-    if (order.status === "결제완료") {
-      router.replace(`/order/complete?orderId=${orderId}`);
-    }
-  }, [order, orderId, router]);
+    const interval = setInterval(async () => {
+        try {
+        const res = await fetch(`/api/orders/status?orderId=${orderId}`);
+        if (!res.ok) return;
+
+        const data = await res.json();
+        if (data.status === "결제완료") {
+            clearInterval(interval);
+            router.replace(`/order/complete?orderId=${orderId}`);
+        }
+        } catch (e) {
+        // 네트워크 오류는 무시
+        }
+    }, 1500);
+
+    return () => clearInterval(interval);
+    }, [orderId, router]);
+
 
   /* -----------------------------
      결제 요청
