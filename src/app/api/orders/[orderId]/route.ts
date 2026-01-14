@@ -9,8 +9,13 @@ export async function GET(
   const supabase = supabaseServer();
 
   const { data, error } = await supabase
-    .from("orders")
-    .select("*")
+   .from("orders")
+   .select(`
+       *,
+       profiles:profiles (
+       contact_email
+      )
+    `)
     .eq("id", params.orderId)
     .single();
 

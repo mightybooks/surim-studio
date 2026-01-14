@@ -22,6 +22,9 @@ type Order = {
   address: string;
   address_detail: string;
   status: string;
+  profiles: {
+   contact_email: string;
+  };
 };
 
 export default function ConfirmForm() {
@@ -104,6 +107,7 @@ export default function ConfirmForm() {
       customer: {
         fullName: order.recipient_name,
         phoneNumber: order.phone,
+        email: order.profiles.contact_email,
       },
       successUrl: `https://surimstudio.com/order/complete?orderId=${order.id}`,
       failUrl: `https://surimstudio.com/order/confirm?error=payment_failed&orderId=${order.id}`,
