@@ -18,7 +18,8 @@ export async function GET(
       zipcode,
       address,
       address_detail,
-      status
+      status,
+      buyer_email
     `)
     .eq("id", params.orderId)
     .single();

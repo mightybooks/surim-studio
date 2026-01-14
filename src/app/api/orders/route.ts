@@ -86,6 +86,11 @@ export async function POST(req: Request) {
     /* -----------------------------
        주문 생성 (결제대기)
     ----------------------------- */
+    
+    console.log("PROFILE RAW", profile);
+
+    console.log("PROFILE EMAIL", profile.contact_email);
+    
     const orderId = randomUUID();
 
     const { error } = await supabase.from("orders").insert({
@@ -101,7 +106,7 @@ export async function POST(req: Request) {
     address_detail: addressDetail ?? "",
     buyer_email: profile.contact_email,
     status: "결제대기",
-    });
+    });    
 
     if (error) {
       console.error("Order insert error:", error);
