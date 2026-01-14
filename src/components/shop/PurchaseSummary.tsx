@@ -24,7 +24,11 @@ export default function PurchaseSummary({ product }: any) {
 
       <button
         onClick={() =>
-          router.push(`/order?productId=${product.id}`)
+          router.push(
+            `/order?productId=${product.id}&productName=${encodeURIComponent(
+              product.name
+            )}&price=${product.price}`
+          )
         }
         className="
           mt-3

@@ -20,9 +20,22 @@ export default function OrderForm() {
   const searchParams = useSearchParams();
 
   // 상품 정보 (query 기반)
-  const productId = searchParams.get("productId") ?? "unknown";
-  const productName = searchParams.get("productName") ?? "상품명 없음";
-  const price = Number(searchParams.get("price") ?? 0);
+  const productId = searchParams.get("productId");
+  const productName = searchParams.get("productName");
+  const priceParam = searchParams.get("price");
+
+  // 🚨 상품 정보가 없으면 여기서 컴포넌트 종료
+  if (!productId || !productName || !priceParam) {
+    return (
+      <main className="mx-auto max-w-2xl px-4 py-8">
+        <p className="text-red-600">
+          상품 정보가 올바르지 않습니다. 다시 시도해 주세요.
+        </p>
+      </main>
+    );
+  }
+
+  const price = Number(priceParam);
 
   const [form, setForm] = useState<OrderFormState>({
     recipientName: "",
@@ -45,11 +58,15 @@ export default function OrderForm() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        productId,
-        productName,
-        price,
-        recipient: form,
-      }),
+      productId,
+      productName,
+      price,
+      recipientName: form.recipientName,
+      phone: form.phone,
+      zipcode: form.zipcode,
+      address: form.address,
+      addressDetail: form.addressDetail,
+     }),
     });
 
     if (!res.ok) {
