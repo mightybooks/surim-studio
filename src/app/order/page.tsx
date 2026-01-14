@@ -1,5 +1,10 @@
+import { Suspense } from "react";
 import OrderForm from "@/components/order/OrderForm";
 
 export default function OrderPage() {
-  return <OrderForm />;
+  return (
+    <Suspense fallback={null}>
+      <OrderForm />
+    </Suspense>
+  );
 }
