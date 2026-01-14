@@ -43,8 +43,7 @@ const NAV_GROUPS: NavGroup[] = [
   },
   {
     label: "SHOP",
-    items: [
-      { href: "/shop/surimji", label: "SurimZine" },
+    items: [      
       { href: "/shop/books/tosil", label: "Books" },
       { href: "/shop/goods/8cut", label: "Goods" },
     ],
