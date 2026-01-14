@@ -38,29 +38,49 @@ export async function POST(req: Request) {
 
     const supabase = supabaseServer();
 
+    /* =========================
+    🔐 인증 회원 체크 (여기)
+    ========================= */
+    const {
+    data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+    return NextResponse.json(
+        { message: "로그인이 필요합니다." },
+        { status: 401 }
+    );
+    }
+
+    const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("contact_email_verified_at")
+    .eq("id", user.id)
+    .single();
+
+    if (profileError || !profile?.contact_email_verified_at) {
+    return NextResponse.json(
+        { message: "이메일 인증이 완료된 회원만 결제할 수 있습니다." },
+        { status: 403 }
+    );
+    }
+
     /* -----------------------------
     기존 결제대기 주문 재사용 (중복 방지)
     ----------------------------- */
     const { data: existing } = await supabase
-     .from("orders")
-     .select("id")
-     .eq("product_id", productId)
-     .eq("recipient_name", recipientName)
-     .eq("phone", phone)
-     .eq("zipcode", zipcode)
-     .eq("address", address)
-     .eq("status", "결제대기")
-     .limit(1)
-     .single();
+    .from("orders")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("product_id", productId)
+    .eq("status", "결제대기")
+    .maybeSingle();
 
-     if (existing) {
-      return NextResponse.json(
-         {
-         orderId: existing.id,
-         status: "결제대기",
-         },
-         { status: 200 }
-       );
+    if (existing) {
+    return NextResponse.json(
+        { orderId: existing.id, status: "결제대기" },
+        { status: 200 }
+    );
     }
 
     /* -----------------------------
@@ -69,17 +89,17 @@ export async function POST(req: Request) {
     const orderId = randomUUID();
 
     const { error } = await supabase.from("orders").insert({
-      id: orderId,
-      product_id: productId,
-      product_name: productName,
-      amount: price,
-      recipient_name: recipientName,
-      phone,
-      zipcode,
-      address,
-      address_detail: addressDetail ?? "",
-      status: "결제대기",
-      user_id: null, // 비회원 주문
+    id: orderId,
+    user_id: user.id,              
+    product_id: productId,
+    product_name: productName,
+    amount: price,
+    recipient_name: recipientName,
+    phone,
+    zipcode,
+    address,
+    address_detail: addressDetail ?? "",
+    status: "결제대기",
     });
 
     if (error) {
