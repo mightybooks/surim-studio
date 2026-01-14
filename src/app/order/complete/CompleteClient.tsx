@@ -20,7 +20,7 @@ export default function CompleteClient() {
 
     const completePayment = async () => {
       try {
-        const res = await fetch("/api/payments/complete", {
+        const res = await fetch("/api/orders/status", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ orderId }),
