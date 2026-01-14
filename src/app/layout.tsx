@@ -51,6 +51,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             data-website-id="d518b050-1977-468c-b343-84b487e20492"
           />
         )}
+          {/* PortOne 결제 SDK */}
+          <script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
       </head>
 
       <body className="min-h-screen bg-[var(--bg)] text-[var(--fg)]"

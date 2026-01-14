@@ -5,12 +5,6 @@ import Script from "next/script";
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
-declare global {
-  interface Window {
-    PortOne?: any;
-  }
-}
-
 export default function PaymentClient() {
   const [ready, setReady] = useState(false);
   const params = useSearchParams();

@@ -1,6 +1,10 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 export default function PurchaseSummary({ product }: any) {
+  const router = useRouter();
+  
   const handlePay = (method: "CARD" | "KAKAOPAY") => {
     const params = new URLSearchParams({
       productId: product.id,
@@ -19,18 +23,11 @@ export default function PurchaseSummary({ product }: any) {
       </div>
 
       <button
-        onClick={() => handlePay("CARD")}
-        className="w-full rounded-xl bg-black text-white py-3"
+        onClick={() => router.push(`/order?productId=${product.id}`)}
       >
-        카드 결제
+        주문하기
       </button>
 
-      <button
-        onClick={() => handlePay("KAKAOPAY")}
-        className="w-full rounded-xl bg-yellow-400 text-black py-3"
-      >
-        카카오페이
-      </button>
     </div>
   );
 }
