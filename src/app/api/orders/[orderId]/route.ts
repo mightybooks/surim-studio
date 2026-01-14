@@ -21,11 +21,16 @@ export async function GET(
   }
 
   // 🔐 2. 본인 주문만 조회
-  const { data, error } = await supabase
+    const { data, error } = await supabase
     .from("orders")
-    .select("*")
+    .select(`
+        *,
+        profiles (
+        contact_email
+        )
+    `)
     .eq("id", params.orderId)
-    .eq("user_id", user.id)   // ← 이 줄이 핵심
+    .eq("user_id", user.id)
     .single();
 
   if (error || !data) {
