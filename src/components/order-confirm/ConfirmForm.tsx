@@ -12,15 +12,29 @@ declare global {
   }
 }
 
+type Order = {
+  id: string;
+  product_name: string;
+  amount: number;
+  recipient_name: string;
+  phone: string;
+  zipcode: string;
+  address: string;
+  address_detail: string;
+  status: string;
+};
+
 export default function ConfirmForm() {
   const router = useRouter();
   const params = useSearchParams();
+
+  const orderId = params.get("orderId");
+  const errorType = params.get("error");
+
+  const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const errorType = params.get("error");
-  const orderId = params.get("orderId");
-
-  // ❗ orderId 없으면 잘못된 접근
+  // ❌ orderId 없으면 잘못된 접근
   if (!orderId) {
     return (
       <main className="mx-auto max-w-2xl px-4 py-8">
@@ -29,55 +43,60 @@ export default function ConfirmForm() {
     );
   }
 
-  // (지금은 query 기반 유지 — 다음 단계에서 서버 조회로 교체)
-  const productName = params.get("productName") ?? "";
-  const price = Number(params.get("price") ?? 0);
-  const recipientName = params.get("recipientName") ?? "";
-  const phone = params.get("phone") ?? "";
-  const zipcode = params.get("zipcode") ?? "";
-  const address = params.get("address") ?? "";
-  const addressDetail = params.get("addressDetail") ?? "";
-
-  // 중복 결제 방지 체크
+  /* -----------------------------
+     주문 정보 조회 (orderId 기준)
+  ----------------------------- */
   useEffect(() => {
-    const checkStatus = async () => {
+    const fetchOrder = async () => {
       try {
-        const res = await fetch(
-          `/api/orders/status?orderId=${orderId}`
-        );
-        if (!res.ok) return;
-
-        const data = await res.json();
-        if (data.status === "결제완료") {
-          router.replace(`/order/complete?orderId=${orderId}`);
+        const res = await fetch(`/api/orders/${orderId}`);
+        if (!res.ok) {
+          alert("주문 정보를 불러올 수 없습니다.");
+          return;
         }
+        const data = await res.json();
+        setOrder(data);
       } catch (err) {
-        console.error(err);
+        console.error("주문 조회 실패:", err);
       }
     };
 
-    checkStatus();
-  }, [orderId, router]);
+    fetchOrder();
+  }, [orderId]);
 
+  /* -----------------------------
+     중복 결제 방지 (결제완료면 이동)
+  ----------------------------- */
+  useEffect(() => {
+    if (!order) return;
+
+    if (order.status === "결제완료") {
+      router.replace(`/order/complete?orderId=${orderId}`);
+    }
+  }, [order, orderId, router]);
+
+  /* -----------------------------
+     결제 요청
+  ----------------------------- */
   const requestPayment = async (method: "CARD" | "KAKAOPAY") => {
-    if (loading) return;
+    if (!order || loading) return;
     setLoading(true);
 
     try {
       await window.PortOne.requestPayment({
         storeId: process.env.NEXT_PUBLIC_PORTONE_STORE_ID!,
         channelKey: process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY!,
-        paymentId: orderId,
-        orderName: productName,
-        totalAmount: price,
+        paymentId: order.id,
+        orderName: order.product_name,
+        totalAmount: order.amount,
         currency: "KRW",
         payMethod: method,
         buyer: {
-          name: recipientName,
-          phoneNumber: phone,
+          name: order.recipient_name,
+          phoneNumber: order.phone,
         },
-        successUrl: `https://surimstudio.com/order/complete?orderId=${orderId}`,
-        failUrl: `https://surimstudio.com/order/confirm?error=payment_failed&orderId=${orderId}`,
+        successUrl: `https://surimstudio.com/order/complete?orderId=${order.id}`,
+        failUrl: `https://surimstudio.com/order/confirm?error=payment_failed&orderId=${order.id}`,
       });
     } catch (err) {
       alert("결제 처리 중 오류가 발생했습니다.");
@@ -87,6 +106,9 @@ export default function ConfirmForm() {
     }
   };
 
+  /* -----------------------------
+     렌더링
+  ----------------------------- */
   return (
     <main className="mx-auto max-w-2xl px-4 py-8 space-y-6">
       <h1 className="text-2xl font-semibold">주문 확인</h1>
@@ -102,17 +124,29 @@ export default function ConfirmForm() {
         </section>
       )}
 
-      <ConfirmSummary productName={productName} price={price} />
+      {!order ? (
+        <p>주문 정보를 불러오는 중입니다...</p>
+      ) : (
+        <>
+          <ConfirmSummary
+            productName={order.product_name}
+            price={order.amount}
+          />
 
-      <ConfirmAddress
-        recipientName={recipientName}
-        phone={phone}
-        zipcode={zipcode}
-        address={address}
-        addressDetail={addressDetail}
-      />
+          <ConfirmAddress
+            recipientName={order.recipient_name}
+            phone={order.phone}
+            zipcode={order.zipcode}
+            address={order.address}
+            addressDetail={order.address_detail}
+          />
 
-      <ConfirmPaymentButtons loading={loading} onPay={requestPayment} />
+          <ConfirmPaymentButtons
+            loading={loading}
+            onPay={requestPayment}
+          />
+        </>
+      )}
     </main>
   );
 }
