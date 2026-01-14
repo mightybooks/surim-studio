@@ -54,7 +54,7 @@ export async function POST(req: Request) {
 
     const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("contact_email_verified_at")
+    .select("contact_email, contact_email_verified_at")
     .eq("id", user.id)
     .single();
 
@@ -99,6 +99,7 @@ export async function POST(req: Request) {
     zipcode,
     address,
     address_detail: addressDetail ?? "",
+    buyer_email: profile.contact_email,
     status: "결제대기",
     });
 

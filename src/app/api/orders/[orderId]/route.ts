@@ -1,4 +1,3 @@
-// /api/orders/[orderId]/route.ts
 import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabase/server";
 
@@ -8,29 +7,20 @@ export async function GET(
 ) {
   const supabase = supabaseServer();
 
-  // 🔐 1. 로그인 유저 확인
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return NextResponse.json(
-      { message: "로그인이 필요합니다." },
-      { status: 401 }
-    );
-  }
-
-  // 🔐 2. 본인 주문만 조회
-    const { data, error } = await supabase
+  const { data, error } = await supabase
     .from("orders")
     .select(`
-        *,
-        profiles (
-        contact_email
-        )
+      id,
+      product_name,
+      amount,
+      recipient_name,
+      phone,
+      zipcode,
+      address,
+      address_detail,
+      status
     `)
     .eq("id", params.orderId)
-    .eq("user_id", user.id)
     .single();
 
   if (error || !data) {
