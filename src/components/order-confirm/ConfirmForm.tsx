@@ -87,6 +87,14 @@ export default function ConfirmForm() {
   if (!order || loading) return;
   setLoading(true);
 
+  console.log("ORDER SNAPSHOT", {
+  id: order.id,
+  amount: order.amount,
+  email: order.buyer_email,
+  name: order.recipient_name,
+  phone: order.phone,
+});
+
   const channelKey =
     method === "KAKAOPAY"
       ? process.env.NEXT_PUBLIC_PORTONE_KAKAOPAY_CHANNEL_KEY!
