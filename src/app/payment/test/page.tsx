@@ -1,8 +1,8 @@
-// app/payment/test/page.tsx
 "use client";
 
 import Script from "next/script";
 import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 declare global {
   interface Window {
@@ -12,10 +12,19 @@ declare global {
 
 export default function PaymentTestPage() {
   const [ready, setReady] = useState(false);
+  const params = useSearchParams();
 
-  // ✅ 본인 값으로 교체
-  const storeId = "store-d0b1d407-3477-47a0-9603-1311d770912a"; // V2 Store ID
-  const channelKey = "channel-key-492f9529-6ed4-499e-b64a-19cd5a9c6f4c"; // 채널키
+  // ✅ 결제수단 분기 (CARD | KAKAOPAY)
+  const payMethod = params.get("payMethod");
+
+  // ✅ Store ID (V2)
+  const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID!;
+
+  // ✅ channelKey 분기
+  const channelKey =
+    payMethod === "KAKAOPAY"
+      ? process.env.NEXT_PUBLIC_PORTONE_KAKAOPAY_CHANNEL_KEY!
+      : process.env.NEXT_PUBLIC_PORTONE_INICIS_CHANNEL_KEY!;
 
   const paymentId = useMemo(() => `pay_${Date.now()}`, []);
 
@@ -25,8 +34,6 @@ export default function PaymentTestPage() {
       return;
     }
 
-    // PortOne V2 결제 요청 (공식 파라미터명)
-    // storeId / channelKey / paymentId / orderName / totalAmount / currency / payMethod / customer / redirectUrl
     const response = await window.PortOne.requestPayment({
       storeId,
       channelKey,
@@ -34,18 +41,16 @@ export default function PaymentTestPage() {
       orderName: "수림지 디지털 이용권",
       totalAmount: 4900,
       currency: "KRW",
-      payMethod: "CARD",
+      payMethod: "CARD", // ⚠️ channelKey로 결제수단 결정
       customer: {
         fullName: "테스트구매자",
         email: "test@surim.studio",
         phoneNumber: "01000000000",
       },
-      // 모바일/일부 환경에서 필수
       redirectUrl: `${window.location.origin}/payment/test?done=1&paymentId=${paymentId}`,
     });
 
     console.log("PortOne 결제 응답:", response);
-    alert("응답은 콘솔에서 확인하세요.");
   };
 
   return (
@@ -61,12 +66,16 @@ export default function PaymentTestPage() {
           PortOne SDK: {ready ? "로드됨" : "로딩중"}
         </div>
 
+        <div className="text-xs text-zinc-500">
+          결제수단: {payMethod === "KAKAOPAY" ? "카카오페이" : "카드"}
+        </div>
+
         <button
           onClick={requestPay}
           disabled={!ready}
           className="w-full rounded-xl bg-black text-white px-4 py-3 text-sm disabled:opacity-50"
         >
-          결제하기 (V2)
+          결제하기
         </button>
 
         <div className="text-xs text-zinc-500">

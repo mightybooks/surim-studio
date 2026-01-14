@@ -15,6 +15,7 @@ export default function SurimjiPage() {
   return (
     <ProductDetailPage product={product}>
       <section className="max-w-2xl text-lg text-zinc-700 leading-relaxed">
+        <p>“본 상품은 정기결제가 아닌 1회 결제형 디지털 콘텐츠입니다.”</p><br/>
         <p>
           수림지는 매달 한 번,<br />
           새로운 글을 가장 먼저 만나는 디지털 웹진입니다.
