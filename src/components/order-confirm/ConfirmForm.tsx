@@ -33,6 +33,7 @@ export default function ConfirmForm() {
 
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(false);
+  
 
   // ❌ orderId 없으면 잘못된 접근
   if (!orderId) {
@@ -78,33 +79,42 @@ export default function ConfirmForm() {
   /* -----------------------------
      결제 요청
   ----------------------------- */
+  
   const requestPayment = async (method: "CARD" | "KAKAOPAY") => {
-    if (!order || loading) return;
-    setLoading(true);
+  if (!order || loading) return;
+  setLoading(true);
 
-    try {
-      await window.PortOne.requestPayment({
-        storeId: process.env.NEXT_PUBLIC_PORTONE_STORE_ID!,
-        channelKey: process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY!,
-        paymentId: order.id,
-        orderName: order.product_name,
-        totalAmount: order.amount,
-        currency: "KRW",
-        payMethod: method,
-        buyer: {
-          name: order.recipient_name,
-          phoneNumber: order.phone,
-        },
-        successUrl: `https://surimstudio.com/order/complete?orderId=${order.id}`,
-        failUrl: `https://surimstudio.com/order/confirm?error=payment_failed&orderId=${order.id}`,
-      });
-    } catch (err) {
-      alert("결제 처리 중 오류가 발생했습니다.");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const channelKey =
+    method === "KAKAOPAY"
+      ? process.env.NEXT_PUBLIC_PORTONE_KAKAOPAY_CHANNEL_KEY!
+      : process.env.NEXT_PUBLIC_PORTONE_INICIS_CHANNEL_KEY!;
+
+  const payMethodForPortOne =
+    method === "KAKAOPAY" ? "EASY_PAY" : "CARD";
+
+  try {
+    await window.PortOne.requestPayment({
+      storeId: process.env.NEXT_PUBLIC_PORTONE_STORE_ID!,
+      channelKey,
+      paymentId: order.id,
+      orderName: order.product_name,
+      totalAmount: order.amount,
+      currency: "KRW",
+      payMethod: payMethodForPortOne,
+      customer: {
+        fullName: order.recipient_name,
+        phoneNumber: order.phone,
+      },
+      successUrl: `https://surimstudio.com/order/complete?orderId=${order.id}`,
+      failUrl: `https://surimstudio.com/order/confirm?error=payment_failed&orderId=${order.id}`,
+    });
+  } catch (err) {
+    alert("결제 처리 중 오류가 발생했습니다.");
+    console.error(err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   /* -----------------------------
      렌더링
