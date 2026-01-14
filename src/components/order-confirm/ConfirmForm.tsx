@@ -1,8 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import ConfirmSummary from "./ConfirmSummary";
 import ConfirmAddress from "./ConfirmAddress";
 import ConfirmPaymentButtons from "./ConfirmPaymentButtons";
@@ -17,86 +16,55 @@ export default function ConfirmForm() {
   const router = useRouter();
   const params = useSearchParams();
   const [loading, setLoading] = useState(false);
-  
-  const errorType = params.get("error"); 
-  const productId = params.get("productId") ?? "";
+
+  const errorType = params.get("error");
+  const orderId = params.get("orderId");
+
+  // ❗ orderId 없으면 잘못된 접근
+  if (!orderId) {
+    return (
+      <main className="mx-auto max-w-2xl px-4 py-8">
+        <p>잘못된 접근입니다.</p>
+      </main>
+    );
+  }
+
+  // (지금은 query 기반 유지 — 다음 단계에서 서버 조회로 교체)
   const productName = params.get("productName") ?? "";
   const price = Number(params.get("price") ?? 0);
-
   const recipientName = params.get("recipientName") ?? "";
   const phone = params.get("phone") ?? "";
   const zipcode = params.get("zipcode") ?? "";
   const address = params.get("address") ?? "";
   const addressDetail = params.get("addressDetail") ?? "";
 
-  const createOrder = async () => {
-    const res = await fetch("/api/orders", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        productId,
-        productName,
-        price,
-        recipientName,
-        phone,
-        zipcode,
-        address,
-        addressDetail,
-      }),
-    });
-
-    if (!res.ok) throw new Error("주문 생성 실패");
-    const data = await res.json();
-    return data.orderId as string;
-  };
-
-    useEffect(() => {
-    const orderId = params.get("orderId");
-    if (!orderId) return;
-
+  // 중복 결제 방지 체크
+  useEffect(() => {
     const checkStatus = async () => {
-        try {
+      try {
         const res = await fetch(
-            `/api/orders/status?orderId=${orderId}`
+          `/api/orders/status?orderId=${orderId}`
         );
         if (!res.ok) return;
 
         const data = await res.json();
-
         if (data.status === "결제완료") {
-            alert("이미 결제가 완료된 주문입니다.");
-            router.replace(`/order/complete?orderId=${orderId}`);
+          router.replace(`/order/complete?orderId=${orderId}`);
         }
-        } catch (err) {
-        console.error("주문 상태 확인 실패:", err);
-        }
+      } catch (err) {
+        console.error(err);
+      }
     };
 
     checkStatus();
-    }, [params, router]);
+  }, [orderId, router]);
 
-    const requestPayment = async (method: "CARD" | "KAKAOPAY") => {
+  const requestPayment = async (method: "CARD" | "KAKAOPAY") => {
     if (loading) return;
     setLoading(true);
 
     try {
-        // 1️⃣ 주문 생성 (멱등 처리됨)
-        const orderId = await createOrder();
-
-        // 2️⃣ 주문 상태 확인 (중복 결제 방지)
-        const statusRes = await fetch(
-        `/api/orders/status?orderId=${orderId}`
-        );
-        const statusData = await statusRes.json();
-
-        if (statusData.status === "결제완료") {
-        alert("이미 결제가 완료된 주문입니다.");
-        router.replace(`/order/complete?orderId=${orderId}`);
-        return;
-        }
-
-        // 3️⃣ 실제 결제 요청
-        await window.PortOne.requestPayment({
+      await window.PortOne.requestPayment({
         storeId: process.env.NEXT_PUBLIC_PORTONE_STORE_ID!,
         channelKey: process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY!,
         paymentId: orderId,
@@ -105,17 +73,17 @@ export default function ConfirmForm() {
         currency: "KRW",
         payMethod: method,
         buyer: {
-            name: recipientName,
-            phoneNumber: phone,
+          name: recipientName,
+          phoneNumber: phone,
         },
         successUrl: `https://surimstudio.com/order/complete?orderId=${orderId}`,
-        failUrl: `https://surimstudio.com/order/confirm?error=payment_failed`,
-        });
+        failUrl: `https://surimstudio.com/order/confirm?error=payment_failed&orderId=${orderId}`,
+      });
     } catch (err) {
-        alert("결제 처리 중 오류가 발생했습니다.");
-        console.error(err);
+      alert("결제 처리 중 오류가 발생했습니다.");
+      console.error(err);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -125,15 +93,14 @@ export default function ConfirmForm() {
 
       {errorType === "payment_failed" && (
         <section className="rounded-xl border border-red-300 bg-red-50 p-4">
-            <h2 className="font-medium text-red-700 mb-1">
+          <h2 className="font-medium text-red-700 mb-1">
             결제가 완료되지 않았습니다
-            </h2>
-            <p className="text-sm text-red-600">
-            결제 과정에서 오류가 발생했습니다.  
-            다시 결제를 시도해 주세요.
-            </p>
+          </h2>
+          <p className="text-sm text-red-600">
+            결제 과정에서 오류가 발생했습니다. 다시 시도해 주세요.
+          </p>
         </section>
-        )}
+      )}
 
       <ConfirmSummary productName={productName} price={price} />
 
@@ -145,10 +112,7 @@ export default function ConfirmForm() {
         addressDetail={addressDetail}
       />
 
-      <ConfirmPaymentButtons
-          loading={loading}
-          onPay={requestPayment}
-      />
+      <ConfirmPaymentButtons loading={loading} onPay={requestPayment} />
     </main>
   );
 }

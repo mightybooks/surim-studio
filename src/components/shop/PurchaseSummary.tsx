@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 
 export default function PurchaseSummary({ product }: any) {
   const router = useRouter();
-  
+
   const handlePay = (method: "CARD" | "KAKAOPAY") => {
     const params = new URLSearchParams({
       productId: product.id,
@@ -23,7 +23,24 @@ export default function PurchaseSummary({ product }: any) {
       </div>
 
       <button
-        onClick={() => router.push(`/order?productId=${product.id}`)}
+        onClick={() =>
+          router.push(`/order?productId=${product.id}`)
+        }
+        className="
+          mt-3
+          w-full
+          rounded-xl
+          border
+          border-black
+          bg-black
+          px-4
+          py-3
+          text-white
+          font-semibold
+          hover:bg-white
+          hover:text-black
+          transition
+        "
       >
         주문하기
       </button>
