@@ -39,7 +39,7 @@ export default function PaymentClient() {
       orderName: "수림지 디지털 이용권",
       totalAmount: 4900,
       currency: "KRW",
-      payMethod: "CARD",
+      payMethod: payMethod === "KAKAOPAY" ? "EASY_PAY" : "CARD",
       customer: {
         fullName: "테스트구매자",
         email: "test@surim.studio",
