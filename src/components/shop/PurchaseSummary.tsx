@@ -9,6 +9,10 @@ export default function PurchaseSummary({ product }: any) {
       <div className="text-xl font-bold">{product.price.toLocaleString()}원</div>
       <div className="text-sm text-zinc-600">{product.delivery}</div>
 
+<p>현재 결제 시스템 점검 중입니다.<br/>
+서비스 오픈 후 정상 결제가 가능합니다.<br/>
+테스트터들 외 이용자들은 버튼을 누르지 마세요!!</p>
+
       <button
         onClick={() => {
           // 필요하면 query로 product 전달 가능
