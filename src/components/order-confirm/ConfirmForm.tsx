@@ -34,7 +34,7 @@ export default function ConfirmForm() {
 
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(false);
-  
+  const [attachPending, setAttachPending] = useState(false);
 
   // ❌ orderId 없으면 잘못된 접근
   if (!orderId) {
@@ -151,11 +151,10 @@ export default function ConfirmForm() {
 
     console.log("ATTACH RESULT >>>", attachRes.status, attachJson);
 
-    if (!attachRes.ok) {
-      // 결제는 성공했으나 주문-결제 매핑 저장 실패
-      // UX는 confirm 페이지 polling에 맡김
-      console.error("attach-payment failed");
-    }
+  if (!attachRes.ok) {
+    console.error("attach-payment failed");
+    setAttachPending(true);
+  }
 
   } catch (err) {
     alert("결제 처리 중 오류가 발생했습니다.");
@@ -171,6 +170,18 @@ export default function ConfirmForm() {
   return (
     <main className="mx-auto max-w-2xl px-4 py-8 space-y-6">
       <h1 className="text-2xl font-semibold">주문 확인</h1>
+
+      {attachPending && (
+        <section className="rounded-xl border border-yellow-300 bg-yellow-50 p-4">
+          <h2 className="font-medium text-yellow-800 mb-1">
+            주문 확인 중입니다
+          </h2>
+          <p className="text-sm text-yellow-700">
+            결제는 완료되었으나 주문 확인이 지연되고 있습니다.
+            잠시만 기다려 주세요.
+          </p>
+        </section>
+      )}
 
       {errorType === "payment_failed" && (
         <section className="rounded-xl border border-red-300 bg-red-50 p-4">

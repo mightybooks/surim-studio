@@ -3,6 +3,10 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
+type Order = {
+  status: string;
+};
+
 export default function CompleteClient() {
   const params = useSearchParams();
   const router = useRouter();
@@ -10,6 +14,7 @@ export default function CompleteClient() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [order, setOrder] = useState<Order | null>(null);
 
   useEffect(() => {
     if (!orderId) {
@@ -18,33 +23,34 @@ export default function CompleteClient() {
       return;
     }
 
-    const completePayment = async () => {
+    const fetchOrder = async () => {
       try {
-        const res = await fetch("/api/orders/status", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ orderId }),
-        });
-
+        const res = await fetch(`/api/orders/${orderId}`);
         if (!res.ok) {
-          throw new Error("결제 완료 처리 실패");
+          throw new Error("주문 조회 실패");
         }
 
+        const data = await res.json();
+        setOrder(data);
         setLoading(false);
       } catch (err) {
         console.error(err);
-        setError("결제 완료 처리 중 오류가 발생했습니다.");
+        setError("주문 정보를 불러오는 중 오류가 발생했습니다.");
         setLoading(false);
       }
     };
 
-    completePayment();
+    fetchOrder();
   }, [orderId]);
+
+  /* -----------------------------
+     렌더링
+  ----------------------------- */
 
   if (loading) {
     return (
       <main className="mx-auto max-w-xl px-4 py-10 text-center">
-        <p className="text-zinc-600">결제 완료 처리 중입니다…</p>
+        <p className="text-zinc-600">주문 정보를 확인 중입니다…</p>
       </main>
     );
   }
@@ -57,6 +63,20 @@ export default function CompleteClient() {
     );
   }
 
+  // 주문은 존재하지만 아직 확정되지 않은 경우
+  if (!order || order.status !== "결제완료") {
+    return (
+      <main className="mx-auto max-w-xl px-4 py-10 text-center space-y-4">
+        <h1 className="text-xl font-semibold">주문 확인 중입니다</h1>
+        <p className="text-zinc-600">
+          주문이 아직 확정되지 않았습니다.  
+          잠시만 기다려 주세요.
+        </p>
+      </main>
+    );
+  }
+
+  // 결제완료 확정 상태
   return (
     <main className="mx-auto max-w-xl px-4 py-10 text-center space-y-4">
       <h1 className="text-2xl font-semibold">결제가 완료되었습니다</h1>
