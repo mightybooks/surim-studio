@@ -15,6 +15,8 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
+    console.log("PORTONE WEBHOOK RAW PAYLOAD >>>", JSON.stringify(body, null, 2));
+
     // 가능하면 다양하게 뽑되, 실패해도 상관없게 (기록자이므로)
     const status = body?.status ?? body?.data?.status ?? null;
 
