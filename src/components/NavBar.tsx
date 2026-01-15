@@ -41,7 +41,7 @@ export default function NavBar() {
           <p className="text-sm text-zinc-500">
             메일 인증을 완료해야 활동을 시작할 수 있습니다.
           </p>
-          <Link href="/mypage" className={base}>
+          <Link href="/my" className={base}>
             마이페이지
           </Link>
         </>
@@ -52,7 +52,7 @@ export default function NavBar() {
           <p className="text-sm text-zinc-500">
             메일 인증을 하셨다면, 활동 기록을 확인해 보세요.
           </p>
-          <Link href="/mypage" className={base}>
+          <Link href="/my" className={base}>
             마이페이지
           </Link>
         </>
