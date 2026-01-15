@@ -10,8 +10,6 @@ export async function POST(req: NextRequest) {
   try {
     const { orderId, portonePaymentId } = await req.json();
 
-    console.log("ATTACH PAYMENT >>>", { orderId, portonePaymentId });
-
     if (!orderId || !portonePaymentId) {
       return NextResponse.json(
         { ok: false, error: "missing params" },
@@ -19,16 +17,40 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { error } = await supabase
-    .from("orders")
-    .update({
-        portone_payment_id: portonePaymentId,
-        status: "결제완료",
-    })
-    .eq("id", orderId);
+    // 1. 주문 조회
+    const { data: order, error: fetchError } = await supabase
+      .from("orders")
+      .select("id, portone_payment_id")
+      .eq("id", orderId)
+      .single();
 
-    if (error) {
-      console.error("ATTACH DB ERROR >>>", error);
+    if (fetchError || !order) {
+      return NextResponse.json(
+        { ok: false, error: "order not found" },
+        { status: 404 }
+      );
+    }
+
+    // 2. 이미 attach 된 경우 (idempotency)
+    if (order.portone_payment_id) {
+      if (order.portone_payment_id === portonePaymentId) {
+        return NextResponse.json({ ok: true });
+      } else {
+        return NextResponse.json(
+          { ok: false, error: "paymentId conflict" },
+          { status: 409 }
+        );
+      }
+    }
+
+    // 3. 최초 attach (매핑만 수행, 상태 변경 없음)
+    const { error: updateError } = await supabase
+      .from("orders")
+      .update({ portone_payment_id: portonePaymentId })
+      .eq("id", orderId);
+
+    if (updateError) {
+      console.error("ATTACH PAYMENT DB ERROR", updateError);
       return NextResponse.json(
         { ok: false, error: "db update failed" },
         { status: 500 }
@@ -37,7 +59,10 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ ok: true });
   } catch (e) {
-    console.error("ATTACH API ERROR >>>", e);
-    return NextResponse.json({ ok: false }, { status: 400 });
+    console.error("ATTACH PAYMENT API ERROR", e);
+    return NextResponse.json(
+      { ok: false, error: "invalid request" },
+      { status: 400 }
+    );
   }
 }
