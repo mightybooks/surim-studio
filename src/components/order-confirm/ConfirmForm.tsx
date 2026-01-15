@@ -135,6 +135,8 @@ export default function ConfirmForm() {
       failUrl: `https://surimstudio.com/order/confirm?error=payment_failed&orderId=${order.id}`,
     });
 
+    console.log("PORTONE RSP >>>", rsp);
+
     // ✅ 추가: 결제 성공 직후 매핑 저장
     const attachRes = await fetch("/api/orders/attach-payment", {
       method: "POST",
