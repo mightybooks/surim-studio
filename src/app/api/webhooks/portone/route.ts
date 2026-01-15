@@ -23,29 +23,30 @@ export async function POST(req: NextRequest) {
      * }
      */
 
-    if (body?.type !== "PAYMENT_PAID") {
-      return NextResponse.json({ ok: true });
+    const status = body?.status || body?.data?.status;
+
+    if (status?.toLowerCase() !== "paid") {
+    return NextResponse.json({ ok: true });
     }
 
-    const paymentId =
-    body?.data?.paymentId ||
-    body?.data?.id ||
+    const orderId =
+    body?.order_id ||
+    body?.orderId ||
+    body?.data?.order_id ||
     body?.data?.orderId;
 
-    console.log("RESOLVED paymentId >>>", paymentId);
+    console.log("RESOLVED orderId >>>", orderId);
 
-    if (!paymentId) {
-      return NextResponse.json(
-        { error: "paymentId missing" },
-        { status: 400 }
-      );
+    if (!orderId) {
+    // 호출 테스트 웹훅에는 주문 개념이 없음 → 정상 종료
+    return NextResponse.json({ ok: true });
     }
 
     // 이미 결제완료면 그대로 종료 (중복 웹훅 대비)
     const { data: order } = await supabase
       .from("orders")
       .select("status")
-      .eq("id", paymentId)
+      .eq("id", orderId)
       .single();
 
     if (!order) {
@@ -62,7 +63,7 @@ export async function POST(req: NextRequest) {
     const { error } = await supabase
       .from("orders")
       .update({ status: "결제완료" })
-      .eq("id", paymentId);
+      .eq("id", orderId);
 
     if (error) {
       console.error("DB update error:", error);
