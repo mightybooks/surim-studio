@@ -146,7 +146,7 @@ try {
   console.error(err);
 } finally {
   setLoading(false);
-}
+}};
 
   /* -----------------------------
      렌더링
