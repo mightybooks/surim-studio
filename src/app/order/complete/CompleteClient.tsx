@@ -7,14 +7,58 @@ type Order = {
   status: string;
 };
 
+
+
 export default function CompleteClient() {
   const params = useSearchParams();
   const router = useRouter();
   const orderId = params.get("orderId");
-
+  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [order, setOrder] = useState<Order | null>(null);
+
+  useEffect(() => {
+    if (!orderId) return;
+
+    const run = async () => {
+      try {
+        // 1. 서버에 paymentId 조회 요청
+        const res = await fetch("/api/orders/resolve-payment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId }),
+        });
+
+        if (!res.ok) {
+          console.error("resolve-payment failed");
+          return;
+        }
+
+        const data = await res.json();
+        const paymentId = data.paymentId;
+
+        if (!paymentId) {
+          console.error("paymentId not found");
+          return;
+        }
+
+        // 2. attach-payment 실행
+        await fetch("/api/orders/attach-payment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            orderId,
+            portonePaymentId: paymentId,
+          }),
+        });
+      } catch (e) {
+        console.error("complete attach flow error", e);
+      }
+    };
+
+    run();
+  }, [orderId]);
 
   useEffect(() => {
     if (!orderId) {

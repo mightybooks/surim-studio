@@ -86,6 +86,8 @@ export async function POST(req: NextRequest) {
     .eq("status", "결제대기")
     .select("id");
 
+    console.log("ATTACH UPDATE RESULT:", updated, updateError);
+
     if (updateError || !updated || updated.length === 0) {
     return NextResponse.json(
         { ok: false, error: "order not updated" },
