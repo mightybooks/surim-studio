@@ -10,6 +10,8 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
+    console.log("PORTONE WEBHOOK BODY >>>", JSON.stringify(body, null, 2));
+
     /**
      * 예상 payload (PortOne v2)
      * {
@@ -25,7 +27,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true });
     }
 
-    const paymentId = body?.data?.paymentId;
+    const paymentId =
+    body?.data?.paymentId ||
+    body?.data?.id ||
+    body?.data?.orderId;
+
+    console.log("RESOLVED paymentId >>>", paymentId);
 
     if (!paymentId) {
       return NextResponse.json(
