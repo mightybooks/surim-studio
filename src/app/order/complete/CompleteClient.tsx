@@ -6,11 +6,34 @@ import { useSearchParams, useRouter } from "next/navigation";
 export default function CompleteClient() {
   const params = useSearchParams();
   const router = useRouter();
-  const paymentId = params.get("paymentId"); // 🔒 단일 키
+  const traceId = params.get("trace");
+  const orderId = params.get("orderId");
+  const paymentId = params.get("paymentId");
+
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
+
+useEffect(() => {
+  try {
+    fetch("/api/debug", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        stage: "complete_enter",
+        traceId: params.get("trace"),
+        orderId: params.get("orderId"),
+        paymentId: params.get("paymentId"),
+        payload: {
+          href: window.location.href,
+        },
+      }),
+    });
+  } catch (e) {
+    console.warn("debug log failed", e);
+  }
+}, []);
 
   useEffect(() => {
     if (!paymentId) {
@@ -24,7 +47,11 @@ export default function CompleteClient() {
         const res = await fetch("/api/orders/confirm", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ paymentId }),
+          body: JSON.stringify({
+            traceId,
+            orderId,
+            paymentId,
+          }),
         });
 
         if (!res.ok) {

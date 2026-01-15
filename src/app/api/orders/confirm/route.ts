@@ -39,8 +39,15 @@ export async function POST(req: NextRequest) {
   console.log("SUPABASE URL:", process.env.SUPABASE_URL);
 
   try {
-    const { paymentId } = await req.json();
-    console.log("PAYMENT ID RECEIVED:", paymentId);
+    const { traceId, orderId, paymentId } = await req.json();
+
+    await supabase.from("debug_events").insert({
+      stage: "confirm_start",
+      trace_id: traceId,
+      order_id: orderId,
+      payment_id: paymentId,
+    });
+
 
     if (!paymentId) {
       return NextResponse.json(
@@ -69,7 +76,20 @@ export async function POST(req: NextRequest) {
     }
 
     const payment = await fetchPortOnePayment(paymentId);
-    console.log("PORTONE PAYMENT RESPONSE:", payment);
+    
+    await supabase.from("debug_events").insert({
+      stage: "portone_result",
+      trace_id: traceId,
+      order_id: orderId,
+      payment_id: paymentId,
+      payload: {
+        status: payment.status,
+        // ⚠️ raw 전체는 너무 크면 일부만
+        id: payment.id,
+        amount: payment.amount,
+        paidAt: payment.paidAt,
+      },
+    });
 
     if (payment.status !== "Paid") {
       return NextResponse.json(

@@ -75,6 +75,10 @@ export default function ConfirmForm() {
   if (!order || loading) return;
   setLoading(true);
 
+  const traceId =
+  typeof crypto !== "undefined" && crypto.randomUUID
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random()}`;
   const paymentId = order.id; // uuid
 
   console.log("ORDER SNAPSHOT", {
@@ -93,6 +97,23 @@ export default function ConfirmForm() {
   const payMethodForPortOne =
     method === "KAKAOPAY" ? "EASY_PAY" : "CARD";
 
+// 결제 요청 직전
+try {
+  await fetch("/api/debug", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      stage: "payment_request",
+      traceId,
+      orderId: order.id,
+      paymentId: order.id,
+      payload: { amount: order.amount, method },
+    }),
+  });
+} catch (e) {
+  console.warn("debug log failed", e);
+}
+
   // ❗️여기서부터 핵심
     window.PortOne.requestPayment({
     storeId: process.env.NEXT_PUBLIC_PORTONE_STORE_ID!,
@@ -108,11 +129,9 @@ export default function ConfirmForm() {
       email: order.buyer_email,
     },
     
-    successUrl: `https://surimstudio.com/order/complete?paymentId=${paymentId}`,
-    failUrl: `https://surimstudio.com/order/confirm?error=payment_failed&orderId=${paymentId}`,
-  });
-  
-  setLoading(false);
+    successUrl: `https://surimstudio.com/order/complete?orderId=${order.id}&paymentId=${order.id}&trace=${traceId}`,
+    failUrl: `https://surimstudio.com/order/confirm?error=payment_failed&orderId=${order.id}&trace=${traceId}`,
+  });    
 };
 
   /* -----------------------------
