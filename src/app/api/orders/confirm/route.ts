@@ -36,6 +36,8 @@ async function fetchPortOnePayment(paymentId: string) {
 export async function POST(req: NextRequest) {
   console.log("===== ORDER CONFIRM ROUTE HIT =====");
 
+  console.log("SUPABASE URL:", process.env.SUPABASE_URL);
+
   try {
     const { paymentId } = await req.json();
     console.log("PAYMENT ID RECEIVED:", paymentId);
