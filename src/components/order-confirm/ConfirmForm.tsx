@@ -136,7 +136,7 @@ export default function ConfirmForm() {
     });
 
     // ✅ 추가: 결제 성공 직후 매핑 저장
-    await fetch("/api/orders/attach-payment", {
+    const attachRes = await fetch("/api/orders/attach-payment", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -144,6 +144,16 @@ export default function ConfirmForm() {
         portonePaymentId: rsp.payment_id,
       }),
     });
+
+    const attachJson = await attachRes.json().catch(() => null);
+
+    console.log("ATTACH RESULT >>>", attachRes.status, attachJson);
+
+    if (!attachRes.ok) {
+      // 결제는 성공했으나 주문-결제 매핑 저장 실패
+      // UX는 confirm 페이지 polling에 맡김
+      console.error("attach-payment failed");
+    }
 
   } catch (err) {
     alert("결제 처리 중 오류가 발생했습니다.");
