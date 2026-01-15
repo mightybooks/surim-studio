@@ -52,21 +52,40 @@ export default function OrderForm() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // ✅ 주문 생성은 여기서
+  /* ------------------------------
+    주소 유효성 검사
+  -------------------------------- */
+  const validateAddress = () => {
+    if (!form.zipcode || !form.address) {
+      alert("주소 검색을 완료해주세요.");
+      return false;
+    }
+
+    if (!form.addressDetail) {
+      alert("상세주소를 입력해주세요.");
+      return false;
+    }
+
+    return true;
+  };
+
+  /* ------------------------------
+    주문 생성 API
+  -------------------------------- */
   const createOrder = async () => {
     const res = await fetch("/api/orders", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-      productId,
-      productName,
-      price,
-      recipientName: form.recipientName,
-      phone: form.phone,
-      zipcode: form.zipcode,
-      address: form.address,
-      addressDetail: form.addressDetail,
-     }),
+        productId,
+        productName,
+        price,
+        recipientName: form.recipientName,
+        phone: form.phone,
+        zipcode: form.zipcode,
+        address: form.address,
+        addressDetail: form.addressDetail,
+      }),
     });
 
     if (!res.ok) {
@@ -77,18 +96,18 @@ export default function OrderForm() {
     return data.orderId as string;
   };
 
+  /* ------------------------------
+    submit handler
+  -------------------------------- */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (
-      !form.recipientName ||
-      !form.phone ||
-      !form.zipcode ||
-      !form.address
-    ) {
-      alert("필수 정보를 모두 입력해 주세요.");
+    if (!form.recipientName || !form.phone) {
+      alert("수령인 이름과 연락처를 입력해 주세요.");
       return;
     }
+
+    if (!validateAddress()) return;
 
     try {
       const orderId = await createOrder();

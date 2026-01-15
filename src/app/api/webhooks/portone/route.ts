@@ -10,34 +10,46 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
-    console.log("PORTONE WEBHOOK BODY >>>", JSON.stringify(body, null, 2));
-
     const status = body?.status || body?.data?.status;
     if (status?.toLowerCase() !== "paid") {
       return NextResponse.json({ ok: true });
     }
 
-    const portonePaymentId = body?.payment_id;
+    const portonePaymentId = body?.payment_id || body?.data?.payment_id;
     if (!portonePaymentId) {
       return NextResponse.json({ ok: true });
     }
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("orders")
-      .update({ status: "결제완료" })
-      .eq("portone_payment_id", portonePaymentId);
+      .update({
+        status: "결제완료",
+        paid_at: new Date().toISOString(),
+      })
+      .eq("portone_payment_id", portonePaymentId)
+      .neq("status", "결제완료")
+      .select("id");
 
     if (error) {
-      console.error("DB update error:", error);
+      console.error("WEBHOOK DB ERROR", {
+        paymentId: portonePaymentId,
+        error,
+      });
       return NextResponse.json(
-        { error: "DB update failed" },
+        { error: "db update failed" },
         { status: 500 }
       );
     }
 
+    // data.length === 0 → 중복 웹훅 or 이미 처리됨
+    if (!data || data.length === 0) {
+      return NextResponse.json({ ok: true });
+    }
+
+    // 최초 결제완료 처리
     return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error("Webhook error:", err);
+    console.error("WEBHOOK API ERROR", err);
     return NextResponse.json(
       { error: "invalid webhook request" },
       { status: 400 }

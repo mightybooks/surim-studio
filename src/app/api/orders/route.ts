@@ -103,7 +103,7 @@ export async function POST(req: Request) {
     phone,
     zipcode,
     address,
-    address_detail: addressDetail ?? "",
+    address_detail: addressDetail,
     buyer_email: profile.contact_email,
     status: "결제대기",
     });    
