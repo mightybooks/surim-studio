@@ -30,8 +30,7 @@ export default function ConfirmForm() {
   const params = useSearchParams();
 
   const orderId = params.get("orderId");
-  const errorType = params.get("error");
-  const paymentId = crypto.randomUUID(); // ← 반드시 위에서 정의
+  const errorType = params.get("error");  
 
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(false);
@@ -69,37 +68,14 @@ export default function ConfirmForm() {
   }, [orderId]);
 
   /* -----------------------------
-     중복 결제 방지 (결제완료면 이동)
-  ----------------------------- */
-    useEffect(() => {
-    if (!orderId) return;
-
-    const interval = setInterval(async () => {
-        try {
-        const res = await fetch(`/api/orders/status?orderId=${orderId}`);
-        if (!res.ok) return;
-
-        const data = await res.json();
-        if (data.status === "결제완료") {
-            clearInterval(interval);
-            router.replace(`/order/complete?orderId=${orderId}`);
-        }
-        } catch (e) {
-        // 네트워크 오류는 무시
-        }
-    }, 1500);
-
-    return () => clearInterval(interval);
-    }, [orderId, router]);
-
-
-  /* -----------------------------
      결제 요청
   ----------------------------- */
   
   const requestPayment = async (method: "CARD" | "KAKAOPAY") => {
   if (!order || loading) return;
   setLoading(true);
+
+  const paymentId = order.id; // uuid
 
   console.log("ORDER SNAPSHOT", {
   id: order.id,
@@ -121,24 +97,19 @@ export default function ConfirmForm() {
     window.PortOne.requestPayment({
     storeId: process.env.NEXT_PUBLIC_PORTONE_STORE_ID!,
     channelKey,
-
-     paymentId,                // PortOne 결제 ID
-     merchant_uid: order.id,   // (있어도 되고 없어도 됨, 지금은 의미 없음)
-
+    paymentId,                // PortOne 결제 ID
     orderName: order.product_name,
     totalAmount: order.amount,
     currency: "KRW",
     payMethod: payMethodForPortOne,
-
     customer: {
       fullName: order.recipient_name,
       phoneNumber: order.phone,
       email: order.buyer_email,
     },
-
-    // ✅ 성공/실패는 “이동”으로만 처리
-    successUrl: `https://surimstudio.com/order/complete?orderId=${order.id}&paymentId=${paymentId}`,
-    failUrl: `https://surimstudio.com/order/confirm?error=payment_failed&orderId=${order.id}`,
+    
+    successUrl: `https://surimstudio.com/order/complete?paymentId=${paymentId}`,
+    failUrl: `https://surimstudio.com/order/confirm?error=payment_failed&orderId=${paymentId}`,
   });
   
   setLoading(false);
