@@ -31,6 +31,7 @@ export default function ConfirmForm() {
 
   const orderId = params.get("orderId");
   const errorType = params.get("error");
+  const paymentId = crypto.randomUUID(); // ← 반드시 위에서 정의
 
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(false);
@@ -121,8 +122,8 @@ export default function ConfirmForm() {
     storeId: process.env.NEXT_PUBLIC_PORTONE_STORE_ID!,
     channelKey,
 
-    paymentId: crypto.randomUUID(),     // PortOne 전용 ID
-    merchant_uid: order.id,             // ← orderId (핵심)
+     paymentId,                // PortOne 결제 ID
+     merchant_uid: order.id,   // (있어도 되고 없어도 됨, 지금은 의미 없음)
 
     orderName: order.product_name,
     totalAmount: order.amount,
@@ -136,7 +137,7 @@ export default function ConfirmForm() {
     },
 
     // ✅ 성공/실패는 “이동”으로만 처리
-    successUrl: `https://surimstudio.com/order/complete?orderId=${order.id}`,
+    successUrl: `https://surimstudio.com/order/complete?orderId=${order.id}&paymentId=${paymentId}`,
     failUrl: `https://surimstudio.com/order/confirm?error=payment_failed&orderId=${order.id}`,
   });
   
