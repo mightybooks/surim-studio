@@ -118,10 +118,10 @@ export default function ConfirmForm() {
     method === "KAKAOPAY" ? "EASY_PAY" : "CARD";
 
   try {
-    await window.PortOne.requestPayment({
+    const rsp = await window.PortOne.requestPayment({
       storeId: process.env.NEXT_PUBLIC_PORTONE_STORE_ID!,
       channelKey,
-      paymentId: order.id,
+      paymentId: order.id, // 그대로 유지
       orderName: order.product_name,
       totalAmount: order.amount,
       currency: "KRW",
@@ -134,13 +134,24 @@ export default function ConfirmForm() {
       successUrl: `https://surimstudio.com/order/complete?orderId=${order.id}`,
       failUrl: `https://surimstudio.com/order/confirm?error=payment_failed&orderId=${order.id}`,
     });
+
+    // ✅ 추가: 결제 성공 직후 매핑 저장
+    await fetch("/api/orders/attach-payment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        orderId: order.id,
+        portonePaymentId: rsp.payment_id,
+      }),
+    });
+
   } catch (err) {
     alert("결제 처리 중 오류가 발생했습니다.");
     console.error(err);
   } finally {
     setLoading(false);
   }
-};
+  }; 
 
   /* -----------------------------
      렌더링
