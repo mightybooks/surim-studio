@@ -116,34 +116,37 @@ export default function ConfirmForm() {
   const payMethodForPortOne =
     method === "KAKAOPAY" ? "EASY_PAY" : "CARD";
 
-  try {
-    const rsp = await window.PortOne.requestPayment({
-      storeId: process.env.NEXT_PUBLIC_PORTONE_STORE_ID!,
-      channelKey,
-      paymentId: crypto.randomUUID(), // PortOne 결제 ID
-      merchant_uid: order.id,          // ← 이게 orderId
-      orderName: order.product_name,
-      totalAmount: order.amount,
-      currency: "KRW",
-      payMethod: payMethodForPortOne,
-      customer: {
-        fullName: order.recipient_name,
-        phoneNumber: order.phone,
-        email: order.buyer_email,
-      },
-      successUrl: `https://surimstudio.com/order/complete?orderId=${order.id}`,
-      failUrl: `https://surimstudio.com/order/confirm?error=payment_failed&orderId=${order.id}`,
-    });
+try {
+  const rsp = await window.PortOne.requestPayment({
+    storeId: process.env.NEXT_PUBLIC_PORTONE_STORE_ID!,
+    channelKey,
+    paymentId: crypto.randomUUID(), // PortOne 결제 ID
+    merchant_uid: order.id,          // ← orderId 전달 (핵심)
+    orderName: order.product_name,
+    totalAmount: order.amount,
+    currency: "KRW",
+    payMethod: payMethodForPortOne,
+    customer: {
+      fullName: order.recipient_name,
+      phoneNumber: order.phone,
+      email: order.buyer_email,
+    },
+    successUrl: `https://surimstudio.com/order/complete?orderId=${order.id}`, // 보조용
+    failUrl: `https://surimstudio.com/order/confirm?error=payment_failed&orderId=${order.id}`,
+  });
 
-    console.log("PORTONE RSP >>>", rsp);
-
-  } catch (err) {
-    alert("결제 처리 중 오류가 발생했습니다.");
-    console.error(err);
-  } finally {
-    setLoading(false);
+  console.log("PORTONE RSP >>>", rsp);
+  
+  if (rsp?.status === "PAID") {
+    router.replace(`/order/complete?orderId=${order.id}`);
   }
-  }; 
+
+} catch (err) {
+  alert("결제 처리 중 오류가 발생했습니다.");
+  console.error(err);
+} finally {
+  setLoading(false);
+}
 
   /* -----------------------------
      렌더링
