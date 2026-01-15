@@ -21,14 +21,14 @@ export async function POST(req: NextRequest) {
     }
 
     const { data, error } = await supabase
-      .from("orders")
-      .update({
+    .from("orders")
+    .update({
         status: "결제완료",
-        paid_at: new Date().toISOString(),
-      })
-      .eq("portone_payment_id", portonePaymentId)
-      .neq("status", "결제완료")
-      .select("id");
+        portone_payment_id: portonePaymentId,
+    })
+    .eq("portone_payment_id", portonePaymentId)
+    .eq("status", "결제대기")
+    .select("id");
 
     if (error) {
       console.error("WEBHOOK DB ERROR", {
