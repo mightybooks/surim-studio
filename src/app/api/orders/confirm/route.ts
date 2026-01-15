@@ -33,12 +33,12 @@ async function fetchPortOnePayment(paymentId: string) {
   return res.json();
 }
 
-/* -----------------------------
-   POST /api/orders/confirm
------------------------------ */
 export async function POST(req: NextRequest) {
+  console.log("===== ORDER CONFIRM ROUTE HIT =====");
+
   try {
     const { paymentId } = await req.json();
+    console.log("PAYMENT ID RECEIVED:", paymentId);
 
     if (!paymentId) {
       return NextResponse.json(
@@ -47,14 +47,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    /* -----------------------------
-       1. 주문 조회
-    ----------------------------- */
     const { data: order, error: orderError } = await supabase
       .from("orders")
       .select("id, status")
       .eq("id", paymentId)
       .single();
+
+    console.log("ORDER QUERY RESULT:", order);
 
     if (orderError || !order) {
       return NextResponse.json(
@@ -63,35 +62,22 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    /* -----------------------------
-       2. 멱등성: 이미 결제완료
-    ----------------------------- */
     if (order.status === "결제완료") {
-      return NextResponse.json({
-        ok: true,
-        status: "결제완료",
-      });
+      return NextResponse.json({ ok: true, status: "결제완료" });
     }
 
-    /* -----------------------------
-       3. PortOne 결제 조회
-    ----------------------------- */
     const payment = await fetchPortOnePayment(paymentId);
+    console.log("PORTONE PAYMENT RESPONSE:", payment);
 
     if (payment.status !== "Paid") {
       return NextResponse.json(
-        {
-          ok: false,
-          error: "payment not paid",
-          paymentStatus: payment.status,
-        },
+        { ok: false, error: "payment not paid" },
         { status: 409 }
       );
     }
 
-    /* -----------------------------
-       4. 주문 상태 전이 (단일 확정)
-    ----------------------------- */
+    console.log("ORDER UPDATE ATTEMPT");
+
     const { error: updateError } = await supabase
       .from("orders")
       .update({
@@ -104,10 +90,9 @@ export async function POST(req: NextRequest) {
       throw updateError;
     }
 
-    return NextResponse.json({
-      ok: true,
-      status: "결제완료",
-    });
+    console.log("ORDER UPDATE DONE");
+
+    return NextResponse.json({ ok: true, status: "결제완료" });
   } catch (err) {
     console.error("ORDER CONFIRM ERROR", err);
 
