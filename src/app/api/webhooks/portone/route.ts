@@ -10,38 +10,45 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
+    // paid 이벤트만 처리
     const status = body?.status || body?.data?.status;
-    if (status?.toLowerCase() !== "paid") {
+    if (String(status).toLowerCase() !== "paid") {
       return NextResponse.json({ ok: true });
     }
 
-    const portonePaymentId = body?.payment_id || body?.data?.payment_id;
-    if (!portonePaymentId) {
+    const portonePaymentId =
+      body?.payment_id || body?.data?.payment_id;
+
+    const merchantUid =
+      body?.merchant_uid ||
+      body?.data?.merchant_uid ||
+      body?.order_id ||
+      body?.data?.order_id;
+
+    if (!portonePaymentId || !merchantUid) {
+      console.log("WEBHOOK MISSING IDS", { portonePaymentId, merchantUid });
       return NextResponse.json({ ok: true });
     }
 
     const { data, error } = await supabase
-    .from("orders")
-    .update({
+      .from("orders")
+      .update({
         status: "결제완료",
         portone_payment_id: portonePaymentId,
-    })
-    .eq("portone_payment_id", portonePaymentId)
-    .eq("status", "결제대기")
-    .select("id");
+      })
+      .eq("id", merchantUid)
+      .eq("status", "결제대기")
+      .select("id");
 
     if (error) {
-      console.error("WEBHOOK DB ERROR", {
-        paymentId: portonePaymentId,
-        error,
-      });
+      console.error("WEBHOOK DB ERROR", error);
       return NextResponse.json(
-        { error: "db update failed" },
+        { error: "db error" },
         { status: 500 }
       );
     }
 
-    // data.length === 0 → 중복 웹훅 or 이미 처리됨
+    // 🔒 중복 웹훅 or 이미 처리된 경우
     if (!data || data.length === 0) {
       return NextResponse.json({ ok: true });
     }
