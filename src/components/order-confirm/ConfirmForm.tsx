@@ -129,7 +129,7 @@ try {
       email: order.buyer_email,
     },
     
-    successUrl: `https://surimstudio.com/order/complete?orderId=${order.id}&paymentId=${order.id}&trace=${traceId}`,
+    successUrl: `https://surimstudio.com/debug/complete?trace=${traceId}`,
     failUrl: `https://surimstudio.com/order/confirm?error=payment_failed&orderId=${order.id}&trace=${traceId}`,
   });    
 };
