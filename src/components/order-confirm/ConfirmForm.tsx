@@ -141,7 +141,7 @@ export default function ConfirmForm() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         orderId: order.id,
-        portonePaymentId: rsp.payment_id,
+        portonePaymentId: rsp.paymentId,
       }),
     });
 
