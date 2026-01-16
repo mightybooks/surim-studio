@@ -31,6 +31,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: true });
     }
 
+console.log("FETCH PORTONE PAYMENT START");
     // 2. PortOne 결제 상세 조회 (서버 검증)
     const paymentRes = await fetch(
       `https://api.portone.io/payments/${paymentId}`,
@@ -40,8 +41,11 @@ export async function POST(req: Request) {
         },
       }
     );
+console.log("FETCH PORTONE PAYMENT RES OK =", paymentRes.ok, paymentRes.status);
 
     if (!paymentRes.ok) {
+      const text = await paymentRes.text();
+console.log("PORTONE ERROR BODY =", text);
       return NextResponse.json({ ok: true });
     }
 
