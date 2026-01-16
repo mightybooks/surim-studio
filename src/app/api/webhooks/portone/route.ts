@@ -37,7 +37,7 @@ console.log("FETCH PORTONE PAYMENT START");
       `https://api.portone.io/payments/${paymentId}`,
       {
         headers: {
-          Authorization: `PortOne ${process.env.PORTONE_SECRET_KEY}`,
+          Authorization: `Bearer ${process.env.PORTONE_SECRET_KEY}`,
         },
       }
     );
