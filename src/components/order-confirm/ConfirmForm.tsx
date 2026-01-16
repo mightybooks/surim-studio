@@ -47,47 +47,72 @@ export default function ConfirmForm() {
   /* -----------------------------
      주문 정보 조회 (orderId 기준)
   ----------------------------- */
-  useEffect(() => {
-    const fetchOrder = async () => {
-      try {
-        const res = await fetch(`/api/orders/${orderId}`, {
+useEffect(() => {
+  let alive = true;
+
+  const fetchOrder = async () => {
+    try {
+      const res = await fetch(`/api/orders/${orderId}`, {
         credentials: "include",
       });
-        if (!res.ok) {
-          alert("주문 정보를 불러올 수 없습니다.");
-          return;
-        }
-        const data = await res.json();
-        setOrder(data);
-      } catch (err) {
-        console.error("주문 조회 실패:", err);
+      if (!res.ok) {
+        alert("주문 정보를 불러올 수 없습니다.");
+        return;
       }
-    };
+      const data = await res.json();
+      if (alive) setOrder(data);
+    } catch (err) {
+      console.error("주문 조회 실패:", err);
+    }
+  };
 
-    fetchOrder();
-  }, [orderId]);
+  fetchOrder();
+
+  return () => {
+    alive = false;
+  };
+}, [orderId]);
+
+
+useEffect(() => {
+  if (!orderId || !loading) return;
+
+  const timer = setInterval(async () => {
+    try {
+      const res = await fetch(
+        `/api/orders/status?orderId=${orderId}`
+      );
+      const json = await res.json();
+
+      if (!json.ok) return;
+
+      if (json.status === "결제완료") {
+        clearInterval(timer);
+        router.replace(`/order/complete?orderId=${orderId}`);
+      }
+
+      if (json.status === "결제보류") {
+        clearInterval(timer);
+        setLoading(false);
+        alert("결제 확인이 필요합니다. 잠시 후 다시 시도해주세요.");
+      }
+    } catch (e) {
+      console.warn("polling error", e);
+    }
+  }, 2000);
+
+  return () => clearInterval(timer);
+}, [orderId, loading, router]);
 
   /* -----------------------------
      결제 요청
   ----------------------------- */
   
-  const requestPayment = async (method: "CARD" | "KAKAOPAY") => {
+ const requestPayment = async (method: "CARD" | "KAKAOPAY") => {
   if (!order || loading) return;
   setLoading(true);
 
-  const traceId =
-  typeof crypto !== "undefined" && crypto.randomUUID
-    ? crypto.randomUUID()
-    : `${Date.now()}-${Math.random()}`;
-  const paymentId = order.id; // uuid
-
-  console.log("ORDER SNAPSHOT", {
-  id: order.id,
-  amount: order.amount,
-  email: order.buyer_email,
-  name: order.recipient_name,
-  phone: order.phone,
-});
+  const paymentId = order.id;
 
   const channelKey =
     method === "KAKAOPAY"
@@ -97,41 +122,33 @@ export default function ConfirmForm() {
   const payMethodForPortOne =
     method === "KAKAOPAY" ? "EASY_PAY" : "CARD";
 
-// 결제 요청 직전
-try {
-  await fetch("/api/debug", {
+  // 1️⃣ 서버에 결제확인중 마킹
+  await fetch("/api/orders/mark-checking", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      stage: "payment_request",
-      traceId,
-      orderId: order.id,
-      paymentId: order.id,
-      payload: { amount: order.amount, method },
-    }),
+    body: JSON.stringify({ orderId: order.id }),
   });
-} catch (e) {
-  console.warn("debug log failed", e);
-}
 
-  // ❗️여기서부터 핵심
+  // 2️⃣ 결제 요청 (단 1회)
+  try {
     window.PortOne.requestPayment({
-    storeId: process.env.NEXT_PUBLIC_PORTONE_STORE_ID!,
-    channelKey,
-    paymentId,                // PortOne 결제 ID
-    orderName: order.product_name,
-    totalAmount: order.amount,
-    currency: "KRW",
-    payMethod: payMethodForPortOne,
-    customer: {
-      fullName: order.recipient_name,
-      phoneNumber: order.phone,
-      email: order.buyer_email,
-    },
-    
-    successUrl: `https://surimstudio.com/debug/complete?trace=${traceId}`,
-    failUrl: `https://surimstudio.com/order/confirm?error=payment_failed&orderId=${order.id}&trace=${traceId}`,
-  });    
+      storeId: process.env.NEXT_PUBLIC_PORTONE_STORE_ID!,
+      channelKey,
+      paymentId,
+      orderName: order.product_name,
+      totalAmount: order.amount,
+      currency: "KRW",
+      payMethod: payMethodForPortOne,
+      customer: {
+        fullName: order.recipient_name,
+        phoneNumber: order.phone,
+        email: order.buyer_email,
+      },
+    });
+  } catch (e) {
+    console.error("PortOne requestPayment failed", e);
+    setLoading(false);
+  }
 };
 
   /* -----------------------------

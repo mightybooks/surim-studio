@@ -1,12 +1,11 @@
 import { NextResponse } from "next/server";
-import { supabaseServer } from "@/lib/supabase/server";
+import { createClient } from "@supabase/supabase-js";
 
-/**
- * GET
- * - 주문 상태 조회 (polling 전용)
- * - read-only
- * - 결제 확정 / 상태 변경 절대 금지
- */
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const orderId = searchParams.get("orderId");
@@ -18,27 +17,21 @@ export async function GET(req: Request) {
     );
   }
 
-  const supabase = supabaseServer();
-
-  const { data, error } = await supabase
+  const { data: order } = await supabase
     .from("orders")
     .select("status")
     .eq("id", orderId)
     .single();
 
-  if (error || !data) {
+  if (!order) {
     return NextResponse.json(
       { ok: false, error: "order not found" },
       { status: 404 }
     );
   }
 
-  return NextResponse.json(
-    {
-      ok: true,
-      orderId,
-      status: data.status,
-    },
-    { status: 200 }
-  );
+  return NextResponse.json({
+    ok: true,
+    status: order.status,
+  });
 }

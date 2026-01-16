@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -6,62 +6,84 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-/**
- * PortOne Webhook (Observer)
- * - 절대 orders를 업데이트하지 않음
- * - 들어온 웹훅을 그대로 기록만 함
- */
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   try {
-    const body = await req.json();
+    const raw = await req.json();
 
-    console.log("PORTONE WEBHOOK RAW PAYLOAD >>>", JSON.stringify(body, null, 2));
+    const paymentId: string | null =
+      raw?.payment_id ?? raw?.paymentId ?? null;
 
-    // 가능하면 다양하게 뽑되, 실패해도 상관없게 (기록자이므로)
-    const status = body?.status ?? body?.data?.status ?? null;
+    // 1. 웹훅 원문 저장 (항상)
+    await supabase.from("payment_webhooks").insert({
+      provider: "portone",
+      event_status: raw?.status ?? null,
+      event_type: raw?.type ?? null,
+      payment_id: paymentId,
+      merchant_uid: raw?.merchant_uid ?? null,
+      raw_payload: raw,
+    });
 
-    const portonePaymentId =
-      body?.payment_id ??
-      body?.paymentId ??
-      body?.data?.payment_id ??
-      body?.data?.paymentId ??
-      null;
+    if (!paymentId) {
+      // payment_id 없는 웹훅은 여기서 종료
+      return NextResponse.json({ ok: true });
+    }
 
-    const merchantUid =
-      body?.merchant_uid ??
-      body?.merchantUid ??
-      body?.data?.merchant_uid ??
-      body?.data?.merchantUid ??
-      body?.order_id ??
-      body?.data?.order_id ??
-      null;
+    // 2. PortOne 결제 상세 조회 (서버 검증)
+    const paymentRes = await fetch(
+      `https://api.portone.io/payments/${paymentId}`,
+      {
+        headers: {
+          Authorization: `PortOne ${process.env.PORTONE_SECRET_KEY}`,
+        },
+      }
+    );
 
-    // ✅ orders 업데이트 없음. 무조건 기록만.
-    const { error: insertError } = await supabase
-      .from("payment_webhooks")
-      .insert({
-        provider: "portone",
-        event_status: status ? String(status) : null,
-        payment_id: portonePaymentId ? String(portonePaymentId) : null,
-        merchant_uid: merchantUid ? String(merchantUid) : null,
-        raw_payload: body,
-      });
+    if (!paymentRes.ok) {
+      return NextResponse.json({ ok: true });
+    }
 
-    if (insertError) {
-      console.error("WEBHOOK LOG INSERT ERROR", insertError);
+    const payment = await paymentRes.json();
 
-      // 선택지:
-      // - 200: 재시도 폭주 방지 (로그 유실 가능)
-      // - 500: 재시도 유도 (로그 보존 우선)
-      // 저는 '로그 보존'이 목적이므로 500을 권합니다.
-      return NextResponse.json({ ok: false }, { status: 500 });
+    // 3. 주문 조회 (paymentId === order.id)
+    const { data: order } = await supabase
+      .from("orders")
+      .select("*")
+      .eq("id", paymentId)
+      .single();
+
+    if (!order) {
+      return NextResponse.json({ ok: true });
+    }
+
+    // 이미 결제완료면 중복 웹훅 무시
+    if (order.status === "결제완료") {
+      return NextResponse.json({ ok: true });
+    }
+
+    // 4. 검증
+    const paid =
+      payment?.status === "Paid" &&
+      payment?.amount?.total === order.amount;
+
+    if (paid) {
+      await supabase
+        .from("orders")
+        .update({
+          status: "결제완료",
+          portone_payment_id: paymentId,
+        })
+        .eq("id", paymentId);
+    } else {
+      await supabase
+        .from("orders")
+        .update({ status: "결제보류" })
+        .eq("id", paymentId);
     }
 
     return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error("WEBHOOK API ERROR", err);
-
-    // 파싱 실패 등은 재시도해도 의미 없을 가능성이 큼 → 200 권장
+    // 웹훅은 실패 응답을 주지 않는 게 원칙
+    console.error("PORTONE WEBHOOK ERROR", err);
     return NextResponse.json({ ok: true });
   }
 }
