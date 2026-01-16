@@ -79,29 +79,27 @@ useEffect(() => {
 useEffect(() => {
   if (!orderId || !loading) return;
 
-  const timer = setInterval(async () => {
-    try {
-      const res = await fetch(
-        `/api/orders/status?orderId=${orderId}`
-      );
-      const json = await res.json();
+console.log("POLLING START", { orderId });
 
-      if (!json.ok) return;
+const timer = setInterval(async () => {
+  console.log("POLLING TICK");
 
-      if (json.status === "결제완료") {
-        clearInterval(timer);
-        router.replace(`/order/complete?orderId=${orderId}`);
-      }
+  const res = await fetch(
+  `/api/orders/status?orderId=${orderId}`,
+  { cache: "no-store" }
+);
+  const json = await res.json();
 
-      if (json.status === "결제보류") {
-        clearInterval(timer);
-        setLoading(false);
-        alert("결제 확인이 필요합니다. 잠시 후 다시 시도해주세요.");
-      }
-    } catch (e) {
-      console.warn("polling error", e);
-    }
-  }, 2000);
+  console.log("POLLING RESPONSE", json);
+
+  if (!json.ok) return;
+
+  if (json.status === "결제완료") {
+    console.log("POLLING DETECTED 결제완료");
+    clearInterval(timer);
+    router.replace(`/order/complete?orderId=${orderId}`);
+  }
+}, 2000);
 
   return () => clearInterval(timer);
 }, [orderId, loading, router]);
