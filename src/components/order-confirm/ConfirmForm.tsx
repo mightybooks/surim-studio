@@ -36,6 +36,8 @@ export default function ConfirmForm() {
 
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(false);
+  const [expired, setExpired] = useState(false);
+  const [showDelayNotice, setShowDelayNotice] = useState(false);
   
   // ❌ orderId 없으면 잘못된 접근
   if (!orderId) {
@@ -79,30 +81,52 @@ useEffect(() => {
 useEffect(() => {
   if (!orderId || !loading) return;
 
-console.log("POLLING START", { orderId });
+  console.log("POLLING START", { orderId });
 
-const timer = setInterval(async () => {
-  console.log("POLLING TICK");
+  const timer = setInterval(async () => {
+    console.log("POLLING TICK");
 
-  const res = await fetch(
-  `/api/orders/status?orderId=${orderId}`,
-  { cache: "no-store" }
-);
-  const json = await res.json();
+    const res = await fetch(
+      `/api/orders/status?orderId=${orderId}`,
+      { cache: "no-store" }
+    );
+    const json = await res.json();
 
-  console.log("POLLING RESPONSE", json);
+    console.log("POLLING RESPONSE", json);
 
-  if (!json.ok) return;
+    if (!json.ok) return;
 
-  if (json.status === "결제완료") {
-    console.log("POLLING DETECTED 결제완료");
-    clearInterval(timer);
-    router.replace(`/order/complete?orderId=${orderId}`);
-  }
-}, 2000);
+    if (json.status === "결제완료") {
+      console.log("POLLING DETECTED 결제완료");
+      clearInterval(timer);
+      router.replace(`/order/complete?orderId=${orderId}`);
+      return; // ← 안전 가드
+    }
+
+    if (json.status === "만료") {
+      console.log("POLLING DETECTED 만료");
+      clearInterval(timer);
+      setExpired(true);
+      setLoading(false);
+      return;
+    }
+  }, 2000);
 
   return () => clearInterval(timer);
 }, [orderId, loading, router]);
+
+useEffect(() => {
+  if (!loading) {
+    setShowDelayNotice(false);
+    return;
+  }
+
+  const t = setTimeout(() => {
+    setShowDelayNotice(true);
+  }, 15000); // 15초 권장
+
+  return () => clearTimeout(t);
+}, [loading]);
 
   /* -----------------------------
      결제 요청
@@ -178,19 +202,50 @@ const timer = setInterval(async () => {
             address={order.address}
             addressDetail={order.address_detail}
           />
-          
-          {loading && (
-            <section className="rounded-xl border p-4 bg-zinc-50 text-center">
-              <p className="text-sm text-zinc-600">
-                결제 확인 중입니다. 카드 승인 후 자동으로 완료됩니다.
+
+          {expired && (
+            <section className="rounded-xl border border-yellow-300 bg-yellow-50 p-4 text-center">
+              <h2 className="font-medium text-yellow-800 mb-1">
+                주문 시간이 초과되었습니다
+              </h2>
+              <p className="text-sm text-yellow-700">
+                결제 시간이 초과되어 주문이 만료되었습니다.<br />
+                다시 시도해 주세요.
               </p>
             </section>
           )}
 
-          <ConfirmPaymentButtons
-            loading={loading}
-            onPay={requestPayment}
-          />
+          <section className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 text-center">
+            <p className="text-sm text-zinc-600 leading-relaxed">
+              카드사 인증 중에는 입력 반응이 늦거나<br />
+              화면이 정지된 것처럼 보일 수 있습니다.<br />
+              <strong>결제가 정상 처리될 때까지 창을 닫지 마세요.</strong>
+            </p>
+          </section>
+          
+          {loading && (
+            <section className="rounded-xl border p-4 bg-zinc-50 text-center">
+              <p className="text-sm text-zinc-600">
+                결제가 정상적으로 처리되었습니다. 결과를 확인 중입니다.<br/>
+                새로고침·뒤로 가기·재결제를 하지 마세요.
+              </p>
+            </section>
+          )}
+
+         {loading && showDelayNotice && (
+          <section className="rounded-xl border border-blue-200 bg-blue-50 p-4 text-center">
+            <p className="text-sm text-blue-700">
+              카드 결제는 이미 완료되었습니다.<br />
+              최종 확인까지 최대 1분 정도 소요될 수 있습니다.<br />
+              잠시만 기다려 주세요.
+            </p>
+          </section>
+        )} 
+
+        <ConfirmPaymentButtons
+          loading={loading || expired}
+          onPay={requestPayment}
+        />
         </>
       )}
     </main>
