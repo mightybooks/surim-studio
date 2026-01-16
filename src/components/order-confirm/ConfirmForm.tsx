@@ -122,13 +122,6 @@ useEffect(() => {
   const payMethodForPortOne =
     method === "KAKAOPAY" ? "EASY_PAY" : "CARD";
 
-  // 1️⃣ 서버에 결제확인중 마킹
-  await fetch("/api/orders/mark-checking", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ orderId: order.id }),
-  });
-
   // 2️⃣ 결제 요청 (단 1회)
   try {
     window.PortOne.requestPayment({

@@ -7,11 +7,14 @@ const supabase = createClient(
 );
 
 export async function POST(req: Request) {
+  console.log("WEBHOOK HIT"); 
   try {
     const raw = await req.json();
 
     const paymentId: string | null =
       raw?.payment_id ?? raw?.paymentId ?? null;
+
+  console.log("WEBHOOK paymentId =", paymentId);
 
     // 1. 웹훅 원문 저장 (항상)
     await supabase.from("payment_webhooks").insert({
@@ -44,6 +47,11 @@ export async function POST(req: Request) {
 
     const payment = await paymentRes.json();
 
+  console.log("PORTONE PAYMENT =", {
+  status: payment?.status,
+  amount: payment?.amount,
+});
+
     // 3. 주문 조회 (paymentId === order.id)
     const { data: order } = await supabase
       .from("orders")
@@ -51,6 +59,8 @@ export async function POST(req: Request) {
       .eq("id", paymentId)
       .single();
 
+console.log("ORDER FOUND =", order?.id, order?.status);
+      
     if (!order) {
       return NextResponse.json({ ok: true });
     }
@@ -65,20 +75,32 @@ export async function POST(req: Request) {
       payment?.status === "Paid" &&
       payment?.amount?.total === order.amount;
 
-    if (paid) {
-      await supabase
-        .from("orders")
-        .update({
-          status: "결제완료",
-          portone_payment_id: paymentId,
-        })
-        .eq("id", paymentId);
-    } else {
-      await supabase
-        .from("orders")
-        .update({ status: "결제보류" })
-        .eq("id", paymentId);
-    }
+console.log("PAID CHECK =", {
+  paid,
+  paymentStatus: payment?.status,
+  paymentAmount: payment?.amount,
+  orderAmount: order.amount,
+}); // ✅ ⑤
+
+
+  if (paid) {
+    const { error } = await supabase
+      .from("orders")
+      .update({
+        status: "결제완료",
+        portone_payment_id: paymentId,
+      })
+      .eq("id", paymentId);
+
+console.log("UPDATE 결제완료 ERROR =", error); // ✅ ⑥
+  } else {
+    const { error } = await supabase
+      .from("orders")
+      .update({ status: "결제보류" })
+      .eq("id", paymentId);
+
+console.log("UPDATE 결제보류 ERROR =", error); // 진단용
+  }
 
     return NextResponse.json({ ok: true });
   } catch (err) {
