@@ -44,10 +44,11 @@ console.log("FETCH PORTONE PAYMENT START");
     const paymentRes = await fetch(
       `https://api.portone.io/payments/${paymentId}`,
       {
-        headers: {
-          Authorization: `Bearer ${process.env.PORTONE_SECRET_KEY}`,
-          "X-PortOne-Api-Version": "2024-01-01",
-        },
+      headers: {
+        Authorization: `PortOne ${process.env.PORTONE_SECRET_KEY}`,
+        "X-PortOne-Api-Version": "2024-01-01",
+        "Content-Type": "application/json",
+       },
       }
     );
 console.log("FETCH PORTONE PAYMENT RES OK =", paymentRes.ok, paymentRes.status);
