@@ -7,9 +7,17 @@ const supabase = createClient(
 );
 
 export async function POST(req: Request) {
-  console.log("WEBHOOK HIT"); 
   try {
+    console.log("HEADERS CHECK", {
+      authorization: req.headers.get("authorization"),
+      version: req.headers.get("x-portone-api-version"),
+      contentType: req.headers.get("content-type"),
+      userAgent: req.headers.get("user-agent"),
+    });
+
     const raw = await req.json();
+
+    console.log("WEBHOOK RAW KEYS", Object.keys(raw));
 
     const paymentId: string | null =
       raw?.payment_id ?? raw?.paymentId ?? null;
@@ -38,6 +46,7 @@ console.log("FETCH PORTONE PAYMENT START");
       {
         headers: {
           Authorization: `Bearer ${process.env.PORTONE_SECRET_KEY}`,
+          "X-PortOne-Api-Version": "2024-01-01",
         },
       }
     );
