@@ -1,3 +1,5 @@
+// src/components/order-confirm/ConfirmPaymentButtons
+
 type Props = {
   loading: boolean;
   onPay: (method: "CARD" | "KAKAOPAY") => void;

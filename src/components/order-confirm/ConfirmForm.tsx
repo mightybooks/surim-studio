@@ -1,3 +1,5 @@
+// src/components/order-confirm/ConfirmForm.tsx
+
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
@@ -178,6 +180,14 @@ useEffect(() => {
             address={order.address}
             addressDetail={order.address_detail}
           />
+          
+          {loading && (
+            <section className="rounded-xl border p-4 bg-zinc-50 text-center">
+              <p className="text-sm text-zinc-600">
+                결제 확인 중입니다. 카드 승인 후 자동으로 완료됩니다.
+              </p>
+            </section>
+          )}
 
           <ConfirmPaymentButtons
             loading={loading}
