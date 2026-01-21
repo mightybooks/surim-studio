@@ -77,6 +77,18 @@ useEffect(() => {
   };
 }, [orderId]);
 
+useEffect(() => {
+  if (errorType === "payment_failed" && orderId) {
+    fetch("/api/orders/update", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        orderId,
+        status: "failed",
+      }),
+    });
+  }
+}, [errorType, orderId]);
 
 useEffect(() => {
   if (!orderId || !loading) return;
@@ -164,10 +176,20 @@ useEffect(() => {
     });
   } catch (e) {
     console.error("PortOne requestPayment failed", e);
+
+    await fetch("/api/orders/update", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        orderId,
+        status: "failed",
+      }),
+    });
+
     setLoading(false);
   }
-};
-
+ };
+ 
   /* -----------------------------
      렌더링
   ----------------------------- */

@@ -80,6 +80,9 @@ export async function POST(req: Request) {
       .eq("user_id", user.id)
       .eq("product_id", productId)
       .eq("status", "pending")
+      .eq("amount", price)
+      .order("created_at", { ascending: false })
+      .limit(1)
       .maybeSingle();
 
     if (existing) {
