@@ -23,15 +23,16 @@ async function getOrders() {
 }
 
 const STATUS_LABEL: Record<string, string> = {
-  pending: "결제대기",
-  paid: "결제완료",
-  shipped: "발송완료",
-  cancelled: "취소",
-  expired: "만료",
+  결제대기: "결제대기",
+  결제보류: "결제보류",
+  결제완료: "결제완료",
+  만료: "만료",
 };
 
 export default async function AdminOrdersPage() {
   const { orders } = await getOrders();
+
+console.log("ADMIN ORDERS RAW =", orders);
 
   return (
     <div className="p-6 space-y-6">
@@ -59,7 +60,7 @@ export default async function AdminOrdersPage() {
                 {new Date(o.created_at).toLocaleString()}
               </td>
               <td className="p-2">
-                {o.status === "paid" && (
+                {o.status === "결제완료" && (
                   <ShipButton orderId={o.id} />
                 )}
               </td>

@@ -119,16 +119,6 @@ useEffect(() => {
       console.log("POLLING DETECTED 만료");
       clearInterval(timer);
 
-      // 🔴 여기만 추가
-      await fetch("/api/orders/update", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          orderId,
-          status: "failed",
-        }),
-      });
-
       setExpired(true);
       setLoading(false);
       return;
@@ -187,15 +177,6 @@ useEffect(() => {
     });
   } catch (e) {
     console.error("PortOne requestPayment failed", e);
-
-    await fetch("/api/orders/update", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        orderId,
-        status: "failed",
-      }),
-    });
 
     setLoading(false);
   }

@@ -147,9 +147,6 @@ export async function GET() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  console.log("ADMIN_EMAIL:", process.env.ADMIN_EMAIL);
-  console.log("USER_EMAIL:", user?.email);
-
   if (!user) {
     return NextResponse.json(
       { message: "로그인이 필요합니다." },
@@ -158,9 +155,15 @@ export async function GET() {
   }
 
   /* -----------------------------
-     관리자 권한 체크 (1차 방어)
+    관리자 권한 체크 (admins 테이블 기준)
   ----------------------------- */
-  if (user.email !== process.env.ADMIN_EMAIL) {
+  const { data: admin, error: adminError } = await supabase
+    .from("admins")
+    .select("user_id")
+    .eq("user_id", user.id)
+    .single();
+
+  if (adminError || !admin) {
     return NextResponse.json(
       { message: "접근 권한이 없습니다." },
       { status: 403 }
