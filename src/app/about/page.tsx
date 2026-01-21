@@ -69,6 +69,25 @@ export default function AboutPage() {
           </p>
         </section>
 
+        {/* 스레드 참고 */}
+        <div className="rounded-xl border border-emerald-100 bg-emerald-50/40 p-5 space-y-2">
+          <p className="text-sm text-zinc-700 leading-relaxed">
+            수림 스튜디오의 실험은 완성된 결과보다,
+            진행 중인 상태로 더 자주 드러납니다.
+            설계 과정과 단편적인 기록들은
+            아래의 스레드 계정을 통해 공개되고 있습니다.
+          </p>
+
+          <a
+            href="https://www.threads.com/@surim_studio"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block text-sm font-medium underline underline-offset-4 text-emerald-800 hover:text-emerald-600"
+          >
+            Threads — surim_studio
+          </a>
+        </div>
+
         {/* 방법론 */}
         <section className="space-y-6">
           <h2 className="text-2xl font-semibold text-emerald-800">
