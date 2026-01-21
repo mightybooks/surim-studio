@@ -2,6 +2,10 @@ import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabase/server";
 import { randomUUID } from "crypto";
 
+/* =========================
+   POST /api/orders
+   주문 생성 (결제대기)
+========================= */
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -19,7 +23,6 @@ export async function POST(req: Request) {
 
     /* -----------------------------
        최소 유효성 검사
-       (비회원 주문 기준)
     ----------------------------- */
     if (
       !productId ||
@@ -38,75 +41,73 @@ export async function POST(req: Request) {
 
     const supabase = supabaseServer();
 
-    /* =========================
-    🔐 인증 회원 체크 (여기)
-    ========================= */
+    /* -----------------------------
+       로그인 체크
+    ----------------------------- */
     const {
-    data: { user },
+      data: { user },
     } = await supabase.auth.getUser();
 
     if (!user) {
-    return NextResponse.json(
+      return NextResponse.json(
         { message: "로그인이 필요합니다." },
         { status: 401 }
-    );
+      );
     }
 
+    /* -----------------------------
+       이메일 인증 체크
+    ----------------------------- */
     const { data: profile, error: profileError } = await supabase
-    .from("profiles")
-    .select("contact_email, contact_email_verified_at")
-    .eq("id", user.id)
-    .single();
+      .from("profiles")
+      .select("contact_email, contact_email_verified_at")
+      .eq("id", user.id)
+      .single();
 
     if (profileError || !profile?.contact_email_verified_at) {
-    return NextResponse.json(
+      return NextResponse.json(
         { message: "이메일 인증이 완료된 회원만 결제할 수 있습니다." },
         { status: 403 }
-    );
+      );
     }
 
     /* -----------------------------
-    기존 결제대기 주문 재사용 (중복 방지)
+       기존 pending 주문 재사용
     ----------------------------- */
     const { data: existing } = await supabase
-    .from("orders")
-    .select("id")
-    .eq("user_id", user.id)
-    .eq("product_id", productId)
-    .eq("status", "결제대기")
-    .maybeSingle();
+      .from("orders")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("product_id", productId)
+      .eq("status", "pending")
+      .maybeSingle();
 
     if (existing) {
-    return NextResponse.json(
-        { orderId: existing.id, status: "결제대기" },
+      return NextResponse.json(
+        { orderId: existing.id, status: "pending" },
         { status: 200 }
-    );
+      );
     }
 
     /* -----------------------------
-       주문 생성 (결제대기)
+       주문 생성 (pending)
     ----------------------------- */
-    
-    console.log("PROFILE RAW", profile);
-
-    console.log("PROFILE EMAIL", profile.contact_email);
-    
     const orderId = randomUUID();
 
     const { error } = await supabase.from("orders").insert({
-    id: orderId,
-    user_id: user.id,              
-    product_id: productId,
-    product_name: productName,
-    amount: price,
-    recipient_name: recipientName,
-    phone,
-    zipcode,
-    address,
-    address_detail: addressDetail,
-    buyer_email: profile.contact_email,
-    status: "결제대기",
-    });    
+      id: orderId,
+      user_id: user.id,
+      product_id: productId,
+      product_name: productName,
+      amount: price,
+      recipient_name: recipientName,
+      phone,
+      zipcode,
+      address,
+      address_detail: addressDetail,
+      buyer_email: profile.contact_email,
+      status: "pending", // 🔥 상태 영문화
+    });
 
     if (error) {
       console.error("Order insert error:", error);
@@ -117,10 +118,7 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json(
-      {
-        orderId,
-        status: "결제대기",
-      },
+      { orderId, status: "pending" },
       { status: 201 }
     );
   } catch (err) {
@@ -130,4 +128,61 @@ export async function POST(req: Request) {
       { status: 500 }
     );
   }
+}
+
+/* =========================
+   GET /api/orders
+   관리자 주문 목록
+========================= */
+export async function GET() {
+  const supabase = supabaseServer();
+
+  /* -----------------------------
+     로그인 체크
+  ----------------------------- */
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json(
+      { message: "로그인이 필요합니다." },
+      { status: 401 }
+    );
+  }
+
+  /* -----------------------------
+     관리자 권한 체크 (1차 방어)
+  ----------------------------- */
+  if (user.email !== process.env.ADMIN_EMAIL) {
+    return NextResponse.json(
+      { message: "접근 권한이 없습니다." },
+      { status: 403 }
+    );
+  }
+
+  /* -----------------------------
+     주문 목록 조회
+  ----------------------------- */
+  const { data, error } = await supabase
+    .from("orders")
+    .select(`
+      id,
+      product_name,
+      amount,
+      status,
+      created_at,
+      recipient_name,
+      phone
+    `)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    return NextResponse.json(
+      { message: "주문 조회 실패", error },
+      { status: 500 }
+    );
+  }
+
+  return NextResponse.json({ orders: data }, { status: 200 });
 }
