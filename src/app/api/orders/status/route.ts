@@ -6,9 +6,13 @@ export const revalidate = 0;
 
 const supabase = createClient(
   process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!  
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
+// 결제 미확정 상태들 (의미 단위)
+const PENDING_STATUSES = ["결제대기", "결제보류"];
+
+// 만료 기준 (5분)
 const EXPIRE_MS = 5 * 60 * 1000;
 
 export async function GET(req: Request) {
@@ -24,32 +28,35 @@ export async function GET(req: Request) {
 
   const { data: order, error } = await supabase
     .from("orders")
-    .select("status, created_at") // ← 반드시 추가
+    .select("status, created_at")
     .eq("id", orderId)
     .single();
 
- if (error || !order) {
-  return NextResponse.json(
-    { ok: false, error: "order not found" },
-    { status: 404 }
-  );
-}
+  if (error || !order) {
+    return NextResponse.json(
+      { ok: false, error: "order not found" },
+      { status: 404 }
+    );
+  }
 
-// 결제대기 + 3분 초과 → 만료
-if (
-  order.status === "결제대기" &&
-  Date.now() - new Date(order.created_at).getTime() > EXPIRE_MS
-) {
-  await supabase
-    .from("orders")
-    .update({ status: "만료" })
-    .eq("id", orderId);
+  // ─────────────────────────────
+  // 만료 판정 (pending 계열만)
+  // ─────────────────────────────
+  if (
+    PENDING_STATUSES.includes(order.status) &&
+    Date.now() - new Date(order.created_at).getTime() > EXPIRE_MS
+  ) {
+    await supabase
+      .from("orders")
+      .update({ status: "만료" })
+      .eq("id", orderId);
 
-  return NextResponse.json({ ok: true, status: "만료" });
-}
+    return NextResponse.json({ ok: true, status: "만료" });
+  }
 
-return NextResponse.json({
-  ok: true,
-  status: order.status,
- });
+  // 그 외는 현재 상태 그대로 반환
+  return NextResponse.json({
+    ok: true,
+    status: order.status,
+  });
 }
