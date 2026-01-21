@@ -1,13 +1,19 @@
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import ShipButton from "./ShipButton";
 
 async function getOrders() {
-  const res = await fetch("/api/orders", {
-    cache: "no-store",
-    headers: {
-      Cookie: cookies().toString(),
-    },
-  });
+  const host = headers().get("host");
+  const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
+
+  const res = await fetch(
+    `${protocol}://${host}/api/orders`,
+    {
+      cache: "no-store",
+      headers: {
+        Cookie: cookies().toString(),
+      },
+    }
+  );
 
   if (!res.ok) {
     throw new Error("주문 목록을 불러오지 못했습니다.");

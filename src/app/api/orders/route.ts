@@ -144,6 +144,9 @@ export async function GET() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  console.log("ADMIN_EMAIL:", process.env.ADMIN_EMAIL);
+  console.log("USER_EMAIL:", user?.email);
+
   if (!user) {
     return NextResponse.json(
       { message: "로그인이 필요합니다." },
