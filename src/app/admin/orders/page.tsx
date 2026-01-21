@@ -1,17 +1,13 @@
 import { cookies } from "next/headers";
+import ShipButton from "./ShipButton";
 
 async function getOrders() {
-  const cookieStore = cookies();
-
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/orders`,
-    {
-      headers: {
-        Cookie: cookieStore.toString(),
-      },
-      cache: "no-store",
-    }
-  );
+  const res = await fetch("/api/orders", {
+    cache: "no-store",
+    headers: {
+      Cookie: cookies().toString(),
+    },
+  });
 
   if (!res.ok) {
     throw new Error("주문 목록을 불러오지 못했습니다.");
@@ -51,12 +47,8 @@ export default async function AdminOrdersPage() {
             <tr key={o.id} className="border-b">
               <td className="p-2">{o.id.slice(0, 8)}</td>
               <td className="p-2">{o.product_name}</td>
-              <td className="p-2">
-                {o.amount.toLocaleString()}원
-              </td>
-              <td className="p-2">
-                {STATUS_LABEL[o.status] ?? o.status}
-              </td>
+              <td className="p-2">{o.amount.toLocaleString()}원</td>
+              <td className="p-2">{STATUS_LABEL[o.status]}</td>
               <td className="p-2">
                 {new Date(o.created_at).toLocaleString()}
               </td>
@@ -70,18 +62,5 @@ export default async function AdminOrdersPage() {
         </tbody>
       </table>
     </div>
-  );
-}
-
-/* =========================
-   배송 처리 버튼
-========================= */
-function ShipButton({ orderId }: { orderId: string }) {
-  return (
-    <form action={`/admin/orders/ship?orderId=${orderId}`}>
-      <button className="text-blue-600 underline">
-        배송처리
-      </button>
-    </form>
   );
 }

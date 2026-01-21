@@ -1,6 +1,10 @@
 "use client";
 
-export default function ShipButton({ orderId }: { orderId: string }) {
+export default function ShipButton({
+  orderId,
+}: {
+  orderId: string;
+}) {
   const handleClick = async () => {
     const trackingNumber = prompt("송장번호를 입력하세요");
     if (!trackingNumber) return;
