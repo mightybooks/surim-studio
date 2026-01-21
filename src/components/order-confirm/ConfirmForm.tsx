@@ -112,17 +112,28 @@ useEffect(() => {
       console.log("POLLING DETECTED 결제완료");
       clearInterval(timer);
       router.replace(`/order/complete?orderId=${orderId}`);
-      return; // ← 안전 가드
+      return;
     }
 
     if (json.status === "만료") {
       console.log("POLLING DETECTED 만료");
       clearInterval(timer);
+
+      // 🔴 여기만 추가
+      await fetch("/api/orders/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderId,
+          status: "failed",
+        }),
+      });
+
       setExpired(true);
       setLoading(false);
       return;
     }
-  }, 2000);
+  }, 2000); // ✅ setInterval은 여기서 닫힘
 
   return () => clearInterval(timer);
 }, [orderId, loading, router]);
