@@ -9,10 +9,17 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-// 결제 미확정 상태들 (의미 단위)
+/**
+ * 결제가 확정되지 않은 상태들
+ * - UX / 운영 편의상 구분되지만
+ * - 논리적으로는 모두 "미완료"
+ */
 const PENDING_STATUSES = ["결제대기", "결제보류"];
 
-// 만료 기준 (5분)
+/**
+ * 주문 만료 기준 (5분)
+ * - 이 시간 이후 미완료 상태면 실패 처리
+ */
 const EXPIRE_MS = 5 * 60 * 1000;
 
 export async function GET(req: Request) {
@@ -28,6 +35,9 @@ export async function GET(req: Request) {
     );
   }
 
+  /* -----------------------------
+     주문 조회
+  ----------------------------- */
   const { data: order, error } = await supabase
     .from("orders")
     .select("status, created_at")
@@ -41,6 +51,9 @@ export async function GET(req: Request) {
     );
   }
 
+  /* -----------------------------
+     시간 / 상태 계산
+  ----------------------------- */
   const status = order.status?.trim();
   const createdMs = new Date(order.created_at).getTime();
   const nowMs = Date.now();
@@ -56,9 +69,11 @@ export async function GET(req: Request) {
     expireMs: EXPIRE_MS,
   });
 
-  // ─────────────────────────────
-  // 만료 판정 (pending 계열만)
-  // ─────────────────────────────
+  /* -----------------------------
+     만료 판정
+     - 결제대기 / 결제보류 모두
+     - 일정 시간 초과 시 "만료"로 강제 종료
+  ----------------------------- */
   if (
     PENDING_STATUSES.includes(status) &&
     diffMs > EXPIRE_MS
@@ -68,8 +83,9 @@ export async function GET(req: Request) {
       .update({ status: "만료" })
       .eq("id", orderId);
 
-    console.log("[STATUS UPDATE RESULT]", { updateError });
+    console.log("[STATUS UPDATE RESULT]", { orderId, updateError });
 
+    // 실제 반영 여부 재확인 (디버깅용)
     const { data: after, error: afterError } = await supabase
       .from("orders")
       .select("status")
@@ -78,12 +94,17 @@ export async function GET(req: Request) {
 
     console.log("[STATUS AFTER UPDATE]", { after, afterError });
 
-    return NextResponse.json({ ok: true, status: "만료" });
+    return NextResponse.json({
+      ok: true,
+      status: "만료",
+    });
   }
 
-  // 그 외는 현재 상태 그대로 반환
+  /* -----------------------------
+     그 외: 현재 상태 그대로 반환
+  ----------------------------- */
   return NextResponse.json({
     ok: true,
-    status: order.status,
+    status,
   });
 }
