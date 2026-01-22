@@ -2,6 +2,7 @@
 
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import type { OrderStatus } from "@/lib/orderStatus";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -16,7 +17,7 @@ const supabase = createClient(
  * - UX / 운영 편의상 구분되지만
  * - 논리적으로는 모두 "미완료"
  */
-const PENDING_STATUSES = ["결제대기", "결제보류"];
+const PENDING_STATUSES: OrderStatus[] = ["pending"];
 
 /**
  * 주문 만료 기준 (5분)
@@ -82,7 +83,7 @@ export async function GET(req: Request) {
   ) {
     const { error: updateError } = await supabase
       .from("orders")
-      .update({ status: "만료" })
+      .update({ status: "expired" })
       .eq("id", orderId);
 
     console.log("[STATUS UPDATE RESULT]", { orderId, updateError });
@@ -98,7 +99,7 @@ export async function GET(req: Request) {
 
     return NextResponse.json({
       ok: true,
-      status: "만료",
+      status: "expired",
     });
   }
 
