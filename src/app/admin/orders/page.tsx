@@ -2,6 +2,8 @@
 
 import { cookies, headers } from "next/headers";
 import ShipButton from "./ShipButton";
+import { STATUS_LABEL } from "@/lib/orderStatus";
+import type { OrderStatus } from "@/lib/orderStatus";
 
 async function getOrders() {
   const host = headers().get("host");
@@ -23,13 +25,6 @@ async function getOrders() {
 
   return res.json();
 }
-
-const STATUS_LABEL: Record<string, string> = {
-  결제대기: "결제대기",
-  결제보류: "결제보류",
-  결제완료: "결제완료",
-  만료: "만료",
-};
 
 export default async function AdminOrdersPage() {
   const { orders } = await getOrders();
@@ -57,12 +52,12 @@ console.log("ADMIN ORDERS RAW =", orders);
               <td className="p-2">{o.id.slice(0, 8)}</td>
               <td className="p-2">{o.product_name}</td>
               <td className="p-2">{o.amount.toLocaleString()}원</td>
-              <td className="p-2">{STATUS_LABEL[o.status]}</td>
+              <td className="p-2">{STATUS_LABEL[o.status as OrderStatus]}</td>
               <td className="p-2">
                 {new Date(o.created_at).toLocaleString()}
               </td>
               <td className="p-2">
-                {o.status === "결제완료" && (
+                {o.status === "paid" && (
                   <ShipButton orderId={o.id} />
                 )}
               </td>
