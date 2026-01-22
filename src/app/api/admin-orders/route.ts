@@ -1,44 +1,42 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { supabaseServer } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 /**
- * 관리자 전용 Supabase Client
- * - service role 사용 (RLS 우회)
- * - 서버에서만 사용
+ * service role client (RLS 우회)
  */
-const supabase = createClient(
+const adminSupabase = createClient(
   process.env.SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-export async function GET(req: Request) {
+export async function GET() {
   try {
     /* -----------------------------
-       1. 관리자 인증 확인
-       - Supabase auth 쿠키를 직접 검증할 수 없으므로
-       - admins 테이블을 기준으로 user_id 검증
+       1. 로그인 유저 확인 (cookie 기반)
     ----------------------------- */
+    const supabase = supabaseServer();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-    const authHeader = req.headers.get("authorization");
-
-    if (!authHeader) {
+    if (!user) {
       return NextResponse.json(
-        { message: "Missing authorization header" },
+        { message: "로그인이 필요합니다." },
         { status: 401 }
       );
     }
 
-    // Next.js middleware에서 이미 /admin 접근 제한됨
-    // 여기서는 방어적으로 admins 테이블만 확인
-    const userId = authHeader.replace("Bearer ", "");
-
-    const { data: admin, error: adminError } = await supabase
+    /* -----------------------------
+       2. 관리자 권한 확인
+    ----------------------------- */
+    const { data: admin, error: adminError } = await adminSupabase
       .from("admins")
       .select("user_id")
-      .eq("user_id", userId)
+      .eq("user_id", user.id)
       .single();
 
     if (adminError || !admin) {
@@ -49,9 +47,9 @@ export async function GET(req: Request) {
     }
 
     /* -----------------------------
-       2. 전체 주문 조회 (RLS 무시)
+       3. 전체 주문 조회 (RLS 무시)
     ----------------------------- */
-    const { data: orders, error } = await supabase
+    const { data: orders, error } = await adminSupabase
       .from("orders")
       .select(`
         id,
