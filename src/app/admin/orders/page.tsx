@@ -1,3 +1,5 @@
+// src/app/admin/orders/page.tsx
+
 import { cookies, headers } from "next/headers";
 import ShipButton from "./ShipButton";
 
