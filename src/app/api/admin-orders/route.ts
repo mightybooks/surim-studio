@@ -60,6 +60,7 @@ export async function GET() {
         recipient_name,
         phone
       `)
+      .eq("status", "paid") 
       .order("created_at", { ascending: false });
 
     if (error) {

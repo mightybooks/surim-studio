@@ -1,23 +1,27 @@
 "use client";
 
-export default function ShipButton({
-  orderId,
-}: {
-  orderId: string;
-}) {
-  const handleClick = async () => {
-    const trackingNumber = prompt("송장번호를 입력하세요");
+import { useState } from "react";
+
+export default function ShipButton({ orderId }: { orderId: string }) {
+  const [open, setOpen] = useState(false);
+  const [trackingNumber, setTrackingNumber] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function submit() {
     if (!trackingNumber) return;
 
-    const res = await fetch("/api/orders/update", {
+    setLoading(true);
+
+    const res = await fetch("/api/admin-orders/ship", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         orderId,
-        status: "shipped",
         trackingNumber,
       }),
     });
+
+    setLoading(false);
 
     if (!res.ok) {
       alert("배송 처리 실패");
@@ -26,14 +30,34 @@ export default function ShipButton({
 
     alert("배송 처리 완료");
     location.reload();
-  };
+  }
+
+  if (!open) {
+    return (
+      <button
+        onClick={() => setOpen(true)}
+        className="text-blue-600 underline"
+      >
+        배송처리
+      </button>
+    );
+  }
 
   return (
-    <button
-      onClick={handleClick}
-      className="text-blue-600 underline"
-    >
-      배송처리
-    </button>
+    <div className="flex gap-2">
+      <input
+        className="border px-2 py-1 text-sm"
+        placeholder="송장번호"
+        value={trackingNumber}
+        onChange={(e) => setTrackingNumber(e.target.value)}
+      />
+      <button
+        onClick={submit}
+        disabled={loading}
+        className="text-blue-600 underline"
+      >
+        확인
+      </button>
+    </div>
   );
 }
