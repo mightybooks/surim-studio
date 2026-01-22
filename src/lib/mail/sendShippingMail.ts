@@ -1,3 +1,5 @@
+// src/lib/mail/sendShippingMail.ts
+
 import * as nodemailer from "nodemailer";
 
 export async function sendShippingMail({
@@ -9,18 +11,16 @@ export async function sendShippingMail({
   productName: string;
   trackingNumber: string;
 }) {
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-  });
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
 
   await transporter.sendMail({
-    from: `"수림 스튜디오" <${process.env.MAIL_FROM}>`,
+    from: process.env.MAIL_FROM,
     to,
     subject: `[수림 스튜디오] 배송이 시작되었습니다`,
     html: `

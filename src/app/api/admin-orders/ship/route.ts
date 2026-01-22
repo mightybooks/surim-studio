@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { supabaseServer } from "@/lib/supabase/server";
+import { sendShippingMail } from "@/lib/mail/sendShippingMail";
 
 const adminSupabase = createClient(
   process.env.SUPABASE_URL!,
@@ -20,7 +21,9 @@ export async function POST(req: Request) {
 
     // 1. 로그인 확인
     const supabase = supabaseServer();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
     if (!user) {
       return NextResponse.json(
@@ -46,7 +49,7 @@ export async function POST(req: Request) {
     // 3. 주문 상태 검증
     const { data: order } = await adminSupabase
       .from("orders")
-      .select("status")
+      .select("status, buyer_email, product_name")
       .eq("id", orderId)
       .single();
 
@@ -71,6 +74,13 @@ export async function POST(req: Request) {
     if (error) {
       throw error;
     }
+
+    // 5. 배송 메일 발송 (정확한 좌표)
+    await sendShippingMail({
+      to: order.buyer_email,
+      productName: order.product_name,
+      trackingNumber,
+    });
 
     return NextResponse.json({ ok: true });
   } catch (err) {
