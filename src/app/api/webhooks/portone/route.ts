@@ -2,11 +2,26 @@
 
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import type { OrderStatus } from "@/lib/orderStatus";
 
 const supabase = createClient(
   process.env.SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
+
+function normalizePortoneStatus(payment: any): OrderStatus | null {
+  switch (payment?.status) {
+    case "PAID":
+      return "paid";
+    case "READY":
+      return "pending";
+    case "FAILED":
+    case "CANCELLED":
+      return "failed";
+    default:
+      return null;
+  }
+}
 
 export async function POST(req: Request) {
   try {
@@ -77,7 +92,7 @@ export async function POST(req: Request) {
 
     console.log("PORTONE PAYMENT =", {
       status: payment?.status,
-      amount: payment?.amount,
+      total: payment?.amount?.total,
     });
 
     /* -----------------------------
@@ -96,7 +111,7 @@ export async function POST(req: Request) {
     }
 
     // 이미 결제완료면 재처리 금지
-    if (order.status === "결제완료") {
+    if (order.status === "paid") {
       console.log("ORDER ALREADY PAID – SKIP");
       return NextResponse.json({ ok: true });
     }
@@ -105,40 +120,38 @@ export async function POST(req: Request) {
        4. 상태별 처리 (핵심)
     ----------------------------- */
 
-    // ✅ 결제 확정
+    const nextStatus = normalizePortoneStatus(payment);
+
+    if (!nextStatus) {
+      console.log("UNKNOWN PAYMENT STATUS – SKIP", payment?.status);
+      return NextResponse.json({ ok: true });
+    }
+
+    // paid 상태는 금액 검증 필수
     if (
-      payment?.status === "PAID" &&
-      payment?.amount?.total === order.amount
+      nextStatus === "paid" &&
+      payment?.amount?.total !== order.amount
     ) {
-      const { error } = await supabase
-        .from("orders")
-        .update({
-          status: "결제완료",
-          portone_payment_id: paymentId,
-        })
-        .eq("id", paymentId);
-
-      console.log("UPDATE 결제완료 ERROR =", error);
+      console.log("AMOUNT MISMATCH – SKIP", {
+        payment: payment?.amount?.total,
+        order: order.amount,
+      });
       return NextResponse.json({ ok: true });
     }
-
-    // ⏸ READY = 정상 대기 상태 → 아무 것도 하지 않음
-    if (payment?.status === "READY") {
-      console.log("PAYMENT READY – WAIT FOR PAID");
-      return NextResponse.json({ ok: true });
-    }
-
-    // ❌ 그 외 실패/취소 케이스만 보류 처리
-    console.log("PAYMENT NOT PAID – MARK HOLD", {
-      status: payment?.status,
-    });
 
     const { error } = await supabase
       .from("orders")
-      .update({ status: "결제보류" })
+      .update({
+        status: nextStatus,
+        portone_payment_id: paymentId,
+      })
       .eq("id", paymentId);
 
-    console.log("UPDATE 결제보류 ERROR =", error);
+    console.log("ORDER STATUS UPDATE", {
+      orderId: paymentId,
+      nextStatus,
+      error,
+    });
 
     return NextResponse.json({ ok: true });
   } catch (err) {
