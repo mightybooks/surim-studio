@@ -2,8 +2,12 @@
 
 import { useState } from "react";
 
-export default function ContactEmailForm() {
-  const [email, setEmail] = useState("");
+export default function ContactEmailForm({
+    defaultEmail = "",
+  }: {
+    defaultEmail?: string;
+  }) {
+  const [email, setEmail] = useState(defaultEmail);
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 

@@ -76,7 +76,7 @@ export default async function MyPage() {
         </h2>
 
         {profile?.contact_email_verified_at ? (
-          // ✅ 인증 완료 (락)
+          // ✅ 인증 완료 (완전 락)
           <div className="rounded-xl border border-[color:var(--border)] p-4 text-sm space-y-1">
             <p className="font-medium text-green-600">
               이메일 인증이 완료되었습니다.
@@ -84,7 +84,8 @@ export default async function MyPage() {
             <p className="text-xs text-[color:var(--fg)]/60">
               인증된 이메일은 변경할 수 없습니다.
             </p>
-           {/* 2층 진입 */}
+
+            {/* 2층 진입 */}
             <div className="pt-2">
               <a
                 href="https://open.kakao.com/o/guwemdsg"
@@ -96,22 +97,11 @@ export default async function MyPage() {
               </a>
             </div>
           </div>
-        ) : profile?.contact_email_pending ? (
-          // ⏳ 인증 대기
-          <div className="rounded-xl border border-[color:var(--border)] p-4 text-sm space-y-1">
-            <p className="font-medium">
-              이메일 인증 대기 중
-            </p>
-            <p className="text-xs text-[color:var(--fg)]/60">
-              인증 메일을 발송했습니다. 메일함에서 링크를 확인해 주세요.
-            </p>
-            <p className="text-xs text-[color:var(--fg)]/50">
-              인증이 완료되기 전까지 이메일을 변경할 수 있습니다.
-            </p>
-          </div>
         ) : (
-          // ✏️ 입력 가능
-          <ContactEmailForm />
+          // ✏️ 미인증 상태 = 언제든 재입력/재발송 가능
+          <ContactEmailForm
+            defaultEmail={profile?.contact_email_pending ?? ""}
+          />
         )}
       </section>
 
