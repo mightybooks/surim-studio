@@ -1,3 +1,5 @@
+// src/components/my/ContactEmailForm.tsx
+
 "use client";
 
 import { useState } from "react";
@@ -25,7 +27,7 @@ export default function ContactEmailForm({
         setMsg(json?.error ?? "인증 메일 발송에 실패했습니다.");
         return;
       }
-      setMsg("인증 메일을 발송했습니다. 메일함을 확인해 주세요.");
+      setMsg("인증 메일을 발송했습니다. 스팸함도 함께 확인해 주세요.");
       setEmail("");
     } finally {
       setLoading(false);
@@ -37,7 +39,11 @@ export default function ContactEmailForm({
       <div className="space-y-1">
         <div className="text-sm font-medium">연락용 이메일(선택)</div>
         <p className="text-sm text-[color:var(--fg)]/60">
-          펀딩/배송/공지/경연 결과 알림을 받기 위해 인증할 수 있습니다.
+          펀딩/배송/공지/경연 결과 알림을 받기 위해 인증할 수 있습니다.<br/>
+        <span className="block mt-1">
+          ※ 일부 메일 서비스(Outlook 등)에서는 인증 메일이 스팸으로 분류될 수 있습니다.
+          메일이 보이지 않는 경우 스팸함을 함께 확인해 주세요.
+        </span>
         </p>
       </div>
 

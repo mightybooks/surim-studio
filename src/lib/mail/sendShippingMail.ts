@@ -1,6 +1,7 @@
 // src/lib/mail/sendShippingMail.ts
 
 import * as nodemailer from "nodemailer";
+import { SHIPPING_MAIL } from "./templates/shipping";
 
 export async function sendShippingMail({
   to,
@@ -19,14 +20,12 @@ export async function sendShippingMail({
       },
     });
 
-    await transporter.sendMail({
-      from: `"수림 스튜디오" <${process.env.SMTP_USER}>`,
-      to,
-      subject: `[수림 스튜디오] 배송이 시작되었습니다`,
-      html: `
-        <p>주문하신 <strong>${productName}</strong> 상품이 발송되었습니다.</p>
-        <p>송장번호: <strong>${trackingNumber}</strong></p>
-        <p>감사합니다.</p>
-      `,
+   const mail = SHIPPING_MAIL.shipped({ productName, trackingNumber });
+
+   await transporter.sendMail({
+    from: `"수림 스튜디오" <${process.env.SMTP_USER}>`,
+    to,
+    subject: mail.subject,
+    html: mail.html,
   });
 }
