@@ -1,22 +1,14 @@
 // src/app/my/page.tsx
-import { supabaseServer } from "@/lib/supabase/server";
+import { supabaseServerPublic } from "@/lib/supabase/server-public";
 import ContactEmailForm from "@/components/my/ContactEmailForm";
 import { redirect } from "next/navigation";
 
-const providerLabelMap: Record<string, string> = {
-  naver: "네이버",
-  kakao: "카카오",
-  google: "구글",
-  email: "이메일",
-};
-
 export default async function MyPage() {
-  const supabase = supabaseServer();
+  const supabase = supabaseServerPublic();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
-  // ✅ 반드시 먼저
+  
    if (!user) {
     redirect("/login?error=auth_required");
   }
@@ -44,7 +36,24 @@ export default async function MyPage() {
     .from("contest_submissions")
     .select("id, contest_year, work_title, pen_name, status, submitted_at")
     .order("submitted_at", { ascending: false });
- 
+
+  // 🔹 내 주문 · 배송 내역 조회
+  const { data: orders } = await supabase
+    .from("orders")
+    .select(`
+      id,
+      product_name,
+      amount,
+      status,
+      created_at,
+      shipping_carrier,
+      tracking_number,
+      shipped_at,
+      is_digital
+    `)
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+    
   return (
     <main className="mx-auto max-w-3xl px-4 py-10 space-y-10">
       <header className="space-y-1">
@@ -104,6 +113,48 @@ export default async function MyPage() {
           />
         )}
       </section>
+
+    {/* 주문 · 배송 내역 */}
+    <section className="space-y-4">
+      <h2 className="text-lg font-semibold">
+        주문 · 배송 내역
+      </h2>
+
+      {!orders || orders.length === 0 ? (
+        <p className="text-sm text-neutral-500">
+          주문 내역이 없습니다.
+        </p>
+      ) : (
+        <ul className="space-y-3">
+          {orders.map((order) => (
+            <li
+              key={order.id}
+              className="rounded-xl border bg-white p-4 space-y-2"
+            >
+              <div className="flex items-center justify-between">
+                <p className="font-medium">
+                  {order.product_name}
+                </p>
+                  <span className="text-sm font-medium">
+                    {getUserFacingOrderStatus(order)}
+                  </span>
+              </div>
+
+              <p className="text-sm text-neutral-600">
+                주문일: {new Date(order.created_at).toLocaleDateString()}
+              </p>
+
+              {!order.is_digital && order.tracking_number && (
+                <p className="text-sm text-neutral-600">
+                  배송사: {order.shipping_carrier ?? "-"} / 송장번호:{" "}
+                  {order.tracking_number}
+                </p>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
 
     {/* 경연대회 투고 이력 */}
       <section className="space-y-4">
@@ -180,4 +231,49 @@ export default async function MyPage() {
   }
 }
 
+  function getOrderStatusLabel(status: string) {
+    switch (status) {
+      case "pending":
+        return "결제 대기";
+      case "paid":
+        return "결제 완료";
+      case "shipped":
+        return "배송 완료";
+      case "failed":
+        return "결제 실패";
+      case "expired":
+        return "결제 만료";
+      default:
+        return "상태 확인 중";
+    }
+  }
+
+  function getUserFacingOrderStatus(order: {
+  is_digital: boolean;
+  status: string;
+  tracking_number: string | null;
+  }) {
+    // 1️⃣ 디지털 열람권
+    if (order.is_digital) {
+      return "열람 가능";
+    }
+
+    // 2️⃣ 배송 완료
+    if (order.status === "shipped") {
+      return "배송 완료";
+    }
+
+    // 3️⃣ 배송 중
+    if (order.tracking_number) {
+      return "배송 중";
+    }
+
+    // 4️⃣ 배송 대기
+    if (order.status === "paid") {
+      return "배송 대기";
+    }
+
+    // 5️⃣ 기타
+    return "결제 완료";
+  }
 }

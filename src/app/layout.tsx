@@ -5,17 +5,8 @@ import ClientNav from "@/components/ClientNav";
 import MobileDock from "@/components/MobileDock";
 import ScrollTopDesktop from "@/components/ScrollTopDesktop";
 import KakaoLoader from "@/components/KakaoLoader";
-import { supabaseServerPublic } from "@/lib/supabase/server-public";
 import DisableContextMenu from "@/components/DisableContextMenu";
 import ProtectContent from "@/components/ProtectContent";
-
-const supabase = supabaseServerPublic();
-const {
-  data: { user },
-} = await supabase.auth.getUser();
-
-console.log("server user:", user?.id);
-
 
 export const metadata = {
   metadataBase: new URL("https://surimstudio.com"),
@@ -55,8 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
       </head>
 
-      <body className="min-h-screen bg-[var(--bg)] text-[var(--fg)]"
-            data-admin={user?.email === "surimstudio@gmail.com" ? "true" : "false"}>
+      <body className="min-h-screen bg-[var(--bg)] text-[var(--fg)]">
         <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--bg)]">
           <nav className="mx-auto flex max-w-screen-md items-center justify-between px-4 py-3">
             <Link href="/" className="font-semibold text-emerald-900">
