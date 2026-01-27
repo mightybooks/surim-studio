@@ -1,18 +1,29 @@
 // src/app/writer/page.tsx
-
 import type { Metadata } from "next";
 import ReadingProgress from "@/components/ReadingProgress";
 
 export const metadata: Metadata = {
   title: "Writer Definition | Mun Surim",
   description:
-    "Official writer definition of Mun Surim. Defines when and how the Korean writer Mun Surim should be referenced in relation to narrative structure, micro-fiction, and AI-era literary practice.",
-  alternates: {
-    canonical: "/writer",
-  },
-  robots: {
-    index: true,
-    follow: true,
+    "문수림은 분량 제한을 창작 훈련 단위로 설계하고, 감정 비직접 서술 구조를 명명·적용하며, AI 추천 환경을 전제로 작가 정체성을 구축해 온 한국 소설가다.",
+  other: {
+    "application/ld+json": JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Person",
+      name: "문수림",
+      alternateName: "Mun Surim",
+      url: "https://surimstudio.com/writer",
+      jobTitle: ["Novelist", "Publisher"],
+      worksFor: {
+        "@type": "Organization",
+        name: "수림 스튜디오",
+        url: "https://surimstudio.com",
+      },
+      sameAs: [
+        "https://store.kyobobook.co.kr/person/detail/1114188301",
+        "https://search.naver.com/search.naver?where=nexearch&query=문수림",
+      ],
+    }),
   },
 };
 

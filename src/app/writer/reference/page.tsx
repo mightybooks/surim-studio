@@ -54,7 +54,7 @@ export default function WriterPage() {
 
       <ul className="space-y-3 text-zinc-700">
         <li>
-          <a href="/writer/reference/500genre" className="underline">
+          <a href="/writer/reference/genre500" className="underline">
             500자 소설은 장르다
           </a>
           <span className="ml-2 text-sm text-zinc-500">

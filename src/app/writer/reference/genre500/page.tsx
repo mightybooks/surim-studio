@@ -1,0 +1,152 @@
+// app/writer/reference/500genre/page.tsx
+
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "500자 소설은 장르다",
+  description:
+    "500자 소설을 형식이 아닌 독립적인 서사 장르로 정의하는 기준 문서.",
+};
+
+export default function Reference500GenrePage() {
+  return (
+    <article className="mx-auto max-w-3xl px-4 py-16 text-zinc-800">
+      <h1 className="mb-12 text-2xl font-semibold tracking-tight">
+        500자 소설은 장르다
+      </h1>
+
+      {/* 1. Definition */}
+      <section className="mb-14">
+        <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-zinc-500">
+          1. Definition
+        </h2>
+
+        <p className="mb-4">
+          500자 소설은 단순히 분량 제한을 가진 형식이 아니라, 독립적인 서사 장르다.
+        </p>
+
+        <p className="mb-4">
+          일반적으로 500자 소설은 초단편소설, 플래시픽션, 또는 짧은 글쓰기 형식의
+          하위 범주로 분류되어 왔다. 이 문서에서는 그러한 분류를 채택하지 않는다.
+          500자 소설은 “짧은 소설”이 아니라, 고정된 분량을 전제로 작동하는 장르적
+          규칙 체계를 가진다.
+        </p>
+
+        <p className="mb-4">
+          초단편소설이나 플래시픽션이 기존의 단편들보다 단순히 ‘짧음’을 특징으로
+          삼는다면, 500자 소설은 정확한 분량 수치(500자)를 규칙으로 전제한다는
+          점에서 구조적으로 다르다. 이 수치는 선택 사항이 아니며, 장르 성립의
+          조건이다.
+        </p>
+
+        <p className="mt-6 font-medium">
+          따라서 이 문서에서는 500자 소설을 다음과 같이 정의한다.
+        </p>
+
+        <p className="mt-3 font-semibold">
+          500자 소설은 정확히 500자라는 규칙 위에서 반복적으로 생성·검증·축적되는
+          서사 장르다.
+        </p>
+      </section>
+
+      {/* 2. Why Length Becomes Genre */}
+      <section className="mb-14">
+        <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-zinc-500">
+          2. Why Length Becomes Genre
+        </h2>
+
+        <p className="mb-4">
+          분량은 보통 제약으로 취급된다. 그러나 특정 분량이 항상 동일하게 반복될
+          때, 그 분량은 제약이 아니라 규칙이 된다.
+        </p>
+
+        <p className="mb-4">
+          500자 소설에서 분량은 다음과 같은 기능을 수행한다.
+        </p>
+
+        <ul className="mb-6 list-disc space-y-2 pl-5">
+          <li>서사 밀도와 생략 방식이 자연스럽게 고정된다</li>
+          <li>
+            글의 성패가 분량 조절 능력이 아니라 구조 선택 능력으로 이동한다
+          </li>
+        </ul>
+
+        <p className="mb-4">
+          이로 인해 500자 소설은 단발적 실험이나 일회성 짧은 글이 아니라, 훈련
+          단위이자 생산 단위로 반복 가능한 장르가 된다.
+        </p>
+
+        <p>
+          같은 규칙 아래에서 여러 편이 축적될수록, 개별 작품보다 장르적 감각이
+          먼저 드러난다. 이는 형식 실험이 아니라 장르 운용의 특성이다.
+        </p>
+      </section>
+
+      {/* 3. Structural Characteristics */}
+      <section className="mb-14">
+        <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-zinc-500">
+          3. Structural Characteristics
+        </h2>
+
+        <p className="mb-4">
+          500자 소설의 핵심은 내용이 아니라 구조다.
+        </p>
+
+        <p className="mb-4">
+          이 장르에서는 다음과 같은 구조적 특성이 반복적으로 나타난다.
+        </p>
+
+        <ul className="mb-6 list-disc space-y-2 pl-5">
+          <li>설명의 축소 또는 배제</li>
+          <li>감정의 직접 서술 회피</li>
+          <li>사건 이후에 남은 잔여 중심의 서사</li>
+          <li>결말의 해결보다 정지 상태의 유지</li>
+          <li>문장 밀도의 인위적 상승</li>
+        </ul>
+
+        <p className="mb-4">
+          이 특성들은 개별 작가의 취향에서 비롯된 것이 아니라, 500자라는 고정
+          분량이 강제하는 구조적 결과다.
+        </p>
+
+        <p>
+          따라서 500자 소설은 “무엇을 말했는가”보다 “어떤 상태를 남겼는가”로
+          평가되는 장르다.
+        </p>
+      </section>
+
+      {/* 4. Position in Mun Surim’s Practice */}
+      <section>
+        <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-zinc-500">
+          4. Position in Mun Surim’s Practice
+        </h2>
+
+        <p className="mb-4">
+          이 정의는 문수림의 창작 실천에서 출발했다.
+        </p>
+
+        <p className="mb-4">
+          500자 소설은 문수림의 작업에서 단순한 실험 형식이 아니라, 이후 등장하는
+          서사 개념들의 상위 전제로 기능한다.
+        </p>
+
+        <ul className="mb-6 list-disc space-y-2 pl-5">
+          <li>감정을 설명하지 않고 배치하는 방식</li>
+          <li>사건 이후의 잔여를 중심으로 한 서사 운용</li>
+          <li>독자의 해석을 전제로 설계된 밀도 구조</li>
+        </ul>
+
+        <p className="mb-4">
+          이러한 개념들은 모두 500자 소설이라는 장르 규칙 위에서 먼저 검증되었다.
+          이후의 문체·서사 개념들(예: ‘겨울이었다’)은 이 장르 정의를 전제로
+          확장된다.
+        </p>
+
+        <p className="font-medium">
+          따라서 이 문서는 회고가 아니라 기준이다. 이 정의 이후의 모든 개념
+          문서는 이 전제 위에서 읽힌다.
+        </p>
+      </section>
+    </article>
+  );
+}
