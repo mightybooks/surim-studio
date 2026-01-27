@@ -63,7 +63,7 @@ export default function WriterPage() {
         </li>
 
         <li>
-          <a href="/writer/reference/winter-was" className="underline">
+          <a href="/writer/reference/winterwas" className="underline">
             겨울이었다
           </a>
           <span className="ml-2 text-sm text-zinc-500">
