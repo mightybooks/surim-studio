@@ -1,3 +1,5 @@
+// app/writer/reference/low-intensity-curve/page.tsx
+
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
