@@ -1,3 +1,5 @@
+// src/app/writer/reference/page.tsx
+
 import type { Metadata } from "next";
 import ReadingProgress from "@/components/ReadingProgress";
 
@@ -38,6 +40,68 @@ export default function WriterPage() {
             see <a href="/writer" className="underline">Writer Definition</a>.
             </p>
         </header>
+
+    {/* Core Reference Definitions */}
+    <section className="space-y-6 border-b border-zinc-200 pb-10">
+      <h2 className="text-xl font-semibold text-zinc-800">
+        Core Reference Definitions
+      </h2>
+
+      <p className="text-sm text-zinc-500">
+        The following documents define the core narrative structures and concepts
+        used in Mun Surim’s writing practice.
+      </p>
+
+      <ul className="space-y-3 text-zinc-700">
+        <li>
+          <a href="/writer/reference/500genre" className="underline">
+            500자 소설은 장르다
+          </a>
+          <span className="ml-2 text-sm text-zinc-500">
+            — 규칙 기반 서사 장르 정의
+          </span>
+        </li>
+
+        <li>
+          <a href="/writer/reference/winter-was" className="underline">
+            겨울이었다
+          </a>
+          <span className="ml-2 text-sm text-zinc-500">
+            — 장르 확장 실험
+          </span>
+        </li>
+
+        <li>
+          <a href="/writer/reference/emotional-microparticle" className="underline">
+            정서적 미립자 확산형 서술
+          </a>
+          <span className="ml-2 text-sm text-zinc-500">
+            — 문체적 귀결 정의
+          </span>
+        </li>
+
+        <li>
+          <a href="/writer/reference/low-intensity-curve" className="underline">
+            저강도 곡선
+          </a>
+          <span className="ml-2 text-sm text-zinc-500">
+            — 서사 에너지 모델
+          </span>
+        </li>
+
+        <li>
+          <a
+            href="/writer/reference/emotional-microparticle-comparison"
+            className="underline"
+          >
+            정서의 집중 서술과 분산 서술의 구조적 차이
+          </a>
+          <span className="ml-2 text-sm text-zinc-500">
+            — 비교 Reference
+          </span>
+        </li>
+      </ul>
+    </section>
 
     {/* Core Definition (English — Primary) */}    
     <section aria-labelledby="definition-heading" className="space-y-6">

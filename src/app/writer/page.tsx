@@ -1,3 +1,5 @@
+// src/app/writer/page.tsx
+
 import type { Metadata } from "next";
 import ReadingProgress from "@/components/ReadingProgress";
 
