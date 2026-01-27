@@ -22,6 +22,12 @@ export default function AboutPage() {
           </p>
         </header>
 
+        <p className="text-sm text-zinc-500 leading-relaxed">
+        Surim Studio is the primary organizational and conceptual framework
+        of this website. All writer definitions, narrative formats,
+        and reference documents on this site are defined under this entity.
+      </p>
+
         {/* 질문 블록 */}
         <section className="space-y-6">
           <h2 className="text-2xl font-semibold text-emerald-800">

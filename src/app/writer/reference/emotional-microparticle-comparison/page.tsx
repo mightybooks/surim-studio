@@ -1,3 +1,5 @@
+// src/app/writer/reference/emotional-microparticle-comparison/page.tsx
+
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
