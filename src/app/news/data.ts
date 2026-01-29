@@ -11,6 +11,16 @@ export type NewsItem = {
 
 export const NEWS: NewsItem[] = [
     {
+    slug: "ready-500-novel",
+    title: "문수림의『500자소설』곧 자체 펀딩에 들어갑니다 ",
+    body:
+      "1월중 출간이 목표였던『500자소설』이 드디어 출력 준비를 마쳤습니다 " +
+      "현재는 최종 파일 검수 단계이며 " +
+      "최종 인쇄 전 가본 2권이 2월초에 제작되어 펀딩 참여자들에게 우선 공개될 예정입니다 ",
+    category: "News",
+    published_at: "2026-01-14",
+    },
+    {
     slug: "shop-ready-mall",
     title: "결제 시스템 도입을 준비중입니다 ",
     body:
