@@ -2,6 +2,7 @@
 import { supabaseServerPublic } from "@/lib/supabase/server-public";
 import ContactEmailForm from "@/components/my/ContactEmailForm";
 import { redirect } from "next/navigation";
+import { formatMoney } from "@/lib/formatMoney";
 
 export default async function MyPage() {
   const supabase = supabaseServerPublic();
@@ -43,13 +44,14 @@ export default async function MyPage() {
     .select(`
       id,
       product_name,
-      amount,
+      amount_minor,      
+      currency,
       status,
       created_at,
       shipping_carrier,
       tracking_number,
       shipped_at,
-      is_digital
+      is_digital      
     `)
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
@@ -142,6 +144,10 @@ export default async function MyPage() {
 
               <p className="text-sm text-neutral-600">
                 주문일: {new Date(order.created_at).toLocaleDateString()}
+              </p>
+             
+              <p className="text-sm text-neutral-600">
+                금액: {formatMoney({ amount_minor: order.amount_minor ?? 0, currency: order.currency ?? "KRW" })}
               </p>
 
               {!order.is_digital && order.tracking_number && (

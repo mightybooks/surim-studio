@@ -1,4 +1,4 @@
-// src/app/shop/books/[slug]/page.tsx
+// src/app/shop/testcard/[slug]/page.tsx
 
 import ProductDetailPage from "@/components/shop/ProductDetailPage";
 
@@ -7,6 +7,7 @@ export default function Page() {
     type: "BOOK",
     name: "수리미 쩐다요",
     price: 1100,
+    priceUsd: 1.0,  
     delivery: "택배 / 1~3영업일",
     thumbnail: "/productlist/tosiltosil_list.webp",
     detailImage: "/productdetail/tosiltosil_detail.webp",

@@ -2,16 +2,20 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 /**
  * GET /api/funding/progress?source=funding_500
  * Response: { currentBooks: number, targetBooks?: number }
  *
  * 전제:
- * - orders 테이블에 source(text), quantity(int) 컬럼이 존재
+ * - orders 테이블에 source(text) 컬럼 존재
+ * - ✅ RPC로 SUM(quantity) 집계 (권수 기준)
  * - 결제 완료 상태값(status)은 기본 "paid"로 가정 (프로젝트에 맞게 조정 가능)
  */
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseUrl = process.env.SUPABASE_URL!;
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 // 결제 완료로 집계할 상태값(프로젝트에 맞게 하나로 통일 권장)
@@ -44,24 +48,31 @@ export async function GET(req: Request) {
       auth: { persistSession: false },
     });
 
-    // Supabase 쿼리로 SUM(quantity) 집계
-    // head:false 로 실제 데이터 row(집계 결과)를 받습니다.
-    const { data, error } = await supabase
-      .from("orders")
-      .select("quantity")
-      .eq("source", source)
-      .eq("status", PAID_STATUS);
+    // ✅ 임시 디버그: 어떤 Supabase를 보고 있는지 식별
+    const supaHost = (() => {
+      try { return new URL(supabaseUrl).host; } catch { return "invalid-url"; }
+    })();
+
+    // ✅ RPC: DB에서 SUM(quantity) 수행
+    // public.funding_current_books(p_source, p_paid_status) -> bigint
+    const { data, error } = await supabase.rpc("funding_current_books", {
+      p_source: source,
+      p_paid_status: PAID_STATUS,
+    });
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    // quantity 합산 (기본값 1이 들어가도록 컬럼 정의하는 것을 전제로 함)
+    // rpc returns bigint -> JS에서는 number로 변환
+    // (목표가 150~수천 수준이면 안전)
     const currentBooks =
-      (data ?? []).reduce((sum, row: any) => sum + (row?.quantity ?? 1), 0) || 0;
+      typeof data === "number"
+        ? data
+        : Number(data ?? 0);
 
     return NextResponse.json(
-      { currentBooks, targetBooks: TARGET_BOOKS },
+      { currentBooks, targetBooks: TARGET_BOOKS, },
       {
         status: 200,
         headers: {

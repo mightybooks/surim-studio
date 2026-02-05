@@ -6,6 +6,29 @@ import { randomUUID } from "crypto";
 
 const MAX_QTY_PER_ORDER = 100;
 
+function normalizeCurrency(v: unknown) {
+  const c = String(v ?? "KRW").toUpperCase();
+  return c === "USD" ? "USD" : "KRW";
+}
+
+function normalizePg(v: unknown) {
+  const p = String(v ?? "").toLowerCase();
+  // 지금은 paypal만 해외로 쓰니 최소 셋업
+  return p === "paypal" ? "paypal" : "inicis"; // 기본 국내는 inicis로 귀속
+}
+
+/**
+ * price(major unit) -> amount_minor(int)
+ * KRW: 4900 -> 4900
+ * USD: 5.99 -> 599
+ */
+function toMinorAmount(currency: "KRW" | "USD", price: unknown) {
+  const n = Number(price);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  if (currency === "USD") return Math.round((n + Number.EPSILON) * 100);
+  return Math.round(n); // KRW는 원 단위 정수
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -14,16 +37,26 @@ export async function POST(req: Request) {
       productId,
       productName,
       price,
+      amount_minor: rawAmountMinor,
+      currency: rawCurrency,
+      pg: rawPg,
+      channelKey: rawChannelKey,
       recipientName,
       phone,
       zipcode,
       address,
       addressDetail,
-
-      // ✅ 추가: 수량/소스 (없으면 기본값)
       quantity: rawQuantity,
       source: rawSource,
     } = body;
+
+    console.log("[orders] money inputs:", {
+      rawCurrency,
+      rawPg,
+      rawChannelKey: Boolean(rawChannelKey),
+      price,
+      rawAmountMinor,
+    });
 
     // ✅ quantity 기본값/검증 (없으면 1)
     const quantity = Number.isFinite(Number(rawQuantity))
@@ -38,8 +71,7 @@ export async function POST(req: Request) {
     }
 
     // ✅ source는 펀딩일 때만 허용(그 외에는 shop으로 강제)
-    const source =
-      rawSource === "funding_500" ? "funding_500" : "shop";
+    const source = rawSource === "funding_500" ? "funding_500" : "shop";
 
     /* -----------------------------
        최소 유효성 검사
@@ -47,7 +79,9 @@ export async function POST(req: Request) {
     if (
       !productId ||
       !productName ||
-      !price ||
+      // ✅ price 또는 amount_minor 둘 중 하나는 필요
+      ((price === undefined || price === null) &&
+       (rawAmountMinor === undefined || rawAmountMinor === null)) ||
       !recipientName ||
       !phone ||
       !zipcode ||
@@ -92,8 +126,67 @@ export async function POST(req: Request) {
     }
 
     /* -----------------------------
+       ✅ 결제모드 정규화 & 검증
+    ----------------------------- */
+    const currency = normalizeCurrency(rawCurrency); // "KRW" | "USD"
+    const pg = normalizePg(rawPg); // "inicis" | "paypal"
+    const channelKey = String(rawChannelKey ?? "").trim() || null;
+
+    // 해외 결제 규칙(현재는 PayPal만)
+    if (currency === "USD") {
+      if (pg !== "paypal") {
+        return NextResponse.json(
+          { message: "USD 결제는 PayPal(pg=paypal)만 지원합니다." },
+          { status: 400 }
+        );
+      }
+      if (!channelKey) {
+        return NextResponse.json(
+          { message: "PayPal 채널키(channelKey)가 없습니다." },
+          { status: 400 }
+        );
+      }
+    }
+
+    /* -----------------------------
+       ✅ 금액 기준 전환: amount_minor 우선
+       - amount_minor가 있으면 그 값을 기준으로 사용
+       - price가 함께 오면 교차 검증(불일치 시 400)
+    ----------------------------- */
+    const parsedAmountMinor =
+      Number.isFinite(Number(rawAmountMinor)) && Number(rawAmountMinor) > 0
+        ? Math.floor(Number(rawAmountMinor))
+        : null;
+
+    // amount_minor가 없으면(구버전) price로 계산하여 사용
+    const fallbackAmountMinor =
+      parsedAmountMinor ?? toMinorAmount(currency, price);
+
+    if (!fallbackAmountMinor) {
+      return NextResponse.json(
+        { message: "결제 금액이 올바르지 않습니다." },
+        { status: 400 }
+      );
+    }
+
+    // price가 함께 왔다면 교차검증 (조작/불일치 방지)
+    const priceNum = Number(price);
+
+    if (Number.isFinite(priceNum) && priceNum > 0) {
+      const expected = toMinorAmount(currency, priceNum);
+      if (!expected || expected !== fallbackAmountMinor) {
+        return NextResponse.json(
+          { message: "결제 금액이 일치하지 않습니다." },
+          { status: 400 }
+        );
+      }
+    }
+
+    const amount_minor = fallbackAmountMinor;
+
+    /* -----------------------------
        기존 pending 주문 재사용
-       ✅ source/quantity까지 동일할 때만 재사용
+       ✅ 결제모드까지 동일할 때만 재사용
     ----------------------------- */
     const { data: existing } = await supabase
       .from("orders")
@@ -101,9 +194,12 @@ export async function POST(req: Request) {
       .eq("user_id", user.id)
       .eq("product_id", productId)
       .eq("status", "pending")
-      .eq("amount", price)
-      .eq("quantity", quantity) // ✅ 추가
-      .eq("source", source)     // ✅ 추가
+      .eq("currency", currency)
+      .eq("pg", pg)
+      .eq("amount_minor", amount_minor)
+      .eq("quantity", quantity)
+      .eq("source", source)
+      .eq("channel_key", channelKey)
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
@@ -125,9 +221,16 @@ export async function POST(req: Request) {
       user_id: user.id,
       product_id: productId,
       product_name: productName,
-      amount: price,
 
-      // ✅ 추가
+      // ✅ amount는 기존 int 컬럼일 가능성이 높으므로 "결제 기준값"으로 통일 (항상 정수)
+      // - KRW: 원 단위
+      // - USD: 센트 단위
+      amount: amount_minor,
+      amount_minor,
+      currency,
+      pg,
+      channel_key: channelKey,
+    
       quantity,
       source,
 
@@ -135,7 +238,7 @@ export async function POST(req: Request) {
       phone,
       zipcode,
       address,
-      address_detail: addressDetail,
+      address_detail: String(addressDetail ?? "").trim(),
       buyer_email: profile.contact_email,
       status: "pending",
     });
@@ -148,10 +251,7 @@ export async function POST(req: Request) {
       );
     }
 
-    return NextResponse.json(
-      { orderId, status: "pending" },
-      { status: 201 }
-    );
+    return NextResponse.json({ orderId, status: "pending" }, { status: 201 });
   } catch (err) {
     console.error("Order API error:", err);
     return NextResponse.json(
@@ -159,67 +259,4 @@ export async function POST(req: Request) {
       { status: 500 }
     );
   }
-}
-
-/* =========================
-   GET /api/orders
-   관리자 주문 목록
-========================= */
-export async function GET() {
-  const supabase = supabaseServer();
-
-  /* -----------------------------
-     로그인 체크
-  ----------------------------- */
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return NextResponse.json(
-      { message: "로그인이 필요합니다." },
-      { status: 401 }
-    );
-  }
-
-  /* -----------------------------
-    관리자 권한 체크 (admins 테이블 기준)
-  ----------------------------- */
-  const { data: admin, error: adminError } = await supabase
-    .from("admins")
-    .select("user_id")
-    .eq("user_id", user.id)
-    .single();
-
-  if (adminError || !admin) {
-    return NextResponse.json(
-      { message: "접근 권한이 없습니다." },
-      { status: 403 }
-    );
-  }
-
-  /* -----------------------------
-     주문 목록 조회
-  ----------------------------- */
-  const { data, error } = await supabase
-    .from("orders")
-    .select(`
-      id,
-      product_name,
-      amount,
-      status,
-      created_at,
-      recipient_name,
-      phone
-    `)
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    return NextResponse.json(
-      { message: "주문 조회 실패", error },
-      { status: 500 }
-    );
-  }
-
-  return NextResponse.json({ orders: data }, { status: 200 });
 }

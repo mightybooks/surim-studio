@@ -1,3 +1,5 @@
+// src/app/api/admin-orders/route.ts
+
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { supabaseServer } from "@/lib/supabase/server";
@@ -55,12 +57,17 @@ export async function GET() {
         id,
         product_name,
         amount,
+        amount_minor,
+        currency,
+        pg,
         status,
         created_at,
         recipient_name,
-        phone
+        phone,
+        quantity,
+        source
       `)
-      .eq("status", "paid") 
+      .eq("status", "paid")
       .order("created_at", { ascending: false });
 
     if (error) {

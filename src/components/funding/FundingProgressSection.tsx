@@ -34,9 +34,11 @@ export default function FundingProgressSection({
   const pct = useMemo(() => {
     if (!targetBooks || targetBooks <= 0) return 0;
     const raw = (currentBooks / targetBooks) * 100;
-    // UI 안정성을 위해 0~100 범위로 클램프
+    // UI 안정성을 위해 0~100 범위로 클램프    
     return Math.max(0, Math.min(100, raw));
   }, [currentBooks, targetBooks]);
+
+  const isOverTarget = currentBooks >= targetBooks;
 
   async function fetchProgress() {
     try {
@@ -103,6 +105,12 @@ export default function FundingProgressSection({
             <span className="text-zinc-700">
               목표 {targetBooks.toLocaleString()}권
             </span>
+
+            {isOverTarget && (
+              <span className="ml-2 text-emerald-600 text-base font-medium">
+                🎉 초과 달성
+              </span>
+            )}
           </div>
 
           <div className="text-sm text-zinc-500">
@@ -117,16 +125,20 @@ export default function FundingProgressSection({
 
       {/* Progress Bar */}
       <div className="space-y-2">
-        <div className="h-3 w-full rounded-full bg-zinc-100 overflow-hidden">
+        <div className="h-3 w-full rounded-full bg-emerald-100 overflow-hidden">
           <div
             className={`
               h-full
-              bg-black
               rounded-full
+              bg-gradient-to-r
+              from-emerald-400
+              via-teal-400
+              to-emerald-600
               transition-[width]
               duration-700
               ease-out
-              ${justUpdated ? "opacity-90" : "opacity-100"}
+              relative
+              ${justUpdated ? "opacity-95" : "opacity-100"}
             `}
             style={{ width: `${pct}%` }}
             aria-label="펀딩 진행률"
@@ -134,13 +146,25 @@ export default function FundingProgressSection({
             aria-valuemin={0}
             aria-valuemax={100}
             role="progressbar"
-          />
-        </div>
+          >
+            {/* ✨ subtle shimmer */}
+            <div
+              className="
+                absolute inset-0
+                bg-gradient-to-r
+                from-transparent
+                via-white/40
+                to-transparent
+                animate-[shimmer_2.5s_infinite]
+              "
+            />
+          </div>
+        </div>      
 
         {/* 보조 텍스트: 퍼센트는 작게(원하면 제거 가능) */}
         <div className="flex justify-between text-xs text-zinc-500">
           <span>0권</span>
-          <span>{Math.round(pct)}%</span>
+          <span>{isOverTarget ? "100%+" : `${Math.round(pct)}%`}</span>
           <span>{targetBooks.toLocaleString()}권</span>
         </div>
 

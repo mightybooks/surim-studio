@@ -1,3 +1,5 @@
+// src/app/order/complete/page.tsx
+
 import { Suspense } from "react";
 import CompleteClient from "./CompleteClient";
 
