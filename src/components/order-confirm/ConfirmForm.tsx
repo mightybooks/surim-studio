@@ -96,34 +96,49 @@ useEffect(() => {
   console.log("POLLING START", { orderId });
 
   const timer = setInterval(async () => {
-    console.log("POLLING TICK");
+    try {
+      const res = await fetch(
+        `/api/orders/status?orderId=${orderId}`,
+        { cache: "no-store" }
+      );
+      const json = await res.json();
 
-    const res = await fetch(
-      `/api/orders/status?orderId=${orderId}`,
-      { cache: "no-store" }
-    );
-    const json = await res.json();
+      console.log("POLLING RESPONSE", json);
 
-    console.log("POLLING RESPONSE", json);
+      if (!json?.ok) return;
 
-    if (!json.ok) return;
+      const status = json.status as string;
 
-    if (json.status === "결제완료") {
-      console.log("POLLING DETECTED 결제완료");
-      clearInterval(timer);
-      router.replace(`/order/complete?orderId=${orderId}`);
-      return;
+      // ✅ 결제 완료 계열
+      if (status === "paid" || status === "shipped") {
+        console.log("POLLING DETECTED PAID/SHIPPED");
+        clearInterval(timer);
+        router.replace(`/order/complete?orderId=${orderId}`);
+        return;
+      }
+
+      // ✅ 만료 (재시도 가능 상태)
+      if (status === "expired") {
+        console.log("POLLING DETECTED EXPIRED");
+        clearInterval(timer);
+        setExpired(true);
+        setLoading(false);
+        return;
+      }
+
+      // ✅ 실패
+      if (status === "failed") {
+        console.log("POLLING DETECTED FAILED");
+        clearInterval(timer);
+        setLoading(false);
+        return;
+      }
+
+      // 그 외(pending 등)는 계속 폴링
+    } catch (e) {
+      console.error("POLLING ERROR", e);
     }
-
-    if (json.status === "만료") {
-      console.log("POLLING DETECTED 만료");
-      clearInterval(timer);
-
-      setExpired(true);
-      setLoading(false);
-      return;
-    }
-  }, 2000); // ✅ setInterval은 여기서 닫힘
+  }, 2000);
 
   return () => clearInterval(timer);
 }, [orderId, loading, router]);

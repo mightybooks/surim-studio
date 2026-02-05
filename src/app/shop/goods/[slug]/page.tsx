@@ -1,3 +1,5 @@
+// src/app/shop/goods/[slug]/page.tsx
+
 import ProductDetailPage from "@/components/shop/ProductDetailPage";
 
 export default function Page() {

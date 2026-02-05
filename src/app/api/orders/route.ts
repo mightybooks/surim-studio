@@ -4,10 +4,8 @@ import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabase/server";
 import { randomUUID } from "crypto";
 
-/* =========================
-   POST /api/orders
-   주문 생성 (결제대기)
-========================= */
+const MAX_QTY_PER_ORDER = 100;
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -21,7 +19,27 @@ export async function POST(req: Request) {
       zipcode,
       address,
       addressDetail,
+
+      // ✅ 추가: 수량/소스 (없으면 기본값)
+      quantity: rawQuantity,
+      source: rawSource,
     } = body;
+
+    // ✅ quantity 기본값/검증 (없으면 1)
+    const quantity = Number.isFinite(Number(rawQuantity))
+      ? Math.floor(Number(rawQuantity))
+      : 1;
+
+    if (quantity < 1 || quantity > MAX_QTY_PER_ORDER) {
+      return NextResponse.json(
+        { message: `수량은 1~${MAX_QTY_PER_ORDER} 사이여야 합니다.` },
+        { status: 400 }
+      );
+    }
+
+    // ✅ source는 펀딩일 때만 허용(그 외에는 shop으로 강제)
+    const source =
+      rawSource === "funding_500" ? "funding_500" : "shop";
 
     /* -----------------------------
        최소 유효성 검사
@@ -75,6 +93,7 @@ export async function POST(req: Request) {
 
     /* -----------------------------
        기존 pending 주문 재사용
+       ✅ source/quantity까지 동일할 때만 재사용
     ----------------------------- */
     const { data: existing } = await supabase
       .from("orders")
@@ -83,6 +102,8 @@ export async function POST(req: Request) {
       .eq("product_id", productId)
       .eq("status", "pending")
       .eq("amount", price)
+      .eq("quantity", quantity) // ✅ 추가
+      .eq("source", source)     // ✅ 추가
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
@@ -105,13 +126,18 @@ export async function POST(req: Request) {
       product_id: productId,
       product_name: productName,
       amount: price,
+
+      // ✅ 추가
+      quantity,
+      source,
+
       recipient_name: recipientName,
       phone,
       zipcode,
       address,
       address_detail: addressDetail,
       buyer_email: profile.contact_email,
-      status: "pending", // 🔥 상태 영문화
+      status: "pending",
     });
 
     if (error) {

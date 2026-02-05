@@ -1,18 +1,19 @@
+// src/components/shop/PurchaseSummary.tsx
 "use client";
 
 import { useRouter } from "next/navigation";
 
-export default function PurchaseSummary({ product }: any) {
+export default function PurchaseSummary({
+  product,
+  ctaLabel = "주문하기",
+  extraQuery = {},
+}: {
+  product: any;
+  ctaLabel?: string;
+  /** /order 로 넘길 query param 추가 (예: { source: "funding_500" }) */
+  extraQuery?: Record<string, string>;
+}) {
   const router = useRouter();
-
-  const handlePay = (method: "CARD" | "KAKAOPAY") => {
-    const params = new URLSearchParams({
-      productId: product.id,
-      payMethod: method,
-    });
-
-    window.location.href = `/payment/test?${params.toString()}`;
-  };
 
   return (
     <div className="rounded-2xl border p-6 space-y-4 bg-white">
@@ -23,13 +24,16 @@ export default function PurchaseSummary({ product }: any) {
       </div>
 
       <button
-        onClick={() =>
-          router.push(
-            `/order?productId=${product.id}&productName=${encodeURIComponent(
-              product.name
-            )}&price=${product.price}`
-          )
-        }
+        onClick={() => {
+          const params = new URLSearchParams({
+            productId: product.id,
+            productName: product.name,
+            price: String(product.price),
+            ...extraQuery, // ✅ 추가
+          });
+
+          router.push(`/order?${params.toString()}`);
+        }}
         className="
           mt-3
           w-full
@@ -46,9 +50,8 @@ export default function PurchaseSummary({ product }: any) {
           transition
         "
       >
-        주문하기
+        {ctaLabel}
       </button>
-
     </div>
   );
 }
