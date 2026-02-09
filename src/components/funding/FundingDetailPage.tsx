@@ -35,7 +35,25 @@ export default function FundingDetailPage({
 
         <div className="space-y-3">
           <InAppBrowserNotice />
-          <PurchaseSummary
+
+        {/* ✅ 전자결제 우회(현금/계좌이체) 안내: 결제 CTA 바로 위가 최적 */}
+        <div className="rounded-xl border bg-neutral-50 p-3 text-sm text-neutral-700">
+          <p className="font-medium">전자결제가 어려우신가요?</p>
+          <p className="mt-1 text-xs text-neutral-600 leading-relaxed">
+            일부 인앱 브라우저 환경에서는 결제가 정상적으로 진행되지 않을 수 있습니다.
+            이 경우 아래 신청서로 현금(계좌이체) 참여가 가능합니다.
+          </p>
+          <a
+            href="https://forms.gle/dzSggGdWvh2Vn7pi6"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2 inline-flex text-xs font-medium underline underline-offset-2"
+          >
+            펀딩 참여 신청서(구글폼) 열기
+          </a>
+        </div>
+
+            <PurchaseSummary
             product={product}
             ctaLabel="펀딩 참여하기"
             extraQuery={{ source }} // ✅ 여기만 핵심 수정
