@@ -12,7 +12,7 @@ export default function Page() {
     delivery: "택배 / 1~3영업일",
     thumbnail: "/productlist/500funding_list.jpg",
     detailImage: "/productdetail/500funding_detail.jpg",
-    composition: "도서 1권",
+    composition: "도서 1권, 사은품 책갈피 1개, 저자 친필사인",
     spec: "128×188mm / 208p",
     isbn: "979-11-994493-2-9(03810)",
   };
