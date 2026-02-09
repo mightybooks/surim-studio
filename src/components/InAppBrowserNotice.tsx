@@ -10,23 +10,27 @@ function isInAppBrowser() {
 // 1. 명시적 인앱 브라우저
   const inAppPatterns = [
     /KAKAOTALK/i,
-    /Instagram/i,    
+    /Instagram/i,
     /FBAN/i,
     /FBAV/i,
     /FB_IAB/i,
+    /NAVER/i,        // 네이버앱 인앱
+    /DaumApps/i,     // 다음앱 인앱
+    /Line/i,
   ];
 
   if (inAppPatterns.some((p) => p.test(ua))) {
     return true;
   }
 
-// 2. Android WebView (Threads 포함)
-  if (
-    /Android/i.test(ua) &&
-    /wv/i.test(ua)
-  ) {
-    return true;
-  }
+  if (inAppPatterns.some((p) => p.test(ua))) return true;
+
+  // 2) Android WebView(wv)만 추가로 잡기
+  if (/Android/i.test(ua) && /\bwv\b/i.test(ua)) return true;
+
+  // ✅ iOS는 “Safari가 아니면 인앱” 같은 판정 금지 (크롬/엣지/파폭까지 다 오탐남)
+  return false;
+}
 
 // 3. iOS WebView 감지 (Threads 핵심)
     const isIOS = /iPhone|iPad|iPod/i.test(ua);
