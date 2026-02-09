@@ -7,24 +7,35 @@ function isInAppBrowser() {
 
   const ua = navigator.userAgent || "";
 
-  // 1️⃣ 명시적으로 "인앱임이 확실한 것"만 잡는다
+  // ✅ iOS 실브라우저 판별
+  const isIOS = /iPhone|iPad|iPod/i.test(ua);
+  const isIOSRealBrowser = /(CriOS|FxiOS|EdgiOS)/i.test(ua);
+
+  // 1️⃣ 명시적으로 인앱임이 확실한 UA
   const inAppPatterns = [
     /KAKAOTALK/i,
     /Instagram/i,
     /FBAN/i,
     /FBAV/i,
     /FB_IAB/i,
-    /NAVER/i,      // 네이버 앱 인앱
-    /DaumApps/i,   // 다음 앱 인앱
-    /Line/i,       // 라인 인앱
+    /NAVER/i,
+    /DaumApps/i,
+    /Line/i,
   ];
 
-  if (inAppPatterns.some((p) => p.test(ua))) return true;
+  const hitInAppToken = inAppPatterns.some((p) => p.test(ua));
 
-  // 2️⃣ Android WebView만 예외적으로 추가
+  // ✅ iOS 크롬/엣지/파폭 + 인앱 토큰 없음 → 정상 브라우저
+  if (isIOS && isIOSRealBrowser && !hitInAppToken) {
+    return false;
+  }
+
+  // 인앱 토큰이 있으면 인앱으로 간주
+  if (hitInAppToken) return true;
+
+  // 2️⃣ Android WebView만 예외 처리
   if (/Android/i.test(ua) && /\bwv\b/i.test(ua)) return true;
 
-  // ❌ iOS는 Safari/Chrome/Edge/Firefox 모두 정상 브라우저로 취급
   return false;
 }
 
@@ -32,6 +43,7 @@ export default function InAppBrowserNotice() {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
+    console.log("UA:", navigator.userAgent);
     setShow(isInAppBrowser());
   }, []);
 
