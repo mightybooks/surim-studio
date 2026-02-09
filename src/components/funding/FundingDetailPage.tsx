@@ -9,6 +9,7 @@ import ProductNotice from "@/components/shop/ProductNotice";
 import ProductPolicyBlock from "@/components/shop/ProductPolicyBlock";
 
 import FundingProgressSection from "./FundingProgressSection";
+import InAppBrowserNotice from "@/components/InAppBrowserNotice";
 
 export default function FundingDetailPage({
   product,
@@ -32,11 +33,14 @@ export default function FundingDetailPage({
           />
         </div>
 
-        <PurchaseSummary
-          product={product}
-          ctaLabel="펀딩 참여하기"
-          extraQuery={{ source }}   // ✅ 여기만 핵심 수정
-        />
+        <div className="space-y-3">
+          <InAppBrowserNotice />
+          <PurchaseSummary
+            product={product}
+            ctaLabel="펀딩 참여하기"
+            extraQuery={{ source }} // ✅ 여기만 핵심 수정
+          />
+        </div>
       </div>
 
       <FundingProgressSection
