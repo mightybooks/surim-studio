@@ -7,41 +7,24 @@ function isInAppBrowser() {
 
   const ua = navigator.userAgent || "";
 
-// 1. 명시적 인앱 브라우저
+  // 1️⃣ 명시적으로 "인앱임이 확실한 것"만 잡는다
   const inAppPatterns = [
     /KAKAOTALK/i,
     /Instagram/i,
     /FBAN/i,
     /FBAV/i,
     /FB_IAB/i,
-    /NAVER/i,        // 네이버앱 인앱
-    /DaumApps/i,     // 다음앱 인앱
-    /Line/i,
+    /NAVER/i,      // 네이버 앱 인앱
+    /DaumApps/i,   // 다음 앱 인앱
+    /Line/i,       // 라인 인앱
   ];
-
-  if (inAppPatterns.some((p) => p.test(ua))) {
-    return true;
-  }
 
   if (inAppPatterns.some((p) => p.test(ua))) return true;
 
-  // 2) Android WebView(wv)만 추가로 잡기
+  // 2️⃣ Android WebView만 예외적으로 추가
   if (/Android/i.test(ua) && /\bwv\b/i.test(ua)) return true;
 
-  // ✅ iOS는 “Safari가 아니면 인앱” 같은 판정 금지 (크롬/엣지/파폭까지 다 오탐남)
-  return false;
-}
-
-// 3. iOS WebView 감지 (Threads 핵심)
-    const isIOS = /iPhone|iPad|iPod/i.test(ua);
-    const isSafari =
-    /Safari/i.test(ua) &&
-    !/CriOS|FxiOS|EdgiOS|OPiOS|FBAN|FBAV|Instagram/i.test(ua);
-
-    if (isIOS && !isSafari) {
-    return true;
-    }
-
+  // ❌ iOS는 Safari/Chrome/Edge/Firefox 모두 정상 브라우저로 취급
   return false;
 }
 
@@ -56,9 +39,9 @@ export default function InAppBrowserNotice() {
 
   return (
     <p className="text-xs text-neutral-500 leading-relaxed">
-      카카오톡·인스타그램·스레드 등 인앱 브라우저에서는 브라우저에서는 결제가 실패할 수 있습니다.
+      카카오톡·인스타그램·네이버 등 인앱 브라우저에서는 결제가 실패할 수 있습니다.
       <br />
-      원활한 이용을 위해 외부 브라우저 크롬, 또는 사파리 등에서 접속해 주세요.
+      원활한 이용을 위해 외부 브라우저(크롬 또는 사파리)로 접속해 주세요.
     </p>
   );
 }
