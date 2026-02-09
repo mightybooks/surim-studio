@@ -133,6 +133,8 @@ export default function LoginForm({
           카카오로 계속하기
         </button>
 
+        {/* 네이버 로그인 임시 비활성화 */}
+        {/*
         <button
           type="button"
           onClick={() => (window.location.href = "/auth/naver?returnTo=/my")}
@@ -140,6 +142,7 @@ export default function LoginForm({
         >
           네이버로 계속하기
         </button>
+        */}
 
         <button
           type="button"
