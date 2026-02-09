@@ -39,6 +39,9 @@ export default function ConfirmForm() {
 
   const orderId = params.get("orderId");
   const errorType = params.get("error");
+  const redirectedPaymentId = params.get("paymentId"); // PortOne redirect 쿼리로 들어옴
+  const redirectedCode = params.get("code");           // 실패 시 코드
+  const redirectedMessage = params.get("message");     // 실패 시 메시지
 
   // ✅ 펀딩 여부 (confirm 단계 UI 제어용)
   const isFunding = params.get("funding") === "1";
@@ -48,6 +51,20 @@ export default function ConfirmForm() {
   const [expired, setExpired] = useState(false);
   const [showDelayNotice, setShowDelayNotice] = useState(false);
 
+  // ✅ 모바일 리디렉션으로 돌아온 경우: 자동으로 상태 폴링 시작
+  useEffect(() => {
+    if (!orderId) return;
+    if (redirectedPaymentId && redirectedPaymentId === orderId) {
+      // 실패 코드가 같이 오면 로딩 켜지지 않게 처리
+      if (redirectedCode) {
+        console.warn("REDIRECT_PAYMENT_FAILED", { redirectedCode, redirectedMessage });
+        setLoading(false);
+        return;
+      }
+      setLoading(true);
+    }
+  }, [orderId, redirectedPaymentId, redirectedCode, redirectedMessage]);
+  
   // ❌ orderId 없으면 잘못된 접근
   if (!orderId) {
     return (
@@ -244,6 +261,12 @@ export default function ConfirmForm() {
         totalAmount: order.amount_minor,
         currency: "KRW",
         payMethod: payMethodForPortOne,
+        // ✅ 모바일 환경 필수: 결제 후 돌아올 URL
+        //    (대부분 모바일이 리디렉션 방식이므로 redirectUrl이 필요) :contentReference[oaicite:2]{index=2}
+        redirectUrl: `${window.location.origin}/order/confirm?orderId=${orderId}`,
+        // ✅ 환경에 따라 프로미스 반환 대신 리디렉션을 강제할 수 있음
+        //    (SDK 버전에 따라 지원) :contentReference[oaicite:3]{index=3}
+        forceRedirect: true,
         customer: {
           fullName: order.recipient_name,
           phoneNumber: order.phone,
