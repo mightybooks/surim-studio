@@ -7,34 +7,43 @@ function isInAppBrowser() {
 
   const ua = navigator.userAgent || "";
 
-  // ✅ iOS 실브라우저 판별
-  const isIOS = /iPhone|iPad|iPod/i.test(ua);
-  const isIOSRealBrowser = /(CriOS|FxiOS|EdgiOS)/i.test(ua);
+  const isAndroid = /Android/i.test(ua);
+  const isAndroidWebView = isAndroid && /\bwv\b/i.test(ua);
 
-  // 1️⃣ 명시적으로 인앱임이 확실한 UA
-  const inAppPatterns = [
+  // ✅ 안드로이드 "진짜 크롬" (대부분 Chrome + Safari 토큰 동시 존재)
+  const isAndroidRealChrome =
+    isAndroid && /Chrome\/\d+/i.test(ua) && /Safari\/\d+/i.test(ua) && !isAndroidWebView;
+
+  // 1) 강한 인앱 신호: 이건 맞으면 그냥 인앱으로 봅니다.
+  const strongInAppPatterns = [
     /KAKAOTALK/i,
     /Instagram/i,
     /FBAN/i,
     /FBAV/i,
     /FB_IAB/i,
+  ];
+
+  // 2) 약한 인앱 신호: 종종 정상 브라우저에도 섞여 들어옵니다.
+  const weakInAppPatterns = [
     /NAVER/i,
     /DaumApps/i,
     /Line/i,
   ];
 
-  const hitInAppToken = inAppPatterns.some((p) => p.test(ua));
+  const hitStrong = strongInAppPatterns.some((p) => p.test(ua));
+  const hitWeak = weakInAppPatterns.some((p) => p.test(ua));
 
-  // ✅ iOS 크롬/엣지/파폭 + 인앱 토큰 없음 → 정상 브라우저
-  if (isIOS && isIOSRealBrowser && !hitInAppToken) {
-    return false;
-  }
+  // 강한 신호면 인앱
+  if (hitStrong) return true;
 
-  // 인앱 토큰이 있으면 인앱으로 간주
-  if (hitInAppToken) return true;
+  // ✅ Android 진짜 크롬이면 약한 신호는 무시 (여기서 오탐 방지)
+  if (isAndroidRealChrome && hitWeak) return false;
 
-  // 2️⃣ Android WebView만 예외 처리
-  if (/Android/i.test(ua) && /\bwv\b/i.test(ua)) return true;
+  // 약한 신호만 맞으면 인앱으로 처리 (실제 인앱 브라우저 케이스)
+  if (hitWeak) return true;
+
+  // Android WebView는 인앱으로 처리
+  if (isAndroidWebView) return true;
 
   return false;
 }
@@ -51,9 +60,9 @@ export default function InAppBrowserNotice() {
 
   return (
     <p className="text-xs text-neutral-500 leading-relaxed">
-      카카오톡·인스타그램·네이버 등 인앱 브라우저에서는 결제가 실패할 수 있습니다.
+      카카오톡·인스타그램·네이버 등 인앱 브라우저에서는 일부 결제가 실패할 수 있습니다.
       <br />
-      원활한 이용을 위해 외부 브라우저(크롬 또는 사파리)로 접속해 주세요.
+      문제가 생기면 외부 브라우저(크롬 또는 사파리)로 다시 시도해 주세요.
     </p>
   );
 }
