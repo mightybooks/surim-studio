@@ -195,11 +195,14 @@ export default function OrderFormIntl() {
       const params = new URLSearchParams();
       params.set("orderId", orderId);
 
+      // ✅ 펀딩이면 confirm에서 카카오 숨김 플래그 전달
+      if (isFunding) params.set("funding", "1");
+
       router.push(`/order/confirm?${params.toString()}`);
-    } catch (err) {
-      alert(String((err as any)?.message ?? "주문 생성 중 오류가 발생했습니다."));
-      console.error(err);
-    }
+      } catch (err) {
+        alert(String((err as any)?.message ?? "주문 생성 중 오류가 발생했습니다."));
+        console.error(err);
+      }
   };
 
   return (

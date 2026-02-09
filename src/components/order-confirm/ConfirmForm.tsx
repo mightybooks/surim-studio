@@ -40,6 +40,9 @@ export default function ConfirmForm() {
   const orderId = params.get("orderId");
   const errorType = params.get("error");
 
+  // ✅ 펀딩 여부 (confirm 단계 UI 제어용)
+  const isFunding = params.get("funding") === "1";
+
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(false);
   const [expired, setExpired] = useState(false);
@@ -274,8 +277,8 @@ export default function ConfirmForm() {
       ) : (
         <>
         
-        <div className="text-[10px] text-zinc-400">
-        DEBUG: ConfirmForm rendered. isPaypal={String(isPaypal)}
+        <div className="text-[10px] text-zinc-400">        
+        DEBUG: ConfirmForm rendered. isPaypal={String(isPaypal)} isFunding={String(isFunding)}
         </div>
         
           {/* 표시용은 기존대로 amount 사용(원하시면 currency에 따라 표시 변경 가능) */}
@@ -345,6 +348,7 @@ export default function ConfirmForm() {
             loading={loading || expired}
             onPay={requestPayment}
             showPaypal={isPaypal}
+            showKakaoPay={!isFunding}
           />
         </>
       )}
