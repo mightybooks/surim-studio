@@ -42,10 +42,7 @@ export default function ConfirmForm() {
   const redirectedPaymentId = params.get("paymentId"); // PortOne redirect 쿼리로 들어옴
   const redirectedCode = params.get("code");           // 실패 시 코드
   const redirectedMessage = params.get("message");     // 실패 시 메시지
-
-  // ✅ 펀딩 여부 (confirm 단계 UI 제어용)
-  const isFunding = params.get("funding") === "1";
-
+  
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(false);
   const [expired, setExpired] = useState(false);
@@ -300,10 +297,6 @@ export default function ConfirmForm() {
       ) : (
         <>
         
-        <div className="text-[10px] text-zinc-400">        
-        DEBUG: ConfirmForm rendered. isPaypal={String(isPaypal)} isFunding={String(isFunding)}
-        </div>
-        
           {/* 표시용은 기존대로 amount 사용(원하시면 currency에 따라 표시 변경 가능) */}
           <ConfirmSummary
             productName={order.product_name}
@@ -370,8 +363,7 @@ export default function ConfirmForm() {
           <ConfirmPaymentButtons
             loading={loading || expired}
             onPay={requestPayment}
-            showPaypal={isPaypal}
-            showKakaoPay={!isFunding}
+            showPaypal={isPaypal}            
           />
         </>
       )}

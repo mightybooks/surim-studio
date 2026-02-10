@@ -170,8 +170,6 @@ export default function OrderForm() {
       // (선택) 디버그/안전벨트: 해외결제 힌트도 같이 넘기고 싶으면
       // params.set("currency", currency); // "USD" | "KRW"
       // params.set("pg", pg);             // "paypal" | "inicis"
-      // ✅ 펀딩이면 confirm에서 카카오 숨김 플래그 전달
-      if (isFunding) params.set("funding", "1");
 
       router.push(`/order/confirm?${params.toString()}`);
     } catch (err) {
