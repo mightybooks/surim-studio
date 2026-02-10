@@ -31,8 +31,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { href: "/projects", label: "Projects" },
       { href: "/surimzine", label: "SurimZine" },
-      { href: "/contest/2026", label: "Contest" },
-      { href: "/funding/books/500", label: "Funding" },
+      { href: "/contest/2026", label: "Contest" },      
     ],
   },
   {
@@ -43,10 +42,9 @@ const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    label: "SHOP",
+    label: "Funding",
     items: [      
-      { href: "/shop/books/tosil", label: "Books" },
-      { href: "/shop/goods/8cut", label: "Goods" },
+      { href: "/funding/books/500", label: "Funding" },      
     ],
   },
 ];
