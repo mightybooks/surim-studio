@@ -8,6 +8,7 @@ import ProductInfoTable from "@/components/shop/ProductInfoTable";
 import ProductNotice from "@/components/shop/ProductNotice";
 import ProductPolicyBlock from "@/components/shop/ProductPolicyBlock";
 
+import FundingTrailerSection from "./FundingTrailerSection";
 import FundingProgressSection from "./FundingProgressSection";
 import InAppBrowserNotice from "@/components/InAppBrowserNotice";
 
@@ -66,6 +67,8 @@ export default function FundingDetailPage({
         targetBooks={targetBooks}
         maxQtyPerOrder={100}
       />
+
+      <FundingTrailerSection />
 
       {children}
 
