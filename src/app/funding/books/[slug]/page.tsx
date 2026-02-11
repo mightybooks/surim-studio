@@ -12,7 +12,7 @@ export default function Page() {
     priceUsd: 22,      // ✅ USD (해외 결제 표시/결제용)  ← 일단 테스트로 박아 넣으십시오
     delivery: "택배 / 1~3영업일",
     thumbnail: "/productlist/500funding_list.jpg",
-    detailImage: "/productdetail/500funding_detail.jpg",
+    detailImage: "/productdetail/500funding_detail2.jpg",
     composition: "도서 1권, 사은품 책갈피 1개, 저자 친필사인",
     spec: "128×188mm / 208p",
     isbn: "979-11-994493-2-9(03810)",
