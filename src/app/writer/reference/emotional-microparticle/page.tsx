@@ -1,16 +1,30 @@
 // src/app/writer/reference/emotional-microparticle/page.tsx
 
 import type { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
+import { makeReferenceJsonLd, makeReferenceMetadata } from "../_lib/referenceSeo";
 
-export const metadata: Metadata = {
+const DOC = {
+  slug: "emotional-microparticle",
   title: "정서적 미립자 확산형 서술",
   description:
-    "강한 정서 설명 없이 미세한 단서의 반복과 분산을 통해 감정을 구성하는 문체에 대한 기준 정의.",
-};
+    "정서적 미립자 확산형 서술은 감정을 직접 설명하지 않고, 미세한 정서 단서들을 분산 배치해 전체 감각을 형성하는 문체다. 기준 문서.",
+  keywords: [
+    "정서적 미립자 확산형 서술",
+    "문수림",
+    "문체",
+    "감정 비직접 서술",
+    "서술 구조",
+  ],
+} as const;
+
+export const metadata: Metadata = makeReferenceMetadata(DOC);
 
 export default function ReferenceEmotionalMicroparticlePage() {
   return (
     <article className="mx-auto max-w-3xl px-4 py-16 text-zinc-800">
+      <JsonLd data={makeReferenceJsonLd(DOC)} />
+
       <h1 className="mb-12 text-2xl font-semibold tracking-tight">
         정서적 미립자 확산형 서술
       </h1>

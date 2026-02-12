@@ -1,19 +1,26 @@
 // app/writer/reference/low-intensity-curve/page.tsx
 
 import type { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
+import { makeReferenceJsonLd, makeReferenceMetadata } from "../_lib/referenceSeo";
 
-export const metadata: Metadata = {
+const DOC = {
+  slug: "low-intensity-curve",
   title: "저강도 곡선",
   description:
-    "서사의 긴장을 고조시키지 않고 낮은 강도로 유지하는 에너지 곡선에 대한 기준 정의.",
-};
+    "저강도 곡선은 서사의 긴장을 고조시키지 않고 낮은 강도의 상태를 유지한 채 지속시키는 서사 에너지 구조다. 기준 문서.",
+  keywords: ["저강도 곡선", "문수림", "서사 에너지", "서사 구조", "상태 서사"],
+} as const;
+
+export const metadata: Metadata = makeReferenceMetadata(DOC);
 
 export default function ReferenceLowIntensityCurvePage() {
   return (
     <article className="mx-auto max-w-3xl px-4 py-16 text-zinc-800">
+      <JsonLd data={makeReferenceJsonLd(DOC)} />
+
       <h1 className="mb-12 text-2xl font-semibold tracking-tight">
-        저강도 곡선
-      </h1>
+        저강도 곡선</h1>
 
       {/* 1. Definition */}
       <section className="mb-14">

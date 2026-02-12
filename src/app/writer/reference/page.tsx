@@ -2,18 +2,33 @@
 
 import type { Metadata } from "next";
 import ReadingProgress from "@/components/ReadingProgress";
+import JsonLd from "@/components/JsonLd";
 
 export const metadata: Metadata = {
-  title: "Writer Definition — Reference | Mun Surim",
+  title: "Writer Reference | 문수림",
   description:
-    "Extended reference documentation defining the narrative structure, concepts, and literary practice of Mun Surim.",
-  alternates: {
-    canonical: "/writer/reference",
+    "문수림의 서사/문체/장르 정의 문서 모음. 500자 소설, 정서적 미립자 확산형 서술, 저강도 곡선, ‘겨울이었다’ 등 기준 문서 허브.",
+  alternates: { canonical: "/writer/reference" },
+  openGraph: {
+    title: "Writer Reference | 문수림",
+    description:
+      "문수림의 서사/문체/장르 정의 문서 모음(기준 문서 허브).",
+    url: "/writer/reference",
+    type: "website",
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Mun Surim — Writer Reference",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, url: "/writer/reference/genre500" },
+    { "@type": "ListItem", position: 2, url: "/writer/reference/emotional-microparticle" },
+    { "@type": "ListItem", position: 3, url: "/writer/reference/emotional-microparticle-comparison" },
+    { "@type": "ListItem", position: 4, url: "/writer/reference/low-intensity-curve" },
+    { "@type": "ListItem", position: 5, url: "/writer/reference/winterwas" },
+  ],
 };
 
 export default function WriterPage() {
@@ -22,6 +37,7 @@ export default function WriterPage() {
       <ReadingProgress />
 
       <main className="max-w-3xl mx-auto p-8 space-y-16">
+        <JsonLd data={jsonLd} />
         {/* Header */}
         <header className="space-y-4">
           <h1 className="text-3xl font-semibold text-zinc-900">

@@ -1,16 +1,30 @@
 // src/app/writer/reference/emotional-microparticle-comparison/page.tsx
 
 import type { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
+import { makeReferenceJsonLd, makeReferenceMetadata } from "../_lib/referenceSeo";
 
-export const metadata: Metadata = {
+const DOC = {
+  slug: "emotional-microparticle-comparison",
   title: "정서의 집중 서술과 분산 서술의 구조적 차이",
   description:
-    "정서적 미립자 확산형 서술과 기존 간접 정서 서술을 작동 구조 기준으로 비교하는 레퍼런스 문서.",
-};
+    "정서적 미립자 확산형 서술과 기존 간접 정서 서술을 ‘작동 구조’ 기준으로 비교해, 감정 배치와 해석 책임의 차이를 명확히 하는 레퍼런스 문서다. 기준 문서.",
+  keywords: [
+    "정서적 미립자 확산형 서술",
+    "간접 정서 서술",
+    "비교",
+    "서술 구조",
+    "저강도 곡선",
+  ],
+} as const;
+
+export const metadata: Metadata = makeReferenceMetadata(DOC);
 
 export default function ReferenceEmotionalMicroparticleComparisonPage() {
   return (
     <article className="mx-auto max-w-3xl px-4 py-16 text-zinc-800">
+      <JsonLd data={makeReferenceJsonLd(DOC)} />
+
       <h1 className="mb-12 text-2xl font-semibold tracking-tight">
         정서의 집중 서술과 분산 서술의 구조적 차이
       </h1>

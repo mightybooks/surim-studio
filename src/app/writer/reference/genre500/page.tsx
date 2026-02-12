@@ -1,19 +1,31 @@
-// app/writer/reference/500genre/page.tsx
+// app/writer/reference/genre500/page.tsx
 
 import type { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
+import { makeReferenceJsonLd, makeReferenceMetadata } from "../_lib/referenceSeo";
 
-export const metadata: Metadata = {
+const DOC = {
+  slug: "genre500",
   title: "500자 소설은 장르다",
   description:
-    "500자 소설을 형식이 아닌 독립적인 서사 장르로 정의하는 기준 문서.",
-};
+    "500자 소설은 ‘짧은 소설’이 아니라, 정확히 500자라는 규칙 위에서 반복적으로 생성·검증·축적되는 서사 장르다. 기준 문서.",
+  keywords: ["500자 소설", "장르 정의", "초단편", "서사 규칙", "문수림"],
+} as const;
 
-export default function Reference500GenrePage() {
+export const metadata: Metadata = makeReferenceMetadata(DOC);
+
+export default function ReferenceGenre500Page() {
   return (
     <article className="mx-auto max-w-3xl px-4 py-16 text-zinc-800">
+      <JsonLd data={makeReferenceJsonLd(DOC)} />
+
       <h1 className="mb-12 text-2xl font-semibold tracking-tight">
         500자 소설은 장르다
       </h1>
+
+      <p className="mt-4 text-base leading-7 text-zinc-700">
+        500자 소설은 정확히 500자라는 규칙 위에서 반복적으로 생성·검증·축적되는 서사 장르다.
+      </p>
 
       {/* 1. Definition */}
       <section className="mb-14">
@@ -146,6 +158,16 @@ export default function Reference500GenrePage() {
           따라서 이 문서는 회고가 아니라 기준이다. 이 정의 이후의 모든 개념
           문서는 이 전제 위에서 읽힌다.
         </p>
+      </section>
+
+      <section className="mt-16 border-t pt-10">
+        <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-zinc-500">
+          Related references
+        </h2>
+        <ul className="list-disc space-y-2 pl-5">
+          <li><a className="underline" href="/writer/reference/winterwas">‘겨울이었다’ 규칙</a></li>
+          <li><a className="underline" href="/writer/reference/emotional-microparticle">정서적 미립자 확산형 서술 구조</a></li>          
+        </ul>
       </section>
     </article>
   );

@@ -1,19 +1,26 @@
 // app/writer/reference/winterwas/page.tsx
 
 import type { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
+import { makeReferenceJsonLd, makeReferenceMetadata } from "../_lib/referenceSeo";
 
-export const metadata: Metadata = {
+const DOC = {
+  slug: "winterwas",
   title: "겨울이었다",
   description:
-    "500자 소설 장르를 전제로 한 확장 서사 실험에 대한 기준 정의 문서.",
-};
+    "‘겨울이었다’는 500자 소설 장르를 전제로, 동일한 구조 규칙을 더 강하게 통제하며 확장 가능성을 검증하는 서사 실험이다. 기준 문서.",
+  keywords: ["겨울이었다", "문수림", "500자 소설", "확장 실험", "서사 규칙"],
+} as const;
+
+export const metadata: Metadata = makeReferenceMetadata(DOC);
 
 export default function ReferenceWinterWasPage() {
   return (
     <article className="mx-auto max-w-3xl px-4 py-16 text-zinc-800">
+      <JsonLd data={makeReferenceJsonLd(DOC)} />
+
       <h1 className="mb-12 text-2xl font-semibold tracking-tight">
-        겨울이었다
-      </h1>
+        겨울이었다</h1>
 
       {/* 1. Definition */}
       <section className="mb-14">
