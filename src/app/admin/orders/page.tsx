@@ -36,6 +36,7 @@ console.log("ADMIN ORDERS RAW =", orders);
         <thead>
           <tr className="border-b bg-gray-50">
             <th className="p-2">주문ID</th>
+            <th className="p-2">주문자명</th>
             <th className="p-2">상품명</th>
             <th className="p-2">금액</th>
             <th className="p-2">상태</th>
@@ -47,7 +48,8 @@ console.log("ADMIN ORDERS RAW =", orders);
           {orders.map((o: any) => (
             <tr key={o.id} className="border-b">
               <td className="p-2">{o.id.slice(0, 8)}</td>
-              <td className="p-2">{o.product_name}</td>
+              <td className="p-2">{o.recipient_name}</td>
+              <td className="p-2">{o.product_name}</td>              
               <td className="p-2">{o.amount.toLocaleString()}원</td>
               <td className="p-2">{STATUS_LABEL[o.status as OrderStatus]}</td>
               <td className="p-2">
