@@ -22,13 +22,13 @@ export default function Home() {
   const banners: MainBannerItem[] = useMemo(() => {
     const arr: MainBannerItem[] = [
       {
-        label: "펀딩 참여",
-        title: "수림서가 첫 도서, 문수림의 『500자 소설』",
-        href: "/funding/books/500",
+        label: "펀딩 아카이브",
+        title: "수림서가 첫 도서, 문수림의 『500자 소설』펀딩 기록",
+        href: "/projects/500funding-archive/",
       },
       {
         label: "문예경연대회",
-        title: "문수림배 제3회 문예경연대회 참가",
+        title: "문수림배 제3회 문예경연대회 원고접수 종료",
         href: "/contest/2026",
       },
       {
