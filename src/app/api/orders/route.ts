@@ -5,6 +5,7 @@ import { supabaseServer } from "@/lib/supabase/server";
 import { randomUUID } from "crypto";
 
 const MAX_QTY_PER_ORDER = 100;
+const FUNDING_500_ACTIVE = false; // 2026 2월 펀딩 종료
 
 function normalizeCurrency(v: unknown) {
   const c = String(v ?? "KRW").toUpperCase();
@@ -74,14 +75,13 @@ export async function POST(req: Request) {
     const source = rawSource === "funding_500" ? "funding_500" : "shop";
 
     /* -----------------------------
-       최소 유효성 검사
+      최소 유효성 검사
     ----------------------------- */
     if (
       !productId ||
       !productName ||
-      // ✅ price 또는 amount_minor 둘 중 하나는 필요
       ((price === undefined || price === null) &&
-       (rawAmountMinor === undefined || rawAmountMinor === null)) ||
+        (rawAmountMinor === undefined || rawAmountMinor === null)) ||
       !recipientName ||
       !phone ||
       !zipcode ||
@@ -90,6 +90,20 @@ export async function POST(req: Request) {
       return NextResponse.json(
         { message: "필수 주문 정보가 누락되었습니다." },
         { status: 400 }
+      );
+    }
+
+    // ✅ 펀딩 종료 차단 (서버 방어선)
+    const isFunding500 =
+      source === "funding_500" || String(productId).startsWith("funding_500_");
+
+    if (isFunding500 && !FUNDING_500_ACTIVE) {
+      return NextResponse.json(
+        {
+          message: "이 펀딩은 종료되었습니다. 아카이브를 확인해 주세요.",
+          redirectTo: "/projects/500funding-archive",
+        },
+        { status: 403 }
       );
     }
 
