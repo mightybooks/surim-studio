@@ -3,6 +3,18 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
+const FUNDING_ARCHIVE = [
+  {
+    slug: "funding-500-complete",
+    title: "『500자 소설』 자체 펀딩 (완료)",
+    summary:
+      "500자 소설 프로젝트의 출간을 위한 자체 펀딩 기록입니다. 펀딩의 목적과 결과를 보관하는 아카이브입니다.",
+    tags: ["펀딩", "아카이브", "완료"],
+    href: "/funding/books/500",
+    thumb: "/productlist/500funding_list.jpg",
+  },
+];
+
 export const metadata: Metadata = {
   title: "Projects – 수림 스튜디오",
   description:
@@ -16,13 +28,13 @@ export const metadata: Metadata = {
   alternates: { canonical: "/projects" },
 };
 
-type Status = "active" | "planned" | "archive" | "application" ;
+type Status = "active" | "planned" | "archive" | "application";
 
 type Project = {
   slug: string;
   title: string;
   summary: string;
-  status: "active" | "planned" | "archive" | "application" ;
+  status: "active" | "planned" | "archive" | "application";
   tags: string[];
   thumb?: string;
   href?: string; // ← 있으면 이 경로로 이동
@@ -42,7 +54,8 @@ const PROJECTS: Project[] = [
   {
     slug: "500_fiction",
     title: "500자 소설 프로젝트",
-    summary: "과연 500자 안에 얼마나 밀도 있는 서사 생성이 가능할까? 개인 창작 실험에서 시작된 독자 참여형 프로젝트",
+    summary:
+      "과연 500자 안에 얼마나 밀도 있는 서사 생성이 가능할까? 개인 창작 실험에서 시작된 독자 참여형 프로젝트",
     status: "active",
     tags: ["캠페인", "500자", "출판"],
     thumb: "/projects/500_fiction_thumb.webp",
@@ -70,7 +83,7 @@ const PROJECTS: Project[] = [
       "독자 참여형 초단편 생성/평가 웹앱. 작품 공유 → 프로젝트 카테고리 연동까지 목표.",
     status: "application",
     tags: ["웹앱", "참여"],
-    thumb: "/projects/500fiction_app_thumb.webp",    
+    thumb: "/projects/500fiction_app_thumb.webp",
   },
   {
     slug: "tosiltosil-care",
@@ -89,7 +102,7 @@ const PROJECTS: Project[] = [
     tags: ["서사실험", "문체연구"],
     thumb: "/projects/500fiction_archive_thumb.webp",
   },
-    {
+  {
     slug: "tosiltosil-archive",
     title: "돌봄에너지 확산 응원 아카이브",
     summary: "돌봄에너지 자가측정 앱을 사용한 이용자들의 응원메시지 모음",
@@ -97,15 +110,23 @@ const PROJECTS: Project[] = [
     tags: ["캠페인", "에너지확산"],
     thumb: "/projects/tosiltosil_archive_thumb.webp",
   },
-    // 필요 시 자유롭게 추가
+  {
+    slug: "500funding-archive",
+    title: "500자소설 펀딩 도전 아카이브",
+    summary: "수림서가 첫 펀딩 도전의 기록",
+    status: "archive",
+    tags: ["펀딩", "500자소설", "도전 기록"],
+    thumb: "/projects/500funding_archive_thumb.webp",
+  },
+  // 필요 시 자유롭게 추가
 ];
 
 // 상태별 그룹화
 const groups: { key: Status; label: string; desc: string }[] = [
   { key: "active", label: "진행중", desc: "현재 운영 중인 프로젝트" },
-  { key: "planned", label: "예정", desc: "준비 및 개발 예정" },
   { key: "application", label: "웹앱", desc: "사용자들 이용, 공유 목적" },
-  { key: "archive", label: "아카이브", desc: "완료·중단·기록 목적" },  
+  { key: "planned", label: "예정", desc: "준비 및 개발 예정" },
+  { key: "archive", label: "아카이브", desc: "완료·중단·기록 목적" },
 ];
 
 export default function ProjectIndexPage() {
@@ -134,10 +155,10 @@ export default function ProjectIndexPage() {
             <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {items.map((p) => (
                 <li key={p.slug}>
-<Link
-  href={p.href ?? `/projects/${p.slug}`} 
-  className="group block rounded-2xl overflow-hidden border border-zinc-200 hover:border-emerald-200 bg-white/60 shadow-sm hover:shadow-md transition"
->
+                  <Link
+                    href={p.href ?? `/projects/${p.slug}`}
+                    className="group block rounded-2xl overflow-hidden border border-zinc-200 hover:border-emerald-200 bg-white/60 shadow-sm hover:shadow-md transition"
+                  >
                     {/* 썸네일 */}
                     <div className="relative w-full h-44 bg-zinc-100">
                       {p.thumb ? (
@@ -209,7 +230,7 @@ function StatusBadge({ status }: { status: Status }) {
       label: "아카이브",
       className:
         "bg-zinc-700/80 text-white border border-white/30 shadow-sm",
-    },    
+    },
   };
 
   const { label, className } = map[status];

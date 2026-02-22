@@ -23,6 +23,8 @@ export default function Page() {
       product={product}
       targetBooks={150}
       source="funding_500"
+      completionNotice="이 펀딩은 완료되었습니다. 기록은 Projects에서 확인할 수 있습니다."
+      completionNoticeHref="/projects#funding-archive"
     />
   );
 }

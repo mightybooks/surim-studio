@@ -17,14 +17,30 @@ export default function FundingDetailPage({
   children,
   targetBooks = 150,
   source = "funding_500",
+  completionNotice,
+  completionNoticeHref = "/projects#funding-archive",
 }: {
   product: any;
   children?: React.ReactNode;
   targetBooks?: number;
   source?: string;
+  completionNotice?: string;
+  completionNoticeHref?: string;
 }) {
   return (
     <section className="mx-auto max-w-5xl px-4 py-10 space-y-12">
+      {completionNotice && (
+        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+          <p>{completionNotice}</p>
+          <a
+            href={completionNoticeHref}
+            className="mt-2 inline-flex font-medium underline underline-offset-2"
+          >
+            Projects에서 아카이브 보기
+          </a>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
         <div className="rounded-2xl border overflow-hidden bg-white">
           <img

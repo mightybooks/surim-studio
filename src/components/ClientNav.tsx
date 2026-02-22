@@ -29,8 +29,7 @@ const NAV_GROUPS: NavGroup[] = [
   {
     label: "WORKS",
     items: [
-      { href: "/projects", label: "Projects" },
-      { href: "/surimzine", label: "SurimZine" },
+      { href: "/projects", label: "Projects" },      
       { href: "/contest/2026", label: "Contest" },      
     ],
   },
@@ -42,9 +41,12 @@ const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    label: "Funding",
-    items: [      
-      { href: "/funding/books/500", label: "Funding" },      
+    label: "Edition",
+    items: [
+      { href: "/editions", label: "Surim Editions" },
+      { href: "/editions/surimji", label: "수림지" },
+      { href: "/editions/surimseoga", label: "수림서가" },
+      { href: "/editions/goods", label: "굿즈" },
     ],
   },
 ];
