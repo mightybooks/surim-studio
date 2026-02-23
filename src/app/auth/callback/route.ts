@@ -1,12 +1,15 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
+import { isSafeInternalRedirect } from "@/lib/inAppBrowser";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL!;
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const code = searchParams.get("code");
+  const url = new URL(request.url);
+  const code = url.searchParams.get("code");
+  const nextRaw = url.searchParams.get("next");
+  const safeNext = isSafeInternalRedirect(nextRaw) ? nextRaw : "/my";
 
   const cookieStore = cookies();
 
@@ -25,44 +28,39 @@ export async function GET(request: Request) {
           cookieStore.set({ name, value: "", ...options });
         },
       },
-    }
+    },
   );
 
-  /**
-   * 1. code 자체가 없는 경우
-   *    → 이미 OAuth 흐름이 깨진 상태
-   *    → 세션/쿠키 정리 후 로그인으로 복귀
-   */
   if (!code) {
-    await supabase.auth.signOut(); // 🔥 중요: 잔존 state 정리
+    await supabase.auth.signOut();
     return NextResponse.redirect(
-      new URL("/login?error=oauth_missing_code", SITE_URL)
+      new URL(`/login?error=oauth_missing_code&next=${encodeURIComponent(safeNext)}`, SITE_URL),
     );
   }
 
-  /**
-   * 2. code → session 교환
-   */
   const { error } = await supabase.auth.exchangeCodeForSession(code);
-
-  /**
-   * 3. 교환 실패
-   *    → flow_state_not_found 등 포함
-   *    → 반드시 cleanup 후 재로그인
-   */
   if (error) {
-    console.error("OAuth exchange error:", error.message);
-
-    await supabase.auth.signOut(); // 🔥 핵심 패치
-
+    await supabase.auth.signOut();
     return NextResponse.redirect(
-      new URL("/login?error=oauth_failed", SITE_URL)
+      new URL(`/login?error=oauth_failed&next=${encodeURIComponent(safeNext)}`, SITE_URL),
     );
   }
 
-  /**
-   * 4. 성공
-   */
-  return NextResponse.redirect(new URL("/auth/verify", SITE_URL));
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
+  if (!user) {
+    return NextResponse.redirect(
+      new URL(`/login?next=${encodeURIComponent(safeNext)}`, SITE_URL),
+    );
+  }
+
+  if (!user.email_confirmed_at) {
+    return NextResponse.redirect(
+      new URL(`/verify-email?next=${encodeURIComponent(safeNext)}`, SITE_URL),
+    );
+  }
+
+  return NextResponse.redirect(new URL(safeNext, SITE_URL));
 }

@@ -11,7 +11,7 @@ export default async function MyPage() {
   } = await supabase.auth.getUser();
   
    if (!user) {
-    redirect("/login?error=auth_required");
+    redirect("/login?error=auth_required&next=%2Fmy");
   }
 
   const { error: ensureProfileError } = await supabase

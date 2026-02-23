@@ -1,29 +1,29 @@
-// components/auth/LoginForm.tsx
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import AuthCard from "@/components/auth/AuthCard";
-import { supabaseBrowser } from "@/lib/supabase/client";
-import InAppBrowserNotice from "@/components/InAppBrowserNotice";
 import type { Provider } from "@supabase/supabase-js";
+import AuthCard from "@/components/auth/AuthCard";
+import InAppBrowserNotice from "@/components/InAppBrowserNotice";
+import { supabaseBrowser } from "@/lib/supabase/client";
+import { isSafeInternalRedirect } from "@/lib/inAppBrowser";
 
 export default function LoginForm({
   fromVerify,
+  nextPath = "/my",
 }: {
   fromVerify?: boolean;
+  nextPath?: string;
 }) {
   const router = useRouter();
   const supabase = supabaseBrowser();
+  const safeNext = isSafeInternalRedirect(nextPath) ? nextPath : "/my";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState<string | null>(null);
 
-  /* =========================
-     이메일 / 비밀번호 로그인
-     ========================= */
   async function onLogin(e: React.FormEvent) {
     e.preventDefault();
     if (loading) return;
@@ -31,7 +31,7 @@ export default function LoginForm({
     setLoading(true);
     setErrMsg(null);
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -42,52 +42,53 @@ export default function LoginForm({
       return;
     }
 
-    router.push("/my");
+    const isVerified = Boolean(data.user?.email_confirmed_at);
+    if (!isVerified) {
+      router.replace(`/verify-email?next=${encodeURIComponent(safeNext)}`);
+      router.refresh();
+      return;
+    }
+
+    router.replace(safeNext);
     router.refresh();
   }
 
-  /* =========================
-     OAuth 로그인
-     ========================= */
   async function signInWithOAuth(provider: Provider) {
     setErrMsg(null);
 
     await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(safeNext)}`,
       },
     });
   }
 
-    return (
-      <AuthCard
-        title="로그인"
-        footer={
-          <>
-            <span>아직 계정이 없으신가요? </span>
-            <a href="/signup" className="underline">
-              회원가입
-            </a>
-          </>
-        }
-      >
-        {fromVerify && (
-          <p className="mb-4 text-sm text-green-700">
-            이메일 인증이 완료되었습니다.
-            <br />
-            로그인하시면 바로 이용하실 수 있습니다.
-          </p>
-        )}
+  return (
+    <AuthCard
+      title="로그인"
+      footer={
+        <>
+          <span>아직 계정이 없으신가요? </span>
+          <a href="/signup" className="underline">
+            회원가입
+          </a>
+        </>
+      }
+    >
+      {fromVerify && (
+        <p className="mb-4 text-sm text-green-700">
+          인증이 확인되었습니다.
+          <br />
+          로그인하면 자동으로 원래 페이지로 이동합니다.
+        </p>
+      )}
 
       <InAppBrowserNotice />
 
-      {/* =========================
-          이메일 로그인 폼
-          ========================= */}
       <form onSubmit={onLogin} className="space-y-3">
         <label className="block text-sm">
-          이메일 (로그인 ID)
+          이메일(로그인 ID)
           <input
             className="mt-1 w-full rounded border px-3 py-2"
             type="email"
@@ -121,10 +122,7 @@ export default function LoginForm({
         {errMsg && <p className="text-sm text-red-600">{errMsg}</p>}
       </form>
 
-      {/* =========================
-          OAuth 로그인 영역
-          ========================= */}
-      <div className="pt-6 space-y-2">
+      <div className="space-y-2 pt-6">
         <button
           type="button"
           onClick={() => signInWithOAuth("kakao")}
@@ -132,17 +130,6 @@ export default function LoginForm({
         >
           카카오로 계속하기
         </button>
-
-        {/* 네이버 로그인 임시 비활성화 */}
-        {/*
-        <button
-          type="button"
-          onClick={() => (window.location.href = "/auth/naver?returnTo=/my")}
-          className="w-full rounded border px-3 py-2 text-sm"
-        >
-          네이버로 계속하기
-        </button>
-        */}
 
         <button
           type="button"
