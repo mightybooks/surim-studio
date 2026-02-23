@@ -28,10 +28,15 @@ type Order = {
   zipcode: string;
   address: string;
   address_detail: string;
+  delivery_memo: string | null;
+  receipt_type: "NONE" | "CASH" | "BUSINESS" | null;
+  receipt_value: string | null;
 
   status: string;
   buyer_email: string;
 };
+
+type PaymentMethod = "bank_transfer" | "card" | "paypal";
 
 export default function ConfirmForm() {
   const router = useRouter();
@@ -39,6 +44,7 @@ export default function ConfirmForm() {
 
   const orderId = params.get("orderId");
   const errorType = params.get("error");
+  const paymentParam = (params.get("payment") ?? "").toLowerCase();
   const redirectedPaymentId = params.get("paymentId"); // PortOne redirect 쿼리로 들어옴
   const redirectedCode = params.get("code");           // 실패 시 코드
   const redirectedMessage = params.get("message");     // 실패 시 메시지
@@ -47,6 +53,12 @@ export default function ConfirmForm() {
   const [loading, setLoading] = useState(false);
   const [expired, setExpired] = useState(false);
   const [showDelayNotice, setShowDelayNotice] = useState(false);
+  const [copyDone, setCopyDone] = useState(false);
+
+  const payment: PaymentMethod =
+    paymentParam === "bank_transfer" || paymentParam === "paypal"
+      ? paymentParam
+      : "card";
 
   // ✅ 모바일 리디렉션으로 돌아온 경우: 자동으로 상태 폴링 시작
   useEffect(() => {
@@ -73,13 +85,16 @@ export default function ConfirmForm() {
 
   // ✅ order 기반으로 PayPal 여부 판단 (query 의존 제거)
   const isPaypal = useMemo(() => {
+    if (payment === "paypal") return true;
     if (!order) return false;
 
     return (
       order.currency === "USD" &&
       String(order.pg).toLowerCase() === "paypal"
     );
-  }, [order]);
+  }, [order, payment]);
+
+  const isBankTransfer = payment === "bank_transfer";
 
   /* -----------------------------
      주문 정보 조회 (orderId 기준)
@@ -175,6 +190,33 @@ export default function ConfirmForm() {
     return () => clearTimeout(t);
   }, [loading]);
 
+  const bankAccount = "우리은행 1005-004-218834 이경민(마이티북스)";
+
+  const handleCopyBankAccount = async () => {
+    try {
+      await navigator.clipboard.writeText(bankAccount);
+      setCopyDone(true);
+      return;
+    } catch {
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = bankAccount;
+        ta.style.position = "fixed";
+        ta.style.top = "0";
+        ta.style.left = "0";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        setCopyDone(true);
+      } catch {
+        prompt("아래 계좌번호를 복사해 주세요.", bankAccount);
+      }
+    }
+  };
+
   /* -----------------------------
      결제 요청
   ----------------------------- */
@@ -260,7 +302,7 @@ export default function ConfirmForm() {
         payMethod: payMethodForPortOne,
         // ✅ 모바일 환경 필수: 결제 후 돌아올 URL
         //    (대부분 모바일이 리디렉션 방식이므로 redirectUrl이 필요) :contentReference[oaicite:2]{index=2}
-        redirectUrl: `${window.location.origin}/order/confirm?orderId=${orderId}`,
+        redirectUrl: `${window.location.origin}/order/confirm?orderId=${orderId}&payment=${payment}`,
         // ✅ 환경에 따라 프로미스 반환 대신 리디렉션을 강제할 수 있음
         //    (SDK 버전에 따라 지원) :contentReference[oaicite:3]{index=3}
         forceRedirect: true,
@@ -313,7 +355,42 @@ export default function ConfirmForm() {
           />
 
           {/* ✅ PayPal은 이 컨테이너에 버튼 렌더 */}
-          {isPaypal && (
+          {order.delivery_memo && (
+            <section className="rounded-xl border p-4 bg-white">
+              <h2 className="font-medium mb-2">배송 시 요청사항(특이사항)</h2>
+              <p className="text-sm text-zinc-700 whitespace-pre-wrap">{order.delivery_memo}</p>
+            </section>
+          )}
+
+          {isBankTransfer && (
+            <section className="rounded-xl border border-amber-300 bg-amber-50 p-4 space-y-3">
+              <h2 className="font-medium text-amber-900">계좌이체 안내</h2>
+              <p className="text-sm text-amber-900">{bankAccount}</p>
+              <button
+                type="button"
+                onClick={() => void handleCopyBankAccount()}
+                className="rounded-lg border border-amber-400 bg-white px-3 py-2 text-sm font-medium text-amber-900 hover:bg-amber-100"
+              >
+                복사하기
+              </button>
+              {copyDone && <p className="text-xs text-amber-800">계좌번호가 복사되었습니다.</p>}
+              <p className="text-sm text-amber-900">
+                입금 후 최대 24시간 이내 확인 후 즉각 발송해드립니다.
+              </p>
+            </section>
+          )}
+
+          {isBankTransfer && order.receipt_type && order.receipt_type !== "NONE" && (
+            <section className="rounded-xl border p-4 bg-white space-y-1">
+              <h2 className="font-medium">증빙 요청 정보</h2>
+              <p className="text-sm text-zinc-700">
+                구분: {order.receipt_type === "CASH" ? "현금영수증" : "사업자지출증빙"}
+              </p>
+              <p className="text-sm text-zinc-700">번호: {order.receipt_value ?? "-"}</p>
+            </section>
+          )}
+
+          {isPaypal && !isBankTransfer && (
             <section className="rounded-xl border p-4 bg-white space-y-2">
               <div className="text-sm font-medium text-zinc-800">PayPal 결제</div>
               <div className="text-xs text-zinc-500">
@@ -333,13 +410,15 @@ export default function ConfirmForm() {
             </section>
           )}
 
-          <section className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 text-center">
-            <p className="text-sm text-zinc-600 leading-relaxed">
-              카드사 인증 중에는 입력 반응이 늦거나<br />
-              화면이 정지된 것처럼 보일 수 있습니다.<br />
-              <strong>결제가 정상 처리될 때까지 창을 닫지 마세요.</strong>
-            </p>
-          </section>
+          {!isBankTransfer && (
+            <section className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 text-center">
+              <p className="text-sm text-zinc-600 leading-relaxed">
+                카드사 인증 중에는 입력 반응이 늦거나<br />
+                화면이 정지된 것처럼 보일 수 있습니다.<br />
+                <strong>결제가 정상 처리될 때까지 창을 닫지 마세요.</strong>
+              </p>
+            </section>
+          )}
 
           {loading && (
             <section className="rounded-xl border p-4 bg-zinc-50 text-center">
@@ -360,11 +439,13 @@ export default function ConfirmForm() {
             </section>
           )}
 
-          <ConfirmPaymentButtons
-            loading={loading || expired}
-            onPay={requestPayment}
-            showPaypal={isPaypal}            
-          />
+          {!isBankTransfer && (
+            <ConfirmPaymentButtons
+              loading={loading || expired}
+              onPay={requestPayment}
+              showPaypal={isPaypal}
+            />
+          )}
         </>
       )}
     </main>

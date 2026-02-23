@@ -91,7 +91,7 @@ export default function FundingDetailPage({
                 공식 기록 보기
               </a>
               <a
-                href="/editions"
+                href="/edition"
                 className="rounded-xl border border-amber-300 bg-white px-5 py-2 text-sm font-medium text-amber-900 hover:bg-amber-100"
               >
                 수림서가 이동

@@ -139,6 +139,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: true });
     }
 
+    if (nextStatus === "paid" && order.status !== "pending") {
+      console.log("INVALID STATUS TRANSITION", {
+        orderId: paymentId,
+        current: order.status,
+        next: nextStatus,
+      });
+      return NextResponse.json({ ok: true });
+    }
+
     const { error } = await supabase
       .from("orders")
       .update({

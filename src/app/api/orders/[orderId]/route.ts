@@ -40,6 +40,9 @@ export async function GET(
       zipcode,
       address,
       address_detail,
+      delivery_memo,
+      receipt_type,
+      receipt_value,
 
       status,
       buyer_email,

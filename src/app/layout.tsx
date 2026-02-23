@@ -7,6 +7,7 @@ import ScrollTopDesktop from "@/components/ScrollTopDesktop";
 import KakaoLoader from "@/components/KakaoLoader";
 import DisableContextMenu from "@/components/DisableContextMenu";
 import ProtectContent from "@/components/ProtectContent";
+import GateKeeper from "@/components/gate/GateKeeper";
 
 export const metadata = {
   metadataBase: new URL("https://surimstudio.com"),
@@ -47,6 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
 
       <body className="min-h-screen bg-[var(--bg)] text-[var(--fg)]">
+        <GateKeeper />
         <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--bg)]">
           <nav className="mx-auto flex max-w-screen-md items-center justify-between px-4 py-3">
             <Link href="/" className="font-semibold text-emerald-900">

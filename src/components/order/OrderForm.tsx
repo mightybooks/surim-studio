@@ -16,6 +16,9 @@ type OrderFormState = {
   addressDetail: string;
 };
 
+type ReceiptType = "NONE" | "CASH" | "BUSINESS";
+type PaymentMethod = "bank_transfer" | "card" | "paypal";
+
 const MAX_QTY_PER_ORDER = 100;
 
 export default function OrderForm() {
@@ -31,8 +34,15 @@ export default function OrderForm() {
   const currency = (searchParams.get("currency") ?? "KRW").toUpperCase(); // KRW | USD
   const pg = (searchParams.get("pg") ?? "").toLowerCase(); // "paypal" | ""
   const payRegion = (searchParams.get("payRegion") ?? "").toUpperCase(); // "OVERSEAS" 등 (선택)
+  const paymentParam = (searchParams.get("payment") ?? "").toLowerCase();
+
+  const payment: PaymentMethod =
+    paymentParam === "bank_transfer" || paymentParam === "paypal"
+      ? paymentParam
+      : "card";
 
   const isOverseas = currency === "USD" && pg === "paypal";
+  const isBankTransfer = payment === "bank_transfer";
   const amountMinorParam = searchParams.get("amount_minor");
 
   // ✅ 펀딩 여부 (query 기반)
@@ -62,6 +72,9 @@ export default function OrderForm() {
 
   // ✅ 수량 (기본 1)
   const [quantity, setQuantity] = useState<number>(1);
+  const [deliveryMemo, setDeliveryMemo] = useState("");
+  const [receiptType, setReceiptType] = useState<ReceiptType>("NONE");
+  const [receiptValue, setReceiptValue] = useState("");
 
     const amount_minor = useMemo(() => {
     // 1) 새 링크: amount_minor 우선
@@ -123,12 +136,17 @@ export default function OrderForm() {
         zipcode: form.zipcode,
         address: form.address,
         addressDetail: form.addressDetail,
+        delivery_memo: deliveryMemo.trim() || null,
+        receipt_type: isBankTransfer ? receiptType : "NONE",
+        receipt_value:
+          isBankTransfer && receiptType !== "NONE"
+            ? receiptValue.trim() || null
+            : null,
 
         // ✅ 추가: 수량
         quantity,
 
-        // ✅ 추가: 펀딩일 때만 source 전달
-        ...(isFunding ? { source: "funding_500" } : {}),
+        ...(sourceParam ? { source: sourceParam } : {}),
       }),
     });
 
@@ -161,11 +179,20 @@ export default function OrderForm() {
 
     if (!validateAddress()) return;
 
+    if (isBankTransfer && receiptType !== "NONE" && !receiptValue.trim()) {
+      alert("증빙 발행 번호를 입력해 주세요.");
+      return;
+    }
+
     try {
       const orderId = await createOrder();
 
       const params = new URLSearchParams();
       params.set("orderId", orderId);
+      params.set("payment", payment);
+      params.set("currency", currency);
+      params.set("pg", pg);
+      if (sourceParam) params.set("source", sourceParam);
 
       // (선택) 디버그/안전벨트: 해외결제 힌트도 같이 넘기고 싶으면
       // params.set("currency", currency); // "USD" | "KRW"
@@ -192,7 +219,7 @@ export default function OrderForm() {
 
       {/* 결제 모드 표시(디버그용) */}
       <div className="text-xs text-zinc-500 mb-4">
-        결제모드: {currency}{pg ? ` / ${pg}` : ""}{isOverseas ? " (해외)" : " (국내)"}
+        결제모드: {payment} / {currency}{pg ? ` / ${pg}` : ""}{isOverseas ? " (해외)" : " (국내)"}
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -233,6 +260,79 @@ export default function OrderForm() {
           addressDetail={form.addressDetail}
           onChange={handleChange}
         />
+
+        <section className="rounded-xl border p-4 bg-white space-y-2">
+          <label htmlFor="delivery_memo" className="block text-sm text-zinc-700">
+            배송 시 요청사항(특이사항)
+          </label>
+          <textarea
+            id="delivery_memo"
+            value={deliveryMemo}
+            onChange={(e) => setDeliveryMemo(e.target.value)}
+            className="w-full rounded-lg border px-3 py-2 text-sm"
+            rows={3}
+            placeholder="예) 공동현관 비밀번호, 부재 시 문 앞에 놓아주세요, 편의점 보관 등"
+          />
+        </section>
+
+        {isBankTransfer && (
+          <section className="rounded-xl border p-4 bg-white space-y-3">
+            <div className="text-sm text-zinc-700">
+              현금영수증 또는 사업자지출증빙이 필요하다면 하나만 선택해 주세요.
+            </div>
+
+            <div className="grid gap-2 sm:grid-cols-3">
+              <label className="inline-flex items-center gap-2 text-sm">
+                <input
+                  type="radio"
+                  name="receipt_type"
+                  value="NONE"
+                  checked={receiptType === "NONE"}
+                  onChange={() => {
+                    setReceiptType("NONE");
+                    setReceiptValue("");
+                  }}
+                />
+                필요없음
+              </label>
+              <label className="inline-flex items-center gap-2 text-sm">
+                <input
+                  type="radio"
+                  name="receipt_type"
+                  value="CASH"
+                  checked={receiptType === "CASH"}
+                  onChange={() => setReceiptType("CASH")}
+                />
+                현금영수증
+              </label>
+              <label className="inline-flex items-center gap-2 text-sm">
+                <input
+                  type="radio"
+                  name="receipt_type"
+                  value="BUSINESS"
+                  checked={receiptType === "BUSINESS"}
+                  onChange={() => setReceiptType("BUSINESS")}
+                />
+                사업자지출증빙
+              </label>
+            </div>
+
+            {receiptType !== "NONE" && (
+              <div className="space-y-1">
+                <label className="block text-sm text-zinc-700" htmlFor="receipt_value">
+                  발행에 필요한 번호를 적어주세요.
+                </label>
+                <input
+                  id="receipt_value"
+                  value={receiptValue}
+                  onChange={(e) => setReceiptValue(e.target.value)}
+                  className="w-full rounded-lg border px-3 py-2 text-sm"
+                  placeholder={receiptType === "CASH" ? "전화번호" : "사업자번호"}
+                />
+              </div>
+            )}
+          </section>
+        )}
 
         {/* 기존 버튼 그대로: submit만 해주면 됨 */}
         <PaymentButtons />

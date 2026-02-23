@@ -23,6 +23,12 @@ function normalizePg(v: unknown) {
  * KRW: 4900 -> 4900
  * USD: 5.99 -> 599
  */
+function normalizeReceiptType(v: unknown): "NONE" | "CASH" | "BUSINESS" {
+  const t = String(v ?? "NONE").toUpperCase();
+  if (t === "CASH" || t === "BUSINESS") return t;
+  return "NONE";
+}
+
 function toMinorAmount(currency: "KRW" | "USD", price: unknown) {
   const n = Number(price);
   if (!Number.isFinite(n) || n <= 0) return null;
@@ -47,6 +53,9 @@ export async function POST(req: Request) {
       zipcode,
       address,
       addressDetail,
+      delivery_memo: rawDeliveryMemo,
+      receipt_type: rawReceiptType,
+      receipt_value: rawReceiptValue,
       quantity: rawQuantity,
       source: rawSource,
     } = body;
@@ -73,6 +82,9 @@ export async function POST(req: Request) {
 
     // ✅ source는 펀딩일 때만 허용(그 외에는 shop으로 강제)
     const source = rawSource === "funding_500" ? "funding_500" : "shop";
+    const deliveryMemo = String(rawDeliveryMemo ?? "").trim() || null;
+    const receiptType = normalizeReceiptType(rawReceiptType);
+    const receiptValue = String(rawReceiptValue ?? "").trim() || null;
 
     /* -----------------------------
       최소 유효성 검사
@@ -89,6 +101,13 @@ export async function POST(req: Request) {
     ) {
       return NextResponse.json(
         { message: "필수 주문 정보가 누락되었습니다." },
+        { status: 400 }
+      );
+    }
+
+    if (receiptType !== "NONE" && !receiptValue) {
+      return NextResponse.json(
+        { message: "증빙 발행 번호를 입력해 주세요." },
         { status: 400 }
       );
     }
@@ -253,6 +272,9 @@ export async function POST(req: Request) {
       zipcode,
       address,
       address_detail: String(addressDetail ?? "").trim(),
+      delivery_memo: deliveryMemo,
+      receipt_type: receiptType,
+      receipt_value: receiptType === "NONE" ? null : receiptValue,
       buyer_email: profile.contact_email,
       status: "pending",
     });

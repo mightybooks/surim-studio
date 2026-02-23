@@ -167,7 +167,7 @@ export default function FundingArchivePage() {
       {/* CTA */}
       <section className="flex flex-col md:flex-row items-center justify-center gap-4 text-center">
         <Link
-          href="/editions"
+          href="/edition"
           className="rounded-xl bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow hover:bg-emerald-700"
         >
           수림서가 바로가기

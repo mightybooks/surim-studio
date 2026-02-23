@@ -1,16 +1,22 @@
 // src/components/shop/ProductDetailPage.tsx
 
+import Link from "next/link";
 import PurchaseSummary from "./PurchaseSummary";
 import ProductDescription from "./ProductDescription";
 import ProductInfoTable from "./ProductInfoTable";
 import ProductNotice from "./ProductNotice";
 import ProductPolicyBlock from "./ProductPolicyBlock";
+import InAppBrowserNotice from "@/components/InAppBrowserNotice";
 
 export default function ProductDetailPage({
   product,
+  ctaLabel,
+  extraQuery,
   children,
 }: {
   product: any;
+  ctaLabel?: string;
+  extraQuery?: Record<string, string>;
   children?: React.ReactNode;
 }) {
   return (
@@ -26,7 +32,30 @@ export default function ProductDetailPage({
           />
         </div>
 
-        <PurchaseSummary product={product} />
+        <div className="space-y-3">
+          <InAppBrowserNotice />
+
+          <div className="rounded-xl border border-zinc-200 bg-neutral-50 p-3 text-sm text-neutral-700">
+            <p className="font-medium">수림 스튜디오는 로그인 기반 플랫폼입니다.</p>
+            <p className="mt-1 text-xs leading-relaxed text-neutral-600">
+              둘러보기는 가능하지만 로그인, 메일 인증, 결제는 일반 브라우저(Safari/Chrome)에서 진행할 때
+              가장 안정적입니다.
+            </p>
+            <div className="mt-2 flex flex-wrap gap-3 text-xs">
+              <Link href="/notice/inapp-safety" className="underline underline-offset-2">
+                인앱 이용 안내
+              </Link>
+              <Link href="/notice/login-required" className="underline underline-offset-2">
+                로그인 기반 정책
+              </Link>
+              <Link href="/notice/email-verification" className="underline underline-offset-2">
+                메일 인증 안내
+              </Link>
+            </div>
+          </div>
+
+          <PurchaseSummary product={product} ctaLabel={ctaLabel} extraQuery={extraQuery} />
+        </div>
       </div>
 
       {/* 상단 소개 문구 (선택적) */}

@@ -5,6 +5,50 @@ const nextConfig = {
     // 정적 파일 포함, 이미지 최적화 비활성화 (엑박 방지용)
     unoptimized: true,
   },
+  async redirects() {
+    return [
+      {
+        source: "/shop/books/:path*",
+        destination: "/edition/surimseoga",
+        permanent: true,
+      },
+      {
+        source: "/shop/goods/:path*",
+        destination: "/edition/goods",
+        permanent: true,
+      },
+      {
+        source: "/shop/surimji/:path*",
+        destination: "/edition/surimji",
+        permanent: true,
+      },
+      {
+        source: "/shop/testcard/:path*",
+        destination: "/edition",
+        permanent: true,
+      },
+      {
+        source: "/shop",
+        destination: "/edition",
+        permanent: true,
+      },
+      {
+        source: "/shop/:path*",
+        destination: "/edition",
+        permanent: true,
+      },
+      {
+        source: "/editions",
+        destination: "/edition",
+        permanent: true,
+      },
+      {
+        source: "/editions/:path*",
+        destination: "/edition/:path*",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

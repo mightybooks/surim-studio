@@ -9,6 +9,13 @@ const supabase = createClient(
 export async function POST(req: Request) {
   const { orderId, status, trackingNumber } = await req.json();
 
+  if (status === "paid") {
+    return NextResponse.json(
+      { ok: false, error: "status paid is not allowed on this endpoint" },
+      { status: 400 }
+    );
+  }
+
   const { error } = await supabase
     .from("orders")
     .update({
