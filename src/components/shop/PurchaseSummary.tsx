@@ -102,6 +102,9 @@ export default function PurchaseSummary({
           currency: "KRW",
         })}
       </div>
+      {product.priceUsd !== undefined && product.priceUsd !== null && (
+        <div className="text-sm text-zinc-500">≈ ${product.priceUsd} USD</div>
+      )}
 
       {isMobile && isInApp && (
         <button
@@ -124,7 +127,7 @@ export default function PurchaseSummary({
             payment: "bank_transfer",
           });
         }}
-        className="mt-3 w-full rounded-xl bg-zinc-700 px-4 py-3 font-semibold text-white transition hover:bg-zinc-800 disabled:opacity-50"
+        className="mt-3 w-full rounded-xl bg-[#8b3a62] px-4 py-3 font-semibold text-white transition hover:bg-[#7a3256] disabled:opacity-50"
       >
         국내주문 계좌이체
       </button>

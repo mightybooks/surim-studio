@@ -75,16 +75,19 @@ export default function InAppGuideClient({
       "하단 공유 버튼을 누릅니다.",
       '"Safari에서 열기"를 선택합니다.',
       "복사한 링크를 주소창에 붙여넣어 이동합니다.",
+      "화면이 열린 뒤 화면 상단의 'LOGIN'을 이용해 로그인을 합니다."
     ],
     android: [
-      "우측 상단 더보기 버튼을 누릅니다.",
-      '"Chrome에서 열기"를 선택합니다.',
+      "우측 상단 또는 하단의 더보기 버튼을 누릅니다.",
+      '"Chrome에서 열기" 또는 "다른 브라우저로 열기"를 선택합니다.',
       "복사한 링크를 주소창에 붙여넣어 이동합니다.",
+      "화면이 열린 뒤 화면 상단의 'LOGIN'을 이용해 로그인을 합니다."
     ],
     other: [
       "현재 링크를 복사합니다.",
       "일반 브라우저(Safari/Chrome)를 실행합니다.",
       "주소창에 링크를 붙여넣어 이동합니다.",
+      "화면이 열린 뒤 화면 상단의 'LOGIN'을 이용해 로그인을 합니다."
     ],
   };
 
@@ -124,6 +127,9 @@ export default function InAppGuideClient({
           </h1>
           <p className="mt-3 max-w-2xl text-zinc-700">
             이 환경에서는 로그인, 메일 인증, 결제가 불안정할 수 있습니다.
+          </p>
+          <p className="mt-5 max-w-2xl font-semibold text-rose-700">
+            아래 안내에 따라 Safari 또는 Chrome에서 접속한 뒤, 로그인 후 이용해 주세요.
           </p>
         </header>
 

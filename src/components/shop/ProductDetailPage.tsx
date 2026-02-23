@@ -1,6 +1,7 @@
 // src/components/shop/ProductDetailPage.tsx
 
 import Link from "next/link";
+import { formatMoney } from "@/lib/formatMoney";
 import PurchaseSummary from "./PurchaseSummary";
 import ProductDescription from "./ProductDescription";
 import ProductInfoTable from "./ProductInfoTable";
@@ -33,6 +34,19 @@ export default function ProductDetailPage({
         </div>
 
         <div className="space-y-3">
+          <div className="rounded-xl border border-zinc-200 bg-white p-4">
+            <p className="text-xs uppercase tracking-wide text-zinc-500">Price</p>
+            <p className="mt-1 text-2xl font-bold text-zinc-900">
+              {formatMoney({
+                amount_minor: Number(product.price ?? 0),
+                currency: "KRW",
+              })}
+            </p>
+            {product.priceUsd !== undefined && product.priceUsd !== null && (
+              <p className="mt-1 text-sm text-zinc-500">≈ ${product.priceUsd} USD</p>
+            )}
+          </div>
+
           <InAppBrowserNotice />
 
           <div className="rounded-xl border border-zinc-200 bg-neutral-50 p-3 text-sm text-neutral-700">
@@ -42,14 +56,14 @@ export default function ProductDetailPage({
               가장 안정적입니다.
             </p>
             <div className="mt-2 flex flex-wrap gap-3 text-xs">
-              <Link href="/notice/inapp-safety" className="underline underline-offset-2">
-                인앱 이용 안내
-              </Link>
               <Link href="/notice/login-required" className="underline underline-offset-2">
                 로그인 기반 정책
               </Link>
               <Link href="/notice/email-verification" className="underline underline-offset-2">
                 메일 인증 안내
+              </Link>
+              <Link href="/notice/inapp-safety" className="underline underline-offset-2">
+                인앱 이용 안내
               </Link>
             </div>
           </div>

@@ -20,7 +20,12 @@ export default function EditionProductCard({
         <p className="text-xs uppercase tracking-wide text-zinc-500">{product.type}</p>
         <h2 className="text-lg font-semibold text-emerald-900">{product.name}</h2>
         <p className="text-sm text-zinc-600">{product.summary}</p>
-        <p className="text-base font-semibold text-zinc-900">{getDisplayPrice(product)}</p>
+        <div className="space-y-1">
+          <p className="text-base font-semibold text-zinc-900">{getDisplayPrice(product)}</p>
+          {product.priceUsd !== undefined && product.priceUsd !== null && (
+            <p className="text-sm text-zinc-500">${product.priceUsd} USD</p>
+          )}
+        </div>
       </div>
 
       <Link
