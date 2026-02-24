@@ -69,7 +69,7 @@ export default async function MyEventsPage() {
 
       <footer>
         <Link href="/my" className="text-sm underline text-[color:var(--fg)]/70">
-          ← MY로 돌아가기
+          ← my로 돌아가기
         </Link>
       </footer>
     </main>

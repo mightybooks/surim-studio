@@ -57,7 +57,7 @@ export default function MyDashboardClient() {
         }
       } catch {
         if (!cancelled) {
-          setError("MY data fetch failed");
+          setError("대시보드 데이터를 불러오지 못했습니다.");
         }
       } finally {
         if (!cancelled) {
@@ -76,7 +76,7 @@ export default function MyDashboardClient() {
   if (loading) {
     return (
       <section className="rounded-xl border border-[color:var(--border)] p-4 text-sm text-[color:var(--fg)]/70">
-        Loading your dashboard...
+        대시보드를 준비하고 있습니다…
       </section>
     );
   }
@@ -84,7 +84,7 @@ export default function MyDashboardClient() {
   if (error || !data) {
     return (
       <section className="rounded-xl border border-[color:var(--border)] p-4 text-sm text-red-600">
-        Failed to load dashboard data. Please refresh.
+        문제가 발생하여 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.
       </section>
     );
   }
@@ -94,18 +94,18 @@ export default function MyDashboardClient() {
   return (
     <>
       <section className="space-y-2">
-        <h2 className="text-sm font-semibold uppercase tracking-wide">Account</h2>
+        <h2 className="text-sm font-semibold uppercase tracking-wide">계정</h2>
         <div className="rounded-xl border border-[color:var(--border)] p-4 text-sm text-[color:var(--fg)]/70">
-          Account details are protected for security reasons.
+          보안을 위해 계정 정보 일부는 표시되지 않습니다.
         </div>
       </section>
 
       <section className="space-y-2">
-        <h2 className="text-sm font-semibold uppercase tracking-wide">Email Verification</h2>
+        <h2 className="text-sm font-semibold uppercase tracking-wide">이메일 인증</h2>
         {profile?.contact_email_verified_at ? (
           <div className="rounded-xl border border-[color:var(--border)] p-4 text-sm space-y-1">
-            <p className="font-medium text-green-600">Email verification is complete.</p>
-            <p className="text-xs text-[color:var(--fg)]/60">The verified email cannot be changed.</p>
+            <p className="font-medium text-green-600">이메일 인증이 완료되었습니다.</p>
+            <p className="text-xs text-[color:var(--fg)]/60">인증된 이메일은 변경하실 수 없습니다.</p>
           </div>
         ) : (
           <ContactEmailForm defaultEmail={profile?.contact_email_pending ?? ""} />
@@ -113,9 +113,9 @@ export default function MyDashboardClient() {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold">Orders</h2>
+        <h2 className="text-lg font-semibold">주문 및 배송 내역</h2>
         {orders.length === 0 ? (
-          <p className="text-sm text-neutral-500">No order history found.</p>
+          <p className="text-sm text-neutral-500">아직 주문 내역이 없습니다.</p>
         ) : (
           <ul className="space-y-3">
             {orders.map((order) => (
@@ -125,14 +125,14 @@ export default function MyDashboardClient() {
                   <span className="text-sm font-medium">{getUserFacingOrderStatus(order)}</span>
                 </div>
                 <p className="text-sm text-neutral-600">
-                  Date: {new Date(order.created_at).toLocaleDateString()}
+                  주문일: {new Date(order.created_at).toLocaleDateString()}
                 </p>
                 <p className="text-sm text-neutral-600">
-                  Amount: {formatMoney({ amount_minor: order.amount_minor ?? 0, currency: order.currency ?? "KRW" })}
+                  금액: {formatMoney({ amount_minor: order.amount_minor ?? 0, currency: order.currency ?? "KRW" })}
                 </p>
                 {!order.is_digital && order.tracking_number && (
                   <p className="text-sm text-neutral-600">
-                    Shipping: {order.shipping_carrier ?? "-"} / Tracking: {order.tracking_number}
+                    배송사: {order.shipping_carrier ?? "-"} / 송장번호: {order.tracking_number}
                   </p>
                 )}
               </li>
@@ -142,18 +142,18 @@ export default function MyDashboardClient() {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold">Contest Submissions</h2>
+        <h2 className="text-lg font-semibold">경연대회 제출 내역</h2>
         {submissions.length === 0 ? (
-          <p className="text-sm text-neutral-500">No submission history found.</p>
+          <p className="text-sm text-neutral-500">아직 제출한 내역이 없습니다.</p>
         ) : (
           <ul className="space-y-3">
             {submissions.map((item) => (
               <li key={item.id} className="rounded-xl border bg-white p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium">Contest ({item.contest_year})</p>
-                    <p className="text-sm text-neutral-600">Title: {item.work_title}</p>
-                    <p className="text-sm text-neutral-600">Pen name: {item.pen_name}</p>
+                    <p className="font-medium">경연대회 ({item.contest_year})</p>
+                    <p className="text-sm text-neutral-600">작품명: {item.work_title}</p>
+                    <p className="text-sm text-neutral-600">필명: {item.pen_name}</p>
                   </div>
                   <span className="text-sm font-medium">{getStatusLabel(item.status)}</span>
                 </div>
@@ -164,16 +164,16 @@ export default function MyDashboardClient() {
       </section>
 
       <section className="space-y-2">
-        <h2 className="text-sm font-semibold uppercase tracking-wide">Fundings</h2>
+        <h2 className="text-sm font-semibold uppercase tracking-wide">펀딩</h2>
         <div className="rounded-xl border border-dashed border-[color:var(--border)] p-4 text-sm text-[color:var(--fg)]/50">
-          No active funding participation.
+          현재 참여 중인 펀딩이 없습니다.
         </div>
       </section>
 
       <section className="space-y-2">
-        <h2 className="text-sm font-semibold uppercase tracking-wide">Events</h2>
+        <h2 className="text-sm font-semibold uppercase tracking-wide">이벤트</h2>
         <div className="rounded-xl border border-dashed border-[color:var(--border)] p-4 text-sm text-[color:var(--fg)]/50">
-          No active event participation.
+          현재 참여 중인 이벤트가 없습니다.
         </div>
       </section>
     </>
@@ -183,15 +183,15 @@ export default function MyDashboardClient() {
 function getStatusLabel(status: string) {
   switch (status) {
     case "submitted":
-      return "Submitted";
+      return "접수 완료";
     case "reviewed":
-      return "Reviewed";
+      return "심사 완료";
     case "selected":
-      return "Selected";
+      return "선정";
     case "not_selected":
-      return "Completed";
+      return "참여 완료";
     default:
-      return "Processing";
+      return "확인 중";
   }
 }
 
@@ -201,20 +201,20 @@ function getUserFacingOrderStatus(order: {
   tracking_number: string | null;
 }) {
   if (order.is_digital) {
-    return "Digital item";
+    return "디지털 열람 가능";
   }
 
   if (order.status === "shipped") {
-    return "Shipped";
+    return "배송 완료";
   }
 
   if (order.tracking_number) {
-    return "In transit";
+    return "배송 중";
   }
 
   if (order.status === "paid") {
-    return "Preparing shipment";
+    return "배송 준비 중";
   }
 
-  return "Paid";
+  return "결제 완료";
 }

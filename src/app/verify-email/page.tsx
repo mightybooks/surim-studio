@@ -28,7 +28,7 @@ export default function VerifyEmailPage({
             href="/my"
             className="inline-flex rounded-xl border border-amber-300 bg-white px-4 py-2 text-sm font-medium text-amber-900 hover:bg-amber-100"
           >
-            마이페이지로 이동
+            my로 이동
           </Link>
         </div>
       </div>

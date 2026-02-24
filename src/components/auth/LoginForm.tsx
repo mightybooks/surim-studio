@@ -22,6 +22,7 @@ export default function LoginForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [oauthLoadingProvider, setOauthLoadingProvider] = useState<Provider | null>(null);
   const [errMsg, setErrMsg] = useState<string | null>(null);
 
   async function onLogin(e: React.FormEvent) {
@@ -54,14 +55,22 @@ export default function LoginForm({
   }
 
   async function signInWithOAuth(provider: Provider) {
-    setErrMsg(null);
+    if (oauthLoadingProvider) return;
 
-    await supabase.auth.signInWithOAuth({
+    setErrMsg(null);
+    setOauthLoadingProvider(provider);
+
+    const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
         redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(safeNext)}`,
       },
     });
+
+    if (error) {
+      setOauthLoadingProvider(null);
+      setErrMsg("소셜 로그인 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+    }
   }
 
   return (
@@ -80,7 +89,7 @@ export default function LoginForm({
         <p className="mb-4 text-sm text-green-700">
           인증이 확인되었습니다.
           <br />
-          로그인하면 자동으로 원래 페이지로 이동합니다.
+          로그인하시면 자동으로 원래 페이지로 이동합니다.
         </p>
       )}
 
@@ -113,7 +122,7 @@ export default function LoginForm({
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || Boolean(oauthLoadingProvider)}
           className="w-full rounded bg-black px-3 py-2 text-white disabled:opacity-60"
         >
           {loading ? "로그인 중..." : "로그인"}
@@ -126,7 +135,8 @@ export default function LoginForm({
         <button
           type="button"
           onClick={() => signInWithOAuth("kakao")}
-          className="w-full rounded border px-3 py-2 text-sm"
+          disabled={Boolean(oauthLoadingProvider)}
+          className="w-full rounded border px-3 py-2 text-sm disabled:opacity-60"
         >
           카카오로 계속하기
         </button>
@@ -134,9 +144,17 @@ export default function LoginForm({
         <button
           type="button"
           onClick={() => signInWithOAuth("google")}
-          className="w-full rounded border px-3 py-2 text-sm"
+          disabled={Boolean(oauthLoadingProvider)}
+          className="flex w-full items-center justify-center gap-2 rounded border px-3 py-2 text-sm disabled:opacity-60"
         >
-          구글로 계속하기
+          {oauthLoadingProvider === "google" ? (
+            <>
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-neutral-300 border-t-neutral-800" />
+              <span>구글로 이동 중</span>
+            </>
+          ) : (
+            <span>구글로 계속하기</span>
+          )}
         </button>
       </div>
     </AuthCard>

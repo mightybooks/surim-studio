@@ -58,5 +58,11 @@ export async function GET(request: Request) {
     );
   }
 
+  if (safeNext === "/my") {
+    return NextResponse.redirect(
+      new URL(`/welcome?next=${encodeURIComponent(safeNext)}`, SITE_URL),
+    );
+  }
+
   return NextResponse.redirect(new URL(safeNext, SITE_URL));
 }
