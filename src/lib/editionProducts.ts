@@ -55,7 +55,7 @@ const PRODUCT_CATALOG: EditionProduct[] = [
     category: "goods",
     summary: "창작용 콘티노트 7권 세트",
     price: 21000,
-    priceUsd: 29.99,
+    priceUsd: 0,
     delivery: "택배 / 1~3영업일",
     thumbnail: "/productlist/8cut_list.webp",
     detailImage: "/productdetail/8cut_detail.webp",
@@ -138,4 +138,25 @@ export function getOrderQuerySource(product: EditionProduct) {
 
 export function getDisplayPrice(product: EditionProduct) {
   return formatMoney({ amount_minor: product.price, currency: "KRW" });
+}
+
+export function getEditionProductById(
+  id: string,
+  products: EditionProduct[] = PRODUCT_CATALOG,
+) {
+  const normalized = String(id ?? "").trim();
+  if (!normalized) return null;
+  return products.find((product) => String(product.id ?? "").trim() === normalized) ?? null;
+}
+
+export function isGoodsProduct(product: Pick<EditionProduct, "type" | "category" | "section">) {
+  const type = String(product.type ?? "").toUpperCase();
+  const category = String(product.category ?? "").toLowerCase();
+  const section = String(product.section ?? "").toLowerCase();
+  return type === "GOODS" || category === "goods" || section === "goods";
+}
+
+export function isGoodsProductId(id: string, products: EditionProduct[] = PRODUCT_CATALOG) {
+  const product = getEditionProductById(id, products);
+  return product ? isGoodsProduct(product) : false;
 }

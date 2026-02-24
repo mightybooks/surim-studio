@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { formatMoney } from "@/lib/formatMoney";
 import { detectDevicePlatform, isInAppBrowser } from "@/lib/inAppBrowser";
+import { isGoodsProduct } from "@/lib/editionProducts";
 
 export default function PurchaseSummary({
   product,
@@ -28,16 +29,17 @@ export default function PurchaseSummary({
   const isIOS = platform === "ios";
   const isAndroid = platform === "android";
   const isInApp = useMemo(() => isInAppBrowser(ua), [ua]);
+  const isGoods = useMemo(() => isGoodsProduct(product), [product]);
 
   async function copyCurrentUrl() {
     const url = typeof window !== "undefined" ? window.location.href : "";
     if (!url) return;
 
     const guide = isIOS
-      ? "링크를 복사했습니다.\nSafari 주소창에 붙여넣어 주세요."
+      ? "링크를 복사했습니다.\nSafari 주소창에 붙여 넣어 주세요."
       : isAndroid
-        ? "링크를 복사했습니다.\nChrome 주소창에 붙여넣어 주세요."
-        : "링크를 복사했습니다.\n일반 브라우저 주소창에 붙여넣어 주세요.";
+        ? "링크를 복사했습니다.\nChrome 주소창에 붙여 넣어 주세요."
+        : "링크를 복사했습니다.\n일반 브라우저 주소창에 붙여 넣어 주세요.";
 
     try {
       await navigator.clipboard.writeText(url);
@@ -103,7 +105,7 @@ export default function PurchaseSummary({
         })}
       </div>
       {product.priceUsd !== undefined && product.priceUsd !== null && (
-        <div className="text-sm text-zinc-500">≈ ${product.priceUsd} USD</div>
+        <div className="text-sm text-zinc-500">약 ${product.priceUsd} USD</div>
       )}
 
       {isMobile && isInApp && (
@@ -148,25 +150,31 @@ export default function PurchaseSummary({
         국내주문 카드결제
       </button>
 
-      <button
-        onClick={() => {
-          if (guardInAppForPay()) return;
-          const usd = Number(product.priceUsd ?? 1.0);
-          const usdMinor = Math.round(usd * 100);
-          goOrder("/order/intl", {
-            amount_minor: String(usdMinor),
-            currency: "USD",
-            payRegion: "OVERSEAS",
-            pg: "paypal",
-            payment: "paypal",
-          });
-        }}
-        className="w-full rounded-xl bg-[#003087] px-4 py-3 font-semibold text-white transition hover:bg-[#001f5c] disabled:opacity-50"
-      >
-        해외주문 PayPal
-      </button>
+      {!isGoods && (
+        <button
+          onClick={() => {
+            if (guardInAppForPay()) return;
+            const usd = Number(product.priceUsd ?? 1.0);
+            const usdMinor = Math.round(usd * 100);
+            goOrder("/order/intl", {
+              amount_minor: String(usdMinor),
+              currency: "USD",
+              payRegion: "OVERSEAS",
+              pg: "paypal",
+              payment: "paypal",
+            });
+          }}
+          className="w-full rounded-xl bg-[#003087] px-4 py-3 font-semibold text-white transition hover:bg-[#001f5c] disabled:opacity-50"
+        >
+          해외주문 PayPal
+        </button>
+      )}
 
-      <div className="text-xs text-zinc-500">해외결제는 USD로 진행됩니다.</div>
+      {isGoods ? (
+        <div className="text-xs text-zinc-500">이 상품은 국내 배송 전용입니다.</div>
+      ) : (
+        <div className="text-xs text-zinc-500">해외결제는 USD로 진행됩니다.</div>
+      )}
     </div>
   );
 }

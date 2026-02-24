@@ -3,6 +3,7 @@
 import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabase/server";
 import { randomUUID } from "crypto";
+import { isGoodsProductId } from "@/lib/editionProducts";
 
 const MAX_QTY_PER_ORDER = 100;
 const FUNDING_500_ACTIVE = false; // 2026 2월 펀딩 종료
@@ -164,6 +165,14 @@ export async function POST(req: Request) {
     const currency = normalizeCurrency(rawCurrency); // "KRW" | "USD"
     const pg = normalizePg(rawPg); // "inicis" | "paypal"
     const channelKey = String(rawChannelKey ?? "").trim() || null;
+    const isGoodsProduct = isGoodsProductId(String(productId ?? ""));
+
+    if (isGoodsProduct && (currency === "USD" || pg === "paypal")) {
+      return NextResponse.json(
+        { message: "이 상품은 국내 배송 전용입니다." },
+        { status: 400 }
+      );
+    }
 
     // 해외 결제 규칙(현재는 PayPal만)
     if (currency === "USD") {
