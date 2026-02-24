@@ -38,7 +38,7 @@ const PRODUCT_CATALOG: EditionProduct[] = [
     category: "surimseoga",
     summary: "500자소설 단행본",
     price: 11000,
-    priceUsd: 22,
+    priceUsd: 26,
     delivery: "택배 / 1~3영업일",
     thumbnail: "/productlist/500ficion_list.webp",
     detailImage: "/productdetail/500ficion_detail.webp",

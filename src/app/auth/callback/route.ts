@@ -32,27 +32,23 @@ export async function GET(request: Request) {
   );
 
   if (!code) {
-    await supabase.auth.signOut();
     return NextResponse.redirect(
       new URL(`/login?error=oauth_missing_code&next=${encodeURIComponent(safeNext)}`, SITE_URL),
     );
   }
 
-  const { error } = await supabase.auth.exchangeCodeForSession(code);
+  const { data, error } = await supabase.auth.exchangeCodeForSession(code);
   if (error) {
-    await supabase.auth.signOut();
     return NextResponse.redirect(
       new URL(`/login?error=oauth_failed&next=${encodeURIComponent(safeNext)}`, SITE_URL),
     );
   }
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = data.user ?? data.session?.user ?? null;
 
   if (!user) {
     return NextResponse.redirect(
-      new URL(`/login?next=${encodeURIComponent(safeNext)}`, SITE_URL),
+      new URL(`/login?error=oauth_no_user&next=${encodeURIComponent(safeNext)}`, SITE_URL),
     );
   }
 
