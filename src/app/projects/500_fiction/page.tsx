@@ -123,10 +123,10 @@ export default function ficionnovel500ProjectPage() {
               </Link>
               
               <Link
-                href="#"
+                href="/edition/surimseoga/500-fiction"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-400 text-white hover:bg-emerald-500 transition"
               >
-                책 보러가기(준비중)
+                책 보러가기
               </Link>
 
               <Link
@@ -134,6 +134,13 @@ export default function ficionnovel500ProjectPage() {
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-300 text-white hover:bg-emerald-500 transition"
               >
                 입고서점 확인(준비중)
+              </Link>
+
+              <Link
+                href="/projects/500funding-archive"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-300 text-white hover:bg-emerald-500 transition"
+              >
+                펀딩 기록 확인
               </Link>
             </div>
           </section>
