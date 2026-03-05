@@ -150,7 +150,7 @@ export default function InAppEntryOverlay() {
 if (seen) {
   return (
     <div className="inapp-stack" role="status" aria-live="polite">
-      {/* 1) 위 배너 */}
+      {/* 1) 위 배너: 안내 메시지 */}
       <aside className="inapp-banner">
         <div className="inapp-banner-message">
           인앱 브라우저에서는<br />
@@ -158,7 +158,7 @@ if (seen) {
         </div>
       </aside>
 
-      {/* 2) 아래 배너 (같은 사이즈/형태) */}
+      {/* 2) 아래 배너: 버튼 역할 */}
       <aside className="inapp-banner inapp-banner--cta">
         <Link className="inapp-banner-cta" href={guideHref}>
           정상 브라우저로 여는 방법
@@ -175,10 +175,9 @@ if (seen) {
           width: min(96vw, 760px);
           display: flex;
           flex-direction: column;
-          gap: 10px; /* 위/아래 배너 간격 */
+          gap: 10px;
         }
 
-        /* ✅ 배너 공통(= 위/아래 동일 사이즈/형태) */
         .inapp-banner {
           border-radius: 14px;
           overflow: hidden;
@@ -187,32 +186,36 @@ if (seen) {
           background: #fff;
         }
 
-        /* 위 배너 내용 */
         .inapp-banner-message {
           padding: 12px 14px;
           font-size: 13px;
           line-height: 1.45;
           color: #262626;
+          text-align: center; /* 가독성을 위해 중앙 정렬 추천 */
         }
 
-        /* ✅ 아래 배너는 색만 다르게 */
+        /* ✅ 아래 배너 배경색 강조 */
         .inapp-banner--cta {
-          background: #111827;
-          border-color: #111827;
+          background-color: #111827 !important;
+          border-color: #111827 !important;
         }
 
-        .inapp-banner-cta {
+        /* ✅ 핵심: 명시도를 높여 글자색을 흰색으로 강제 고정 */
+        .inapp-banner--cta .inapp-banner-cta {
           display: block;
           width: 100%;
           padding: 10px 0;
           text-align: center;
           font-size: 13px;
           font-weight: 800;
-          color: #ffffff;
-          text-decoration: none;
+          color: #ffffff !important; /* 인앱 브라우저 기본 파란색 방어 */
+          text-decoration: none !important;
+          -webkit-appearance: none; /* iOS 등 기본 스타일 제거 */
         }
 
+        /* 클릭 시 반응성 보강 */
         .inapp-banner-cta:active {
+          opacity: 0.8;
           transform: translateY(1px);
         }
 
@@ -224,7 +227,7 @@ if (seen) {
             font-size: 12.5px;
             padding: 11px 12px;
           }
-          .inapp-banner-cta {
+          .inapp-banner--cta .inapp-banner-cta {
             padding: 11px 0;
             font-size: 12.5px;
           }
