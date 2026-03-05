@@ -5,19 +5,24 @@ import Link from "next/link";
 export default function InAppMicroPrompt({
   isLoggedIn,
   isEmailVerified,
-  loginHref = "/login",
+  nextPath,
+  loginHref,
   verifyGuideHref = "/notice/email-verification",
 }: {
   isLoggedIn: boolean;
   isEmailVerified: boolean;
+  nextPath?: string;
   loginHref?: string;
   verifyGuideHref?: string;
 }) {
+  const resolvedLoginHref =
+    loginHref ?? `/login${nextPath ? `?next=${encodeURIComponent(nextPath)}` : ""}`;
+
   if (!isLoggedIn) {
     return (
-      <div className="rounded-lg border border-neutral-200 bg-white p-2 text-xs text-neutral-700">
+      <div className="rounded-md border border-neutral-200 bg-white p-2 text-[11px] text-neutral-700">
         <p>이 기능은 로그인 후 이용 가능합니다.</p>
-        <Link href={loginHref} className="mt-1 inline-block font-semibold underline underline-offset-2">
+        <Link href={resolvedLoginHref} className="mt-1 inline-block font-semibold underline underline-offset-2">
           로그인
         </Link>
       </div>
@@ -26,7 +31,7 @@ export default function InAppMicroPrompt({
 
   if (!isEmailVerified) {
     return (
-      <div className="rounded-lg border border-neutral-200 bg-white p-2 text-xs text-neutral-700">
+      <div className="rounded-md border border-neutral-200 bg-white p-2 text-[11px] text-neutral-700">
         <p>이 기능은 이메일 인증 후 이용 가능합니다.</p>
         <Link
           href={verifyGuideHref}

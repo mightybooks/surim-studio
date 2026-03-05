@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Provider } from "@supabase/supabase-js";
 import AuthCard from "@/components/auth/AuthCard";
-import InAppGate from "@/components/inapp/InAppGate";
 import { supabaseBrowser } from "@/lib/supabase/client";
 import { isSafeInternalRedirect } from "@/lib/inAppBrowser";
 
@@ -92,8 +91,6 @@ export default function LoginForm({
           로그인하시면 자동으로 원래 페이지로 이동합니다.
         </p>
       )}
-
-      <InAppGate />
 
       <form onSubmit={onLogin} className="space-y-3">
         <label className="block text-sm">
