@@ -18,8 +18,8 @@ const GUIDE_PATH = "/notice/inapp-guide";
 const STAGE_TIMERS_MS = {
   surimi: 300,
   speech1: 1400,
-  tosil: 3800,
-  speech2: 5600,
+  tosil: 3400,
+  speech2: 4200,
   speech3: 8400,
   buttons: 9800,
 } as const;
@@ -150,7 +150,7 @@ export default function InAppEntryOverlay() {
   if (seen) {
     return (
       <aside className="inapp-banner" role="status" aria-live="polite">
-        <p>인앱 브라우저에서는 로그인/결제/인증이 정상 동작하지 않을 수 있습니다.</p>
+        <p>인앱 브라우저에서는<br/> 로그인/결제/인증이 정상 동작하지 않을 수 있습니다.</p>
         <div className="inapp-banner-actions">
           {/* ✅ “자세히”를 버튼처럼 도드라지게 */}
           <Link className="cta" href={guideHref}>
@@ -184,29 +184,32 @@ export default function InAppEntryOverlay() {
             color: #262626;
           }
 
-          .inapp-banner-actions {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-shrink: 0;
-          }
-
           .inapp-banner-actions .cta {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            border-radius: 10px;
-            padding: 7px 10px;
-            font-size: 12px;
-            font-weight: 800;
+            padding: 6px 10px;
+            border-radius: 999px;
             border: 1px solid #111827;
             background: #111827;
-            color: #fff;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 12px;
+            line-height: 1;
             text-decoration: none;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+            transform: translateY(0);
+            transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
+          }
+
+          .inapp-banner-actions .cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 18px rgba(0, 0, 0, 0.22);
           }
 
           .inapp-banner-actions .cta:active {
-            transform: translateY(1px);
+            transform: translateY(0);
+            opacity: 0.92;
           }
 
           @media (max-width: 640px) {
