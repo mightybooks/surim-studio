@@ -11,9 +11,9 @@ const GUIDE_PATH = "/notice/inapp-guide";
 const STAGE_TIMERS_MS = {
   surimi: 300,
   speech1: 1400,
-  tosil: 3600,
-  speech2: 4800,
-  speech3: 7600,
+  tosil: 3800,
+  speech2: 5600,
+  speech3: 8400,
   buttons: 9800,
 } as const;
 
@@ -69,11 +69,6 @@ export default function InAppEntryOverlay() {
     return `${pathname || "/"}${query ? `?${query}` : ""}${hash}`;
   }, [hash, pathname, searchParams]);
 
-  const currentAbsoluteUrl = useMemo(() => {
-    if (typeof window === "undefined") return currentRelativeUrl;
-    return `${window.location.origin}${currentRelativeUrl}`;
-  }, [currentRelativeUrl]);
-
   const guideHref = `${GUIDE_PATH}?redirect=${encodeURIComponent(currentRelativeUrl)}`;
 
   function markSeen() {
@@ -81,21 +76,9 @@ export default function InAppEntryOverlay() {
     setSeen(true);
   }
 
-  function openInBrowser() {
+  function goToGuide() {
     markSeen();
-    const popup = window.open(currentAbsoluteUrl, "_blank", "noopener,noreferrer");
-    if (!popup) {
-      window.location.href = currentAbsoluteUrl;
-      return;
-    }
-    window.setTimeout(() => {
-      window.location.href = currentAbsoluteUrl;
-    }, 350);
-  }
-
-  function goToLogin() {
-    markSeen();
-    window.location.href = `/login?next=${encodeURIComponent(currentRelativeUrl)}`;
+    window.location.href = guideHref;
   }
 
   function browseOnly() {
@@ -108,12 +91,9 @@ export default function InAppEntryOverlay() {
   if (seen) {
     return (
       <aside className="inapp-banner" role="status" aria-live="polite">
-        <p>카톡/인스타/스레드에서 바로 열면 로그인·결제가 꼬일 수 있습니다.</p>
+        <p>인앱 브라우저에서는 로그인/결제/인증이 정상 동작하지 않을 수 있습니다.</p>
         <div className="inapp-banner-actions">
           <Link href={guideHref}>자세히</Link>
-          <button type="button" onClick={openInBrowser}>
-            정상 브라우저로 열기
-          </button>
         </div>
 
         <style jsx>{`
@@ -156,26 +136,11 @@ export default function InAppEntryOverlay() {
             font-weight: 600;
           }
 
-          .inapp-banner button {
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            background: #fff;
-            color: #111827;
-            padding: 4px 8px;
-            font-size: 11px;
-            font-weight: 600;
-            line-height: 1.2;
-          }
-
           @media (max-width: 640px) {
             .inapp-banner {
               top: 60px;
               padding: 8px;
               gap: 8px;
-            }
-
-            .inapp-banner-actions button {
-              padding: 4px 6px;
             }
           }
         `}</style>
@@ -185,10 +150,10 @@ export default function InAppEntryOverlay() {
 
   const speechText =
     stage >= 3
-      ? "브라우저로 열어도\n댓글이나 결제는\n로그인 + 이메일 인증이 필요합니다."
+      ? "정상 브라우저로 이어서 로그인/인증/결제를 진행할 수 있어요."
       : stage >= 2
-        ? "이렇게 열리면\n로그인이나 결제가 가끔 꼬여요.\n브라우저에서 열어주세요."
-        : "잠깐!\n지금 스레드/인스타/카톡에서 링크 눌러 바로 들어오셨나요?\n그건 좀 곤란해요!";
+        ? "인앱 브라우저에서는 기능이 제한될 수 있어요.\n안내를 보고 정상 브라우저로 이동해 주세요."
+        : "잠깐!\n지금 인앱 브라우저로 접속했어요.\n안정적인 이용을 위해 안내를 확인해 주세요.";
 
   return (
     <div className="inapp-gate-overlay" role="dialog" aria-modal="true" aria-label="접속 안내">
@@ -213,11 +178,8 @@ export default function InAppEntryOverlay() {
 
       {stage >= 4 && (
         <div className="inapp-gate-actions">
-          <button type="button" className="primary" onClick={openInBrowser}>
-            정상 브라우저로 열기
-          </button>
-          <button type="button" onClick={goToLogin}>
-            로그인하고 전체 이용하기
+          <button type="button" className="primary" onClick={goToGuide}>
+            안내 보고 정상 브라우저로 열기
           </button>
           <button type="button" onClick={browseOnly}>
             그냥 둘러보기
