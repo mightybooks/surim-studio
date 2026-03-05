@@ -160,8 +160,10 @@ if (seen) {
 
       {/* 2) 아래 배너: 버튼 역할 */}
       <aside className="inapp-banner inapp-banner--cta">
-        <Link className="inapp-banner-cta" href={guideHref}>
-          정상 브라우저로 여는 방법
+        <Link href={guideHref} legacyBehavior>
+          <a className="inapp-banner-cta">
+            정상 브라우저로 여는 방법
+          </a>
         </Link>
       </aside>
 
