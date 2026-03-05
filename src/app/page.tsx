@@ -22,20 +22,20 @@ export default function Home() {
   const banners: MainBannerItem[] = useMemo(() => {
     const arr: MainBannerItem[] = [
       {
-        label: "펀딩 아카이브",
-        title: "수림서가 첫 도서, 문수림의 『500자 소설』펀딩 기록",
-        href: "/projects/500funding-archive/",
-      },
-      {
         label: "문예경연대회",
-        title: "문수림배 제3회 문예경연대회 원고접수 종료",
-        href: "/contest/2026",
+        title: "문수림배 제3회 문예경연대회 결과 발표",
+        href: "/contest/2026/Results/",
       },
       {
         label: "500자 챌린지 웹앱",
         title: "수림봇의 냉정한 평가를 견뎌낼 수 있다면",
         href: "https://500challenge.vercel.app/",
         external: true,
+      },
+            {
+        label: "펀딩 아카이브",
+        title: "수림서가 첫 도서, 문수림의 『500자 소설』펀딩 기록",
+        href: "/projects/500funding-archive/",
       },
     ];
 
