@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import InAppBrowserNotice from "@/components/InAppBrowserNotice";
 import { isInAppBrowser } from "@/lib/inAppBrowser";
 
-const SEEN_KEY = "surim_inapp_seen_v2";
+const SEEN_KEY = "surim_inapp_seen_v1";
 
 const STAGE_TIMERS_MS = {
   surimi: 300,
@@ -33,6 +33,17 @@ export default function InAppGate() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("resetGate") === "1") {
+      localStorage.removeItem(SEEN_KEY);
+      params.delete("resetGate");
+      const next =
+        window.location.pathname +
+        (params.toString() ? `?${params.toString()}` : "") +
+        window.location.hash;
+      window.history.replaceState(null, "", next);
+    }
+
     const userAgent = navigator.userAgent || "";
     const hasSeen = localStorage.getItem(SEEN_KEY) !== null;
 
@@ -43,8 +54,6 @@ export default function InAppGate() {
 
   useEffect(() => {
     if (!ready || !inApp || !firstVisit) return;
-
-    localStorage.setItem(SEEN_KEY, "1");
 
     const timers = [
       window.setTimeout(() => setShowSurimi(true), STAGE_TIMERS_MS.surimi),
@@ -76,6 +85,7 @@ export default function InAppGate() {
         : "잠깐!\n지금 스레드/인스타/카톡에서 링크 눌러 바로 들어오셨나요?\n그건 좀 곤란해요!";
 
   function closeOverlay() {
+    localStorage.setItem(SEEN_KEY, "1");
     setFirstVisit(false);
   }
 
