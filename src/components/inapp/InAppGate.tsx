@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import InAppBrowserNotice from "@/components/InAppBrowserNotice";
 import { isInAppBrowser } from "@/lib/inAppBrowser";
 
-const SEEN_KEY = "surim_inapp_seen_v1";
+const SEEN_KEY = "surim_inapp_seen_v2";
 
 const STAGE_TIMERS_MS = {
   surimi: 300,
