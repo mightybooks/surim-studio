@@ -10,11 +10,11 @@ const GUIDE_PATH = "/notice/inapp-guide";
 
 const STAGE_TIMERS_MS = {
   surimi: 300,
-  speech1: 1400,
-  tosil: 2600,
-  speech2: 3300,
-  speech3: 4800,
-  buttons: 6000,
+  speech1: 1800,
+  tosil: 3600,
+  speech2: 5200,
+  speech3: 7600,
+  buttons: 9800,
 } as const;
 
 type Stage = 0 | 1 | 2 | 3 | 4;
