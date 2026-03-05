@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";  
+import { Suspense } from "react";
 import "./globals.css";
 import ClientNav from "@/components/ClientNav";
 import MobileDock from "@/components/MobileDock";
@@ -48,7 +49,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
 
       <body className="min-h-screen bg-[var(--bg)] text-[var(--fg)]">
-        <InAppEntryOverlayRoot />
+        <Suspense fallback={null}>
+          <InAppEntryOverlayRoot />
+        </Suspense>
         <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--bg)]">
           <nav className="mx-auto flex max-w-screen-md items-center justify-between px-4 py-3">
             <Link href="/" className="font-semibold text-emerald-900">
