@@ -63,3 +63,131 @@
     font-size: 12.5px;
   }
 }
+
+/* ===== overlay (not seen) ===== */
+
+.inappGateOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px);
+  z-index: 1000;
+}
+
+.inappGateSurimi,
+.inappGateTosil {
+  position: fixed;
+  bottom: 0;
+  width: 280px;
+  max-width: 38vw;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 280ms ease, transform 280ms ease;
+  pointer-events: none;
+}
+
+.inappGateSurimi {
+  left: 24px;
+}
+
+.inappGateTosil {
+  right: 24px;
+}
+
+.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.inappGateBubble {
+  position: absolute;
+  top: 12vh;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 420px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 18px 22px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #171717;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+  animation: bubble-in 260ms ease both;
+}
+
+.inappGateBubble::after {
+  content: "";
+  position: absolute;
+  left: 60px;
+  bottom: -14px;
+  border-width: 14px;
+  border-style: solid;
+  border-color: #fff transparent transparent transparent;
+}
+
+.inappGateBubble p {
+  margin: 0;
+  white-space: pre-line;
+}
+
+.inappGateActions {
+  position: fixed;
+  left: 50%;
+  bottom: 18vh;
+  transform: translateX(-50%);
+  width: min(92vw, 420px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: bubble-in 260ms ease both;
+}
+
+.inappGateActions button {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: #171717;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+  padding: 12px 14px;
+}
+
+.primary {
+  border-color: #111827;
+  background: #111827;
+  color: #fff;
+}
+
+@keyframes bubble-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .inappGateSurimi,
+  .inappGateTosil {
+    width: 210px;
+    max-width: 46vw;
+  }
+
+  .inappGateSurimi {
+    left: 8px;
+  }
+
+  .inappGateTosil {
+    right: 8px;
+  }
+
+  .inappGateBubble {
+    width: min(92vw, 420px);
+    font-size: 15px;
+  }
+}

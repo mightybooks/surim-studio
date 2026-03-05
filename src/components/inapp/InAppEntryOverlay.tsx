@@ -179,9 +179,9 @@ if (seen) {
         : "잠깐!\n지금 인앱 브라우저로 접속했어요.\n안정적인 이용을 위해 안내를 확인해 주세요.";
 
   return (
-    <div className="inapp-gate-overlay" role="dialog" aria-modal="true" aria-label="접속 안내">
+    <div className={styles.inappGateOverlay} role="dialog" aria-modal="true" aria-label="접속 안내">
       {stage >= 1 && (
-        <div className="inapp-gate-bubble" aria-live="polite">
+        <div className={styles.inappGateBubble} aria-live="polite">
           {speechText.split("\n").map((line) => (
             <p key={line}>{line}</p>
           ))}
@@ -191,153 +191,24 @@ if (seen) {
       <img
         src="/characters/notice/suriminotice01.png"
         alt="Surimi"
-        className={`inapp-gate-surimi ${showSurimi ? "show" : ""}`}
+        className={`${styles.inappGateSurimi} ${showSurimi ? styles.show : ""}`}
       />
       <img
         src="/characters/notice/tosilnotice01.png"
         alt="Tosil"
-        className={`inapp-gate-tosil ${showTosil ? "show" : ""}`}
+        className={`${styles.inappGateTosil} ${showTosil ? styles.show : ""}`}
       />
 
       {stage >= 4 && (
-        <div className="inapp-gate-actions">
-          <button type="button" className="primary" onClick={goToGuide}>
+        <div className={styles.inappGateActions}>
+          <button type="button" className={styles.primary} onClick={goToGuide}>
             안내 보고 정상 브라우저로 열기
           </button>
           <button type="button" onClick={browseOnly}>
             그냥 둘러보기
           </button>
         </div>
-      )}
-
-      <style jsx>{`
-        .inapp-gate-overlay {
-          position: fixed;
-          inset: 0;
-          background: rgba(0, 0, 0, 0.55);
-          backdrop-filter: blur(2px);
-          z-index: 1000;
-        }
-
-        .inapp-gate-surimi,
-        .inapp-gate-tosil {
-          position: fixed;
-          bottom: 0;
-          width: 280px;
-          max-width: 38vw;
-          opacity: 0;
-          transform: translateY(16px);
-          transition: opacity 280ms ease, transform 280ms ease;
-          pointer-events: none;
-        }
-
-        .inapp-gate-surimi {
-          left: 24px;
-        }
-
-        .inapp-gate-tosil {
-          right: 24px;
-        }
-
-        .inapp-gate-surimi.show,
-        .inapp-gate-tosil.show {
-          opacity: 1;
-          transform: translateY(0);
-        }
-
-        .inapp-gate-bubble {
-          position: absolute;
-          top: 12vh;
-          left: 50%;
-          transform: translateX(-50%);
-          max-width: 420px;
-          background: #fff;
-          border-radius: 20px;
-          padding: 18px 22px;
-          font-size: 16px;
-          line-height: 1.5;
-          color: #171717;
-          box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-          animation: bubble-in 260ms ease both;
-        }
-
-        .inapp-gate-bubble::after {
-          content: "";
-          position: absolute;
-          left: 60px;
-          bottom: -14px;
-          border-width: 14px;
-          border-style: solid;
-          border-color: #fff transparent transparent transparent;
-        }
-
-        .inapp-gate-bubble p {
-          margin: 0;
-          white-space: pre-line;
-        }
-
-        .inapp-gate-actions {
-          position: fixed;
-          left: 50%;
-          bottom: 18vh;
-          transform: translateX(-50%);
-          width: min(92vw, 420px);
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-          animation: bubble-in 260ms ease both;
-        }
-
-        .inapp-gate-actions button {
-          width: 100%;
-          border-radius: 12px;
-          border: 1px solid #e5e7eb;
-          background: #fff;
-          color: #171717;
-          font-size: 14px;
-          font-weight: 700;
-          line-height: 1.2;
-          padding: 12px 14px;
-        }
-
-        .inapp-gate-actions button.primary {
-          border-color: #111827;
-          background: #111827;
-          color: #fff;
-        }
-
-        @keyframes bubble-in {
-          from {
-            opacity: 0;
-            transform: translateX(-50%) translateY(8px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-          }
-        }
-
-        @media (max-width: 768px) {
-          .inapp-gate-surimi,
-          .inapp-gate-tosil {
-            width: 210px;
-            max-width: 46vw;
-          }
-
-          .inapp-gate-surimi {
-            left: 8px;
-          }
-
-          .inapp-gate-tosil {
-            right: 8px;
-          }
-
-          .inapp-gate-bubble {
-            width: min(92vw, 420px);
-            font-size: 15px;
-          }
-        }
-      `}</style>
+      )}      
     </div>
   );
 }
