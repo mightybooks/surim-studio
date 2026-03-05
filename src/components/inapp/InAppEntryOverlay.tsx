@@ -147,60 +147,75 @@ export default function InAppEntryOverlay() {
   if (pathname === GUIDE_PATH) return null;
 
   // ✅ 이미 seen이면: 상단 배너만
- if (seen) {
+if (seen) {
   return (
-    <aside className="inapp-banner" role="status" aria-live="polite">
-      <div className="inapp-banner-message">
-        인앱 브라우저에서는<br />
-        로그인 / 결제 / 인증이 정상 동작하지 않을 수 있습니다.
+    <div className="inapp-banner-wrap" role="status" aria-live="polite">
+      {/* 레이어 1: 메시지 카드 */}
+      <aside className="inapp-banner-card">
+        <div className="inapp-banner-message">
+          인앱 브라우저에서는<br />
+          로그인 / 결제 / 인증이 정상 동작하지 않을 수 있습니다.
+        </div>
+      </aside>
+
+      {/* 레이어 2: CTA 바(완전 별개 층) */}
+      <div className="inapp-banner-cta-layer">
+        <Link className="inapp-banner-cta" href={guideHref}>
+          정상 브라우저로 여는 방법
+        </Link>
       </div>
 
-      <Link className="inapp-banner-cta" href={guideHref}>
-        정상 브라우저로 여는 방법
-      </Link>
-
       <style jsx>{`
-        .inapp-banner {
+        .inapp-banner-wrap {
           position: fixed;
           left: 50%;
           top: 68px;
+          transform: translateX(-50%);
           z-index: 60;
           width: min(96vw, 760px);
-          transform: translateX(-50%);
-          border-radius: 14px;
-          overflow: hidden;
-          border: 1px solid #e5e7eb;
-          box-shadow: 0 12px 26px rgba(0, 0, 0, 0.12);
-          background: #fff;
-          display: flex;
-          flex-direction: column;
+          pointer-events: none; /* 바깥은 클릭 막고 */
         }
 
-        /* ✅ 상단: 안내 메시지 영역 */
+        /* 레이어 1: 카드 */
+        .inapp-banner-card {
+          pointer-events: auto;
+          border-radius: 16px;
+          border: 1px solid #e5e7eb;
+          background: #ffffff;
+          box-shadow: 0 12px 26px rgba(0, 0, 0, 0.12);
+          overflow: hidden;
+        }
+
         .inapp-banner-message {
-          padding: 12px 14px;
+          padding: 14px 14px;
           font-size: 13px;
           line-height: 1.45;
           color: #262626;
-          background: #ffffff;
         }
 
-        /* ✅ 하단: CTA 버튼 영역 */
+        /* 레이어 2: CTA 바 (카드랑 분리된 “층”) */
+        .inapp-banner-cta-layer {
+          pointer-events: auto;
+          margin-top: 10px; /* 카드와 층 분리감 */
+        }
+
         .inapp-banner-cta {
           display: block;
           width: 100%;
           text-align: center;
-          padding: 10px 0;
-          font-size: 13px;
-          font-weight: 700;
+          padding: 11px 0;
+          border-radius: 14px;
+
+          /* ✅ “바탕색과 확실히 다른 층” */
           background: #111827;
           color: #ffffff;
           text-decoration: none;
-          transition: background 120ms ease, transform 120ms ease;
-        }
+          font-size: 13px;
+          font-weight: 800;
 
-        .inapp-banner-cta:hover {
-          background: #000000;
+          /* ✅ 레이어 느낌(독립된 그림자) */
+          box-shadow: 0 10px 18px rgba(17, 24, 39, 0.25);
+          border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .inapp-banner-cta:active {
@@ -208,22 +223,20 @@ export default function InAppEntryOverlay() {
         }
 
         @media (max-width: 640px) {
-          .inapp-banner {
+          .inapp-banner-wrap {
             top: 60px;
           }
-
           .inapp-banner-message {
             font-size: 12.5px;
-            padding: 11px 12px;
+            padding: 12px 12px;
           }
-
           .inapp-banner-cta {
-            padding: 11px 0;
             font-size: 12.5px;
+            padding: 12px 0;
           }
         }
       `}</style>
-    </aside>
+    </div>
   );
 }
 
