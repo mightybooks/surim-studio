@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { isInAppBrowser } from "@/lib/inAppBrowser";
+import styles from "./InAppEntryOverlay.module.css";
 
 /**
  * ✅ seen 정책
@@ -149,92 +150,23 @@ export default function InAppEntryOverlay() {
   // ✅ 이미 seen이면: 상단 배너만
 if (seen) {
   return (
-    <div className="inapp-stack" role="status" aria-live="polite">
+    <div className={styles.inappStack} role="status" aria-live="polite">
       {/* 1) 위 배너: 안내 메시지 */}
-      <aside className="inapp-banner">
-        <div className="inapp-banner-message">
+      <aside className={styles.inappBanner}>
+        <div className={styles.inappBannerMessage}>
           인앱 브라우저에서는<br />
           로그인 / 결제 / 인증이 정상 동작하지 않을 수 있습니다.
         </div>
       </aside>
 
       {/* 2) 아래 배너: 버튼 역할 */}
-      <aside className="inapp-banner inapp-banner--cta">
+      <aside className={`${styles.inappBanner} ${styles.inappBannerCtaBox}`}>
         <Link href={guideHref} legacyBehavior>
-          <a className="inapp-banner-cta">
+          <a className={styles.inappBannerCta}>
             정상 브라우저로 여는 방법
           </a>
         </Link>
-      </aside>
-
-      <style jsx>{`
-        .inapp-stack {
-          position: fixed;
-          left: 50%;
-          top: 68px;
-          transform: translateX(-50%);
-          z-index: 60;
-          width: min(96vw, 760px);
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-        }
-
-        .inapp-banner {
-          border-radius: 14px;
-          overflow: hidden;
-          border: 1px solid #e5e7eb;
-          box-shadow: 0 12px 26px rgba(0, 0, 0, 0.12);
-          background: #fff;
-        }
-
-        .inapp-banner-message {
-          padding: 12px 14px;
-          font-size: 13px;
-          line-height: 1.45;
-          color: #262626;
-          text-align: center; /* 가독성을 위해 중앙 정렬 추천 */
-        }
-
-        /* ✅ 아래 배너 배경색 강조 */
-        .inapp-banner--cta {
-          background-color: #111827 !important;
-          border-color: #111827 !important;
-        }
-
-        /* ✅ 핵심: 명시도를 높여 글자색을 흰색으로 강제 고정 */
-        .inapp-banner--cta .inapp-banner-cta {
-          display: block;
-          width: 100%;
-          padding: 10px 0;
-          text-align: center;
-          font-size: 13px;
-          font-weight: 800;
-          color: #ffffff !important; /* 인앱 브라우저 기본 파란색 방어 */
-          text-decoration: none !important;
-          -webkit-appearance: none; /* iOS 등 기본 스타일 제거 */
-        }
-
-        /* 클릭 시 반응성 보강 */
-        .inapp-banner-cta:active {
-          opacity: 0.8;
-          transform: translateY(1px);
-        }
-
-        @media (max-width: 640px) {
-          .inapp-stack {
-            top: 60px;
-          }
-          .inapp-banner-message {
-            font-size: 12.5px;
-            padding: 11px 12px;
-          }
-          .inapp-banner--cta .inapp-banner-cta {
-            padding: 11px 0;
-            font-size: 12.5px;
-          }
-        }
-      `}</style>
+      </aside>     
     </div>
   );
 }
