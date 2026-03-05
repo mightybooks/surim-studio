@@ -11,6 +11,17 @@ export type NewsItem = {
 
 export const NEWS: NewsItem[] = [
     {
+    slug: "contest-2026-results",
+    title: "자체 펀딩 및 문예경연대회 종료 ",
+    body:
+      "문수림의 신간『500자소설』이 성공적으로 자체 펀딩을 종료하고 " +       
+      "현재 온라인 서점과 독립서점을 통해 유통되고 있습니다. " +
+      "제3회 문예경연대회가 소설 부분 대상 1편, 가작 1편을 선정하고 발표하는 것으로 " +
+      "행사를 종료하였습니다. ",
+    category: "News",
+    published_at: "2026-03-05",
+    },
+    {
     slug: "ready-500-novel",
     title: "문수림의『500자소설』곧 자체 펀딩에 들어갑니다 ",
     body:
