@@ -5,15 +5,8 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { isInAppBrowser } from "@/lib/inAppBrowser";
 import styles from "./InAppEntryOverlay.module.css";
+import { makeSeenKey, readSeen, writeSeen } from "@/lib/inappSeen";
 
-/**
- * ✅ seen 정책
- * - 앱(카톡/메타/네이버 등)별로 key 분리
- * - TTL 7일: 7일 지나면 다시 오버레이 1회 노출 가능
- * - "둘러보기"는 seen 처리하지 않음 (첫 방문 오판 방지)
- */
-const SEEN_KEY_PREFIX = "surim_inapp_character_seen_v2";
-const SEEN_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7일
 const GUIDE_PATH = "/notice/inapp-guide";
 
 const STAGE_TIMERS_MS = {
@@ -26,45 +19,6 @@ const STAGE_TIMERS_MS = {
 } as const;
 
 type Stage = 0 | 1 | 2 | 3 | 4;
-
-function detectInAppHost(ua: string) {
-  if (/KAKAOTALK/i.test(ua)) return "kakao";
-  if (/Threads|Instagram|FBAN|FBAV|FB_IAB/i.test(ua)) return "meta";
-  if (/NAVER/i.test(ua)) return "naver";
-  if (/DaumApps/i.test(ua)) return "daum";
-  if (/Line/i.test(ua)) return "line";
-  return "other";
-}
-
-function makeSeenKey(ua: string) {
-  const host = detectInAppHost(ua);
-  return `${SEEN_KEY_PREFIX}_${host}`;
-}
-
-function readSeen(key: string): boolean {
-  try {
-    const raw = localStorage.getItem(key);
-    if (!raw) return false;
-
-    // ✅ 과거 v1("1") 포맷 호환 (혹시 남아있으면 TTL 없이 seen으로 취급)
-    if (raw === "1") return true;
-
-    const parsed = JSON.parse(raw) as { v: number; t: number };
-    if (!parsed?.t) return false;
-
-    return Date.now() - parsed.t < SEEN_TTL_MS;
-  } catch {
-    return false;
-  }
-}
-
-function writeSeen(key: string) {
-  try {
-    localStorage.setItem(key, JSON.stringify({ v: 1, t: Date.now() }));
-  } catch {
-    // 저장 불가 환경(일부 인앱)에서는 실패할 수 있음. UX는 state로만 처리.
-  }
-}
 
 export default function InAppEntryOverlay() {
   const pathname = usePathname();
@@ -148,28 +102,28 @@ export default function InAppEntryOverlay() {
   if (pathname === GUIDE_PATH) return null;
 
   // ✅ 이미 seen이면: 상단 배너만
-if (seen) {
-  return (
-    <div className={styles.inappStack} role="status" aria-live="polite">
-      {/* 1) 위 배너: 안내 메시지 */}
-      <aside className={styles.inappBanner}>
-        <div className={styles.inappBannerMessage}>
-          인앱 브라우저에서는<br />
-          로그인 / 결제 / 인증이 정상 동작하지 않을 수 있습니다.
-        </div>
-      </aside>
+  if (seen) {
+    return (
+      <div className={styles.inappStack} role="status" aria-live="polite">
+        {/* 1) 위 배너: 안내 메시지 */}
+        <aside className={styles.inappBanner}>
+          <div className={styles.inappBannerMessage}>
+            인앱 브라우저에서는<br />
+            로그인 / 결제 / 인증이 정상 동작하지 않을 수 있습니다.
+          </div>
+        </aside>
 
-      {/* 2) 아래 배너: 버튼 역할 */}
-      <aside className={`${styles.inappBanner} ${styles.inappBannerCtaBox}`}>
-        <Link href={guideHref} legacyBehavior>
-          <a className={styles.inappBannerCta}>
-            정상 브라우저로 여는 방법
-          </a>
-        </Link>
-      </aside>     
-    </div>
-  );
-}
+        {/* 2) 아래 배너: 버튼 역할 */}
+        <aside className={`${styles.inappBanner} ${styles.inappBannerCtaBox}`}>
+          <Link href={guideHref} legacyBehavior>
+            <a className={styles.inappBannerCta}>
+              정상 브라우저로 여는 방법
+            </a>
+          </Link>
+        </aside>     
+      </div>
+    );
+  }
 
   const speechText =
     stage >= 3
