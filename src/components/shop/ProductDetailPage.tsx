@@ -7,7 +7,7 @@ import ProductDescription from "./ProductDescription";
 import ProductInfoTable from "./ProductInfoTable";
 import ProductNotice from "./ProductNotice";
 import ProductPolicyBlock from "./ProductPolicyBlock";
-import InAppBrowserNotice from "@/components/InAppBrowserNotice";
+import InAppGate from "@/components/inapp/InAppGate";
 
 export default function ProductDetailPage({
   product,
@@ -47,7 +47,7 @@ export default function ProductDetailPage({
             )}
           </div>
 
-          <InAppBrowserNotice />
+          <InAppGate />
 
           <div className="rounded-xl border border-zinc-200 bg-neutral-50 p-3 text-sm text-neutral-700">
             <p className="font-medium">수림 스튜디오는 로그인 기반 플랫폼입니다.</p>

@@ -10,7 +10,7 @@ import ProductPolicyBlock from "@/components/shop/ProductPolicyBlock";
 
 import FundingTrailerSection from "./FundingTrailerSection";
 import FundingProgressSection from "./FundingProgressSection";
-import InAppBrowserNotice from "@/components/InAppBrowserNotice";
+import InAppGate from "@/components/inapp/InAppGate";
 
 export default function FundingDetailPage({
   product,
@@ -53,7 +53,7 @@ export default function FundingDetailPage({
         </div>
 
         <div className="space-y-3">
-          <InAppBrowserNotice />
+          <InAppGate />
 
         {/* ✅ 전자결제 우회(현금/계좌이체) 안내: 결제 CTA 바로 위가 최적 */}
         {fundingActive !== false && (
