@@ -5,7 +5,14 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { isInAppBrowser } from "@/lib/inAppBrowser";
 
-const CHARACTER_SEEN_KEY = "surim_inapp_character_seen_v1";
+/**
+ * ✅ seen 정책
+ * - 앱(카톡/메타/네이버 등)별로 key 분리
+ * - TTL 7일: 7일 지나면 다시 오버레이 1회 노출 가능
+ * - "둘러보기"는 seen 처리하지 않음 (첫 방문 오판 방지)
+ */
+const SEEN_KEY_PREFIX = "surim_inapp_character_seen_v2";
+const SEEN_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7일
 const GUIDE_PATH = "/notice/inapp-guide";
 
 const STAGE_TIMERS_MS = {
@@ -19,9 +26,49 @@ const STAGE_TIMERS_MS = {
 
 type Stage = 0 | 1 | 2 | 3 | 4;
 
+function detectInAppHost(ua: string) {
+  if (/KAKAOTALK/i.test(ua)) return "kakao";
+  if (/Threads|Instagram|FBAN|FBAV|FB_IAB/i.test(ua)) return "meta";
+  if (/NAVER/i.test(ua)) return "naver";
+  if (/DaumApps/i.test(ua)) return "daum";
+  if (/Line/i.test(ua)) return "line";
+  return "other";
+}
+
+function makeSeenKey(ua: string) {
+  const host = detectInAppHost(ua);
+  return `${SEEN_KEY_PREFIX}_${host}`;
+}
+
+function readSeen(key: string): boolean {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return false;
+
+    // ✅ 과거 v1("1") 포맷 호환 (혹시 남아있으면 TTL 없이 seen으로 취급)
+    if (raw === "1") return true;
+
+    const parsed = JSON.parse(raw) as { v: number; t: number };
+    if (!parsed?.t) return false;
+
+    return Date.now() - parsed.t < SEEN_TTL_MS;
+  } catch {
+    return false;
+  }
+}
+
+function writeSeen(key: string) {
+  try {
+    localStorage.setItem(key, JSON.stringify({ v: 1, t: Date.now() }));
+  } catch {
+    // 저장 불가 환경(일부 인앱)에서는 실패할 수 있음. UX는 state로만 처리.
+  }
+}
+
 export default function InAppEntryOverlay() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
   const [mounted, setMounted] = useState(false);
   const [inApp, setInApp] = useState(false);
   const [seen, setSeen] = useState(false);
@@ -30,11 +77,18 @@ export default function InAppEntryOverlay() {
   const [showSurimi, setShowSurimi] = useState(false);
   const [showTosil, setShowTosil] = useState(false);
 
+  // UA 기반 key는 mount 이후에 확정
+  const [seenKey, setSeenKey] = useState<string>("");
+
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    setInApp(isInAppBrowser(window.navigator.userAgent || ""));
-    setSeen(localStorage.getItem(CHARACTER_SEEN_KEY) === "1");
+    const ua = window.navigator.userAgent || "";
+    const key = makeSeenKey(ua);
+
+    setSeenKey(key);
+    setInApp(isInAppBrowser(ua));
+    setSeen(readSeen(key));
     setHash(window.location.hash || "");
     setMounted(true);
 
@@ -59,9 +113,7 @@ export default function InAppEntryOverlay() {
       window.setTimeout(() => setStage(4), STAGE_TIMERS_MS.buttons),
     ];
 
-    return () => {
-      timers.forEach((id) => window.clearTimeout(id));
-    };
+    return () => timers.forEach((id) => window.clearTimeout(id));
   }, [inApp, mounted, seen]);
 
   const currentRelativeUrl = useMemo(() => {
@@ -72,28 +124,38 @@ export default function InAppEntryOverlay() {
   const guideHref = `${GUIDE_PATH}?redirect=${encodeURIComponent(currentRelativeUrl)}`;
 
   function markSeen() {
-    localStorage.setItem(CHARACTER_SEEN_KEY, "1");
+    if (!seenKey) {
+      setSeen(true);
+      return;
+    }
+    writeSeen(seenKey);
     setSeen(true);
   }
 
   function goToGuide() {
+    // ✅ 안내를 보러 가는 명확한 행동에서만 seen 처리
     markSeen();
     window.location.href = guideHref;
   }
 
   function browseOnly() {
-    markSeen();
+    // ✅ "둘러보기"는 seen 처리하지 않음 (첫 방문 오판 방지)
+    setSeen(true); // 단, 이번 방문 동안만 오버레이를 닫기 위해 state만 true
   }
 
   if (!mounted || !inApp) return null;
   if (pathname === GUIDE_PATH) return null;
 
+  // ✅ 이미 seen이면: 상단 배너만
   if (seen) {
     return (
       <aside className="inapp-banner" role="status" aria-live="polite">
         <p>인앱 브라우저에서는 로그인/결제/인증이 정상 동작하지 않을 수 있습니다.</p>
         <div className="inapp-banner-actions">
-          <Link href={guideHref}>자세히</Link>
+          {/* ✅ “자세히”를 버튼처럼 도드라지게 */}
+          <Link className="cta" href={guideHref}>
+            자세히
+          </Link>
         </div>
 
         <style jsx>{`
@@ -108,13 +170,13 @@ export default function InAppEntryOverlay() {
             background: #fff;
             border-radius: 12px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
-            padding: 8px 10px;
+            padding: 10px 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 10px;
             font-size: 12px;
-            line-height: 1.3;
+            line-height: 1.35;
           }
 
           .inapp-banner p {
@@ -129,18 +191,32 @@ export default function InAppEntryOverlay() {
             flex-shrink: 0;
           }
 
-          .inapp-banner a {
-            text-decoration: underline;
-            text-underline-offset: 2px;
-            color: #111827;
-            font-weight: 600;
+          .inapp-banner-actions .cta {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            padding: 7px 10px;
+            font-size: 12px;
+            font-weight: 800;
+            border: 1px solid #111827;
+            background: #111827;
+            color: #fff;
+            text-decoration: none;
+          }
+
+          .inapp-banner-actions .cta:active {
+            transform: translateY(1px);
           }
 
           @media (max-width: 640px) {
             .inapp-banner {
               top: 60px;
-              padding: 8px;
+              padding: 10px;
               gap: 8px;
+            }
+            .inapp-banner-actions .cta {
+              padding: 7px 9px;
             }
           }
         `}</style>
@@ -150,7 +226,7 @@ export default function InAppEntryOverlay() {
 
   const speechText =
     stage >= 3
-      ? "정상 브라우저로 이어서 로그인/인증/결제를 진행할 수 있어요."
+      ? "정상 브라우저로 이어서\n로그인/인증/결제를 진행할 수 있어요."
       : stage >= 2
         ? "인앱 브라우저에서는 기능이 제한될 수 있어요.\n안내를 보고 정상 브라우저로 이동해 주세요."
         : "잠깐!\n지금 인앱 브라우저로 접속했어요.\n안정적인 이용을 위해 안내를 확인해 주세요.";
@@ -272,7 +348,7 @@ export default function InAppEntryOverlay() {
           background: #fff;
           color: #171717;
           font-size: 14px;
-          font-weight: 600;
+          font-weight: 700;
           line-height: 1.2;
           padding: 12px 14px;
         }
