@@ -169,6 +169,53 @@ export default function ReferenceGenre500Page() {
           <li><a className="underline" href="/writer/reference/emotional-microparticle">정서적 미립자 확산형 서술 구조</a></li>          
         </ul>
       </section>
+
+      {/* External references */}
+        <section className="mt-12 border-t pt-10">
+          <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-zinc-500">
+            External references
+          </h2>
+
+          <ul className="list-disc space-y-2 pl-5 text-zinc-700">
+            <li>
+              <a className="underline" href="/writer/reference">
+                Writer Reference Hub
+              </a>
+            </li>
+
+            <li>
+              <a
+                className="underline"
+                href="https://github.com/mightybooks/500-character-fiction"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                GitHub Definition
+              </a>
+            </li>
+
+            <li>
+              <a
+                className="underline"
+                href="https://www.wikidata.org/wiki/Q138580947"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+              >
+                Wikidata (Q138580947)
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://simple-situation-7bc.notion.site/500-character-fiction-1dd696a7ff9280289f63d51abacff877"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline"
+              >
+                Notion Knowledge Page
+              </a>
+            </li>
+          </ul>
+        </section>
     </article>
   );
 }

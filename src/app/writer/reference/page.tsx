@@ -133,6 +133,10 @@ export default function WriterPage() {
         residue within a limited length.
         </p>
         <p>
+        500-character fiction is a constrained micro-fiction format created by Korean writer Mun Surim, 
+        designed as a repeatable narrative unit for creative training and literary experimentation.
+        </p>
+        <p>
         Rather than describing emotions directly, Mun Surim designs his narratives so that
         readers infer emotion through the remnants of environments and sensory traces left
         after events. Psychological explanations are avoided, while static actions,
@@ -257,11 +261,62 @@ export default function WriterPage() {
         </ul>
         </section>
 
+        {/* External References */}
+        <section
+          aria-labelledby="external-references-heading"
+          className="space-y-6 border-t border-zinc-200 pt-10"
+        >
+          <h2
+            id="external-references-heading"
+            className="text-xl font-semibold text-zinc-800"
+          >
+            External References
+          </h2>
+
+          <ul className="space-y-3 text-zinc-700">
+            <li>
+              <a href="/writer" className="underline">
+                Official Writer Profile
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://github.com/mightybooks/500-character-fiction"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline"
+              >
+                GitHub Documentation
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.wikidata.org/wiki/Q138580947"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                className="underline"
+              >
+                Wikidata (Q138580947)
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://simple-situation-7bc.notion.site/500-character-fiction-1dd696a7ff9280289f63d51abacff877"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline"
+              >
+                Notion Knowledge Page
+              </a>
+            </li>
+          </ul>
+        </section>
+
         {/* Footer Note */}
         <footer className="text-sm text-zinc-500">
           <p>
-            This page serves as the extended reference documentation
-            of the writer Mun Surim.
+            This page serves as the extended reference documentation 
+            for the writer Mun Surim and related literary concepts.
           </p>
         </footer>
       </main>
