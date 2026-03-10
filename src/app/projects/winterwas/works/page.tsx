@@ -21,6 +21,11 @@ const works = [
     date: "2026.01.11",
     tags: ["바람", "민둥산", "패인얼음"],
   },
+  {
+    slug: "winter-005",
+    date: "2026.03.10",
+    tags: ["아기", "아이", "태엽 인형"],
+  },
 ];
 
 export default function WinterWorksPage() {
