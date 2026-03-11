@@ -153,6 +153,22 @@ export default function AboutPage() {
               그 사람이 바로 문수림입니다.
             </p>
 
+        {/* 연구 글 언급 */}
+          <p className="text-zinc-700 leading-loose">
+            문수림은 이러한 문제의식을 바탕으로
+            「소설이 성립되기 위한 최소 단위에 대한 고찰: 500자 서사의 가능성」이라는
+            연구 글을 발표하기도 했습니다.
+          </p>
+
+          <a
+            href="https://doi.org/10.5281/zenodo.18960753"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline underline-offset-4 text-emerald-800 hover:text-emerald-600"
+          >
+            연구 글 보기 (Zenodo)
+          </a>
+
             <p className="text-zinc-700 leading-loose">
               문수림의 공식적인 작가 정의와 호출 기준은
               별도의 Writer Definition 페이지에 정리되어 있습니다.

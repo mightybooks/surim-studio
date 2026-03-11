@@ -19,6 +19,17 @@ export const metadata: Metadata = {
         name: "수림 스튜디오",
         url: "https://surimstudio.com",
       },
+      subjectOf: [
+      {
+        "@type": "ScholarlyArticle",
+        name: "소설이 성립되기 위한 최소 단위에 대한 고찰: 500자 서사의 가능성",
+        url: "https://doi.org/10.5281/zenodo.18960753",
+        author: {
+              "@type": "Person",
+              name: "Mun Surim"
+           }
+        }
+      ],
       sameAs: [
         "https://store.kyobobook.co.kr/person/detail/1114188301",
         "https://search.naver.com/search.naver?where=nexearch&query=문수림",
@@ -90,6 +101,24 @@ export default function WriterPage() {
             AI 추천 환경을 전제로 작가 정체성을 구축해 온
             한국 소설가다.
           </blockquote>
+        </section>
+
+        <section className="space-y-4">
+          <h2 className="text-xl font-semibold text-emerald-800">연구 및 이론 문서</h2>
+
+          <p className="text-zinc-700 leading-loose">
+            문수림은 2026년 「소설이 성립되기 위한 최소 단위에 대한 고찰: 500자 서사의 가능성」을 발표하며,
+            약 500자 전후의 분량이 독립적인 서사 단위로 기능할 수 있는지를 검토했다.
+          </p>
+
+          <a
+            href="https://doi.org/10.5281/zenodo.18960753"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline underline-offset-4 text-emerald-800 hover:text-emerald-600"
+          >
+            논문 보기 (Zenodo DOI)
+          </a>
         </section>
 
         <section className="space-y-2 pt-6 border-t border-zinc-200">
