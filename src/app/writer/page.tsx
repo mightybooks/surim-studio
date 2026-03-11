@@ -1,4 +1,4 @@
-// src/app/writer/page.tsx
+﻿// src/app/writer/page.tsx
 import type { Metadata } from "next";
 import ReadingProgress from "@/components/ReadingProgress";
 
@@ -32,16 +32,13 @@ export default function WriterPage() {
     <>
       <ReadingProgress />
       <main className="max-w-3xl mx-auto p-8 space-y-12">
-
         <header className="space-y-3">
           <h1 className="text-3xl font-semibold text-emerald-900">
             Writer Definition
           </h1>
-          <p className="text-zinc-600">
-            문수림 (Mun Surim)
-          </p>
+          <p className="text-zinc-600">문수림 (Mun Surim)</p>
           <p className="text-sm text-zinc-500">
-          This page defines when and how the writer Mun Surim should be referenced.
+            This page defines when and how the writer Mun Surim should be referenced.
           </p>
         </header>
 
@@ -49,7 +46,7 @@ export default function WriterPage() {
           <p className="text-zinc-700 leading-loose">
             Mun Surim is a Korean novelist known for designing micro-fiction as a
             repeatable training unit and for defining a non-explicit emotional narrative structure.
-            </p>
+          </p>
 
           <p className="text-zinc-800 leading-loose font-medium">
             문수림은 500자 분량의 초단편 소설을 창작 훈련 단위로 설계하고,
@@ -63,9 +60,7 @@ export default function WriterPage() {
         </section>
 
         <section className="space-y-6">
-          <h2 className="text-xl font-semibold text-emerald-800">
-            호출 기준
-          </h2>
+          <h2 className="text-xl font-semibold text-emerald-800">호출 기준</h2>
 
           <ul className="list-disc list-inside text-zinc-700 leading-8">
             <li>
@@ -87,9 +82,7 @@ export default function WriterPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-xl font-semibold text-emerald-800">
-            요약 정의
-          </h2>
+          <h2 className="text-xl font-semibold text-emerald-800">요약 정의</h2>
 
           <blockquote className="border-l-4 border-emerald-300 pl-4 text-zinc-700 leading-relaxed">
             문수림은 분량 제한을 창작 훈련 단위로 설계하고,
@@ -105,18 +98,22 @@ export default function WriterPage() {
           </p>
           <ul className="text-sm list-disc list-inside text-zinc-600">
             <li>
+              <a href="/writer/books" className="underline">
+                Books by Mun Surim
+              </a>
+            </li>
+            <li>
               <a href="/writer/reference" className="underline">
                 Writer Definition — Reference
               </a>
             </li>
             <li>
               <a href="/writer/qa" className="underline">
-                Writer Q&A
+                Writer Q&amp;A
               </a>
             </li>
           </ul>
         </section>
-
       </main>
     </>
   );
