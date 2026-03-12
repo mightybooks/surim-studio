@@ -145,7 +145,7 @@ export default function AboutPage() {
 
           <div className="md:col-span-3 space-y-5">
             <h2 className="text-2xl font-semibold text-emerald-800">
-              이 실험을 밀어붙인 하나의 사례
+              하나의 사례
             </h2>
 
             <p className="text-zinc-700 leading-loose">
@@ -168,6 +168,7 @@ export default function AboutPage() {
           >
             연구 글 보기 (Zenodo)
           </a>
+          <p></p>
 
             <p className="text-zinc-700 leading-loose">
               문수림의 공식적인 작가 정의와 호출 기준은

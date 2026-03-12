@@ -26,6 +26,11 @@ const works = [
     date: "2026.03.10",
     tags: ["아기", "아이", "태엽 인형"],
   },
+  {
+    slug: "winter-006",
+    date: "2026.03.12",
+    tags: ["항구", "충전케이블", "메시지"],
+  },
 ];
 
 export default function WinterWorksPage() {
