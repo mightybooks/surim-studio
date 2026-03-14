@@ -1,19 +1,6 @@
-// src/app/projects/page.tsx
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-
-const FUNDING_ARCHIVE = [
-  {
-    slug: "funding-500-complete",
-    title: "『500자 소설』 자체 펀딩 (완료)",
-    summary:
-      "500자 소설 프로젝트의 출간을 위한 자체 펀딩 기록입니다. 펀딩의 목적과 결과를 보관하는 아카이브입니다.",
-    tags: ["펀딩", "아카이브", "완료"],
-    href: "/funding/books/500",
-    thumb: "/productlist/500funding_list.jpg",
-  },
-];
 
 export const metadata: Metadata = {
   title: "Projects – 수림 스튜디오",
@@ -23,7 +10,7 @@ export const metadata: Metadata = {
     title: "Projects – 수림 스튜디오",
     description:
       "진행중 캠페인부터 실험 앱, 출판 프로젝트까지 전체 목록.",
-    images: ["/og/projects.jpg"], // 선택: 없으면 제거 가능
+    images: ["/og/projects.jpg"],
   },
   alternates: { canonical: "/projects" },
 };
@@ -34,13 +21,11 @@ type Project = {
   slug: string;
   title: string;
   summary: string;
-  status: "active" | "planned" | "archive" | "application";
+  status: Status;
   tags: string[];
   thumb?: string;
-  href?: string; // ← 있으면 이 경로로 이동
+  href?: string;
 };
-
-// 파일 위치: src/app/projects/page.tsx  ← 복수형으로!
 
 const PROJECTS: Project[] = [
   {
@@ -118,10 +103,8 @@ const PROJECTS: Project[] = [
     tags: ["펀딩", "500자소설", "도전 기록"],
     thumb: "/projects/500funding_archive_thumb.webp",
   },
-  // 필요 시 자유롭게 추가
 ];
 
-// 상태별 그룹화
 const groups: { key: Status; label: string; desc: string }[] = [
   { key: "active", label: "진행중", desc: "현재 운영 중인 프로젝트" },
   { key: "application", label: "웹앱", desc: "사용자들 이용, 공유 목적" },
@@ -129,83 +112,131 @@ const groups: { key: Status; label: string; desc: string }[] = [
   { key: "archive", label: "아카이브", desc: "완료·중단·기록 목적" },
 ];
 
+function revealStyle(delay: number) {
+  return {
+    animationDelay: `${delay}ms`,
+  };
+}
+
 export default function ProjectIndexPage() {
   return (
-    <main className="max-w-6xl mx-auto px-6 py-12 space-y-14">
-      {/* 헤더 */}
-      <header className="space-y-3">
-        <h1 className="text-3xl font-semibold text-emerald-900">Projects</h1>
-        <p className="text-zinc-600">
-          수림 스튜디오의 캠페인, 앱, 출판 프로젝트를 모았습니다.
-        </p>
-      </header>
-
-      {/* 그룹 섹션 */}
-      {groups.map(({ key, label, desc }) => {
-        const items = PROJECTS.filter((p) => p.status === key);
-        if (items.length === 0) return null;
-
-        return (
-          <section key={key} className="space-y-4">
-            <div className="flex items-baseline justify-between">
-              <h2 className="text-2xl font-semibold text-emerald-800">{label}</h2>
-              <p className="text-sm text-zinc-500">{desc}</p>
+    <>
+      <main className="mx-auto max-w-6xl px-6 py-12 md:py-16">
+        <div className="space-y-14 md:space-y-16">
+          {/* 헤더 */}
+          <header className="space-y-4">
+            <div
+              className="reveal-up"
+              style={revealStyle(80)}
+            >
+              <p className="text-[11px] uppercase tracking-[0.22em] text-emerald-800/80">
+                Literary Studio / Projects Archive
+              </p>
             </div>
 
-            <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {items.map((p) => (
-                <li key={p.slug}>
-                  <Link
-                    href={p.href ?? `/projects/${p.slug}`}
-                    className="group block rounded-2xl overflow-hidden border border-zinc-200 hover:border-emerald-200 bg-white/60 shadow-sm hover:shadow-md transition"
-                  >
-                    {/* 썸네일 */}
-                    <div className="relative w-full h-44 bg-zinc-100">
-                      {p.thumb ? (
-                        <Image
-                          src={p.thumb}
-                          alt={p.title}
-                          fill
-                          className="object-cover"
-                          sizes="(max-width: 768px) 100vw, 33vw"
-                        />
-                      ) : (
-                        <div className="absolute inset-0 grid place-items-center text-zinc-400 text-sm">
-                          이미지 준비중
-                        </div>
-                      )}
-                      <StatusBadge status={p.status} />
-                    </div>
+            <div
+              className="reveal-up"
+              style={revealStyle(180)}
+            >
+              <h1 className="text-3xl font-semibold tracking-[-0.03em] text-emerald-900 md:text-4xl">
+                Projects
+              </h1>
+            </div>
 
-                    {/* 텍스트 */}
-                    <div className="p-5 space-y-2">
-                      <h3 className="text-lg font-semibold text-zinc-900 group-hover:text-emerald-800">
-                        {p.title}
-                      </h3>
-                      <p className="text-sm text-zinc-600 leading-relaxed line-clamp-3">
-                        {p.summary}
-                      </p>
+            <div
+              className="reveal-up"
+              style={revealStyle(300)}
+            >
+              <p className="max-w-2xl text-[15px] leading-7 text-zinc-600 md:text-base">
+                수림 스튜디오의 캠페인, 앱, 출판 프로젝트를 모았습니다.
+                진행중인 실험부터 기록 보관용 아카이브까지 한눈에 확인할 수 있습니다.
+              </p>
+            </div>
+          </header>
 
-                      {/* 태그 */}
-                      <div className="flex flex-wrap gap-2 pt-2">
-                        {p.tags.map((t) => (
-                          <span
-                            key={t}
-                            className="text-xs px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100"
-                          >
-                            #{t}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-        );
-      })}
-    </main>
+          {/* 그룹 섹션 */}
+          {groups.map(({ key, label, desc }, groupIndex) => {
+            const items = PROJECTS.filter((p) => p.status === key);
+            if (items.length === 0) return null;
+
+            const sectionBaseDelay = 420 + groupIndex * 180;
+
+            return (
+              <section key={key} className="space-y-5">
+                <div
+                  className="reveal-up flex items-baseline justify-between border-b border-zinc-200/80 pb-3"
+                  style={revealStyle(sectionBaseDelay)}
+                >
+                  <h2 className="text-2xl font-semibold tracking-[-0.03em] text-emerald-800">
+                    {label}
+                  </h2>
+                  <p className="text-sm text-zinc-500">{desc}</p>
+                </div>
+
+                <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                  {items.map((p, itemIndex) => {
+                    const cardDelay = sectionBaseDelay + 100 + itemIndex * 90;
+
+                    return (
+                      <li
+                        key={p.slug}
+                        className="reveal-up"
+                        style={revealStyle(cardDelay)}
+                      >
+                        <Link
+                          href={p.href ?? `/projects/${p.slug}`}
+                          className="group block overflow-hidden rounded-2xl border border-zinc-200 bg-white/65 shadow-[0_8px_30px_rgba(0,0,0,0.03)] transition duration-300 hover:-translate-y-1 hover:border-emerald-200 hover:shadow-[0_14px_34px_rgba(0,0,0,0.06)]"
+                        >
+                          {/* 썸네일 */}
+                          <div className="relative h-44 w-full bg-zinc-100">
+                            {p.thumb ? (
+                              <Image
+                                src={p.thumb}
+                                alt={p.title}
+                                fill
+                                className="object-cover transition duration-500 group-hover:scale-[1.02]"
+                                sizes="(max-width: 768px) 100vw, 33vw"
+                              />
+                            ) : (
+                              <div className="absolute inset-0 grid place-items-center text-sm text-zinc-400">
+                                이미지 준비중
+                              </div>
+                            )}
+                            <StatusBadge status={p.status} />
+                          </div>
+
+                          {/* 텍스트 */}
+                          <div className="space-y-3 p-5">
+                            <h3 className="text-lg font-semibold tracking-[-0.02em] text-zinc-900 transition group-hover:text-emerald-800">
+                              {p.title}
+                            </h3>
+
+                            <p className="line-clamp-3 text-sm leading-relaxed text-zinc-600">
+                              {p.summary}
+                            </p>
+
+                            <div className="flex flex-wrap gap-2 pt-1">
+                              {p.tags.map((t) => (
+                                <span
+                                  key={t}
+                                  className="rounded-full border border-emerald-100 bg-emerald-50 px-2 py-0.5 text-xs text-emerald-700"
+                                >
+                                  #{t}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
+            );
+          })}
+        </div>
+      </main>
+    </>
   );
 }
 
@@ -234,9 +265,10 @@ function StatusBadge({ status }: { status: Status }) {
   };
 
   const { label, className } = map[status];
+
   return (
     <span
-      className={`absolute top-3 left-3 text-xs px-2 py-0.5 rounded-full ${className}`}
+      className={`absolute left-3 top-3 rounded-full px-2 py-0.5 text-xs ${className}`}
     >
       {label}
     </span>

@@ -68,40 +68,117 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         <ProtectContent />
 
-        <footer className="text-center text-xs text-zinc-500 py-6 border-t border-[var(--border)] bg-[var(--bg)]">
-          <div className="mx-auto max-w-6xl px-4 space-y-1">
-            <div>ⓒ 수림 스튜디오 · 마이티북스</div>
-            
-            <a
-              href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=5582801574"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              사업자정보확인: 558-28-01574
-            </a>            
-            <div>통신판매업신고: 2023-대구동구-0140</div>
-            
-            <div className="pt-1">
-              <a href="/legal/guide" className="hover:underline">이용안내</a>
-              {" · "}
-              <a href="/legal/terms" className="hover:underline">이용약관</a>
-              {" · "}
-              <a href="/legal/privacy" className="hover:underline">개인정보처리방침</a>
+      <footer className="border-t border-[var(--border)] bg-[var(--bg)] text-zinc-600">
+        <div className="mx-auto max-w-6xl px-4 py-10 md:py-12">
+          <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
+            {/* Brand */}
+            <div className="space-y-4">
+              <div>
+                <div className="text-sm tracking-[0.22em] text-zinc-800">
+                  SURIM STUDIO
+                </div>
+                <div className="mt-3 space-y-1 text-sm leading-relaxed text-zinc-600">
+                  <div>Publishing Lab / Editorial Archive</div>
+                  <div>Independent Literary Studio</div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 text-xs uppercase tracking-[0.28em] text-zinc-500">
+                <span>Est. 2025</span>
+                <span className="h-px w-8 bg-[var(--border)]" />
+                <span>Daegu, KR</span>
+              </div>
             </div>
 
-            <div className="pt-1">
-              일반 문의: surimstudio@gmail.com · 010-5148-9433
+            {/* Contact */}
+            <div className="space-y-4">
+              <div className="text-xs uppercase tracking-[0.22em] text-zinc-500">
+                Contact
+              </div>
+
+              <div className="space-y-2 text-sm leading-relaxed">
+                <div>
+                  <span className="text-zinc-500">일반 문의</span>
+                  <div className="mt-1">
+                    <a href="mailto:surimstudio@gmail.com" className="hover:text-zinc-900 transition-colors">
+                      surimstudio@gmail.com
+                    </a>
+                  </div>
+                </div>
+
+                <div>
+                  <span className="text-zinc-500">전화</span>
+                  <div className="mt-1">010-5148-9433</div>
+                </div>
+
+                <div>
+                  <span className="text-zinc-500">개인정보처리 담당자</span>
+                  <div className="mt-1">대표자 이경민</div>
+                  <div>
+                    <a href="mailto:novelstudylab@naver.com" className="hover:text-zinc-900 transition-colors">
+                      novelstudylab@naver.com
+                    </a>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div>
-              개인정보처리 담당자: 대표자 이경민 · novelstudylab@naver.com
-            </div>
+            {/* Legal / Business */}
+            <div className="space-y-4">
+              <div className="text-xs uppercase tracking-[0.22em] text-zinc-500">
+                Legal / Business
+              </div>
 
-            <div>
-              주소: 대구광역시 동구 동호로7길 66, 1층 102호
+              <div className="space-y-2 text-sm leading-relaxed">
+                <div>
+                  <span className="text-zinc-500">사업자정보확인</span>
+                  <div className="mt-1">
+                    <a
+                      href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=5582801574"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-zinc-900 transition-colors"
+                    >
+                      558-28-01574
+                    </a>
+                  </div>
+                </div>
+
+                <div>
+                  <span className="text-zinc-500">통신판매업신고</span>
+                  <div className="mt-1">2023-대구동구-0140</div>
+                </div>
+
+                <div className="pt-1 flex flex-col gap-1">
+                  <a href="/legal/guide" className="hover:text-zinc-900 transition-colors">
+                    이용안내
+                  </a>
+                  <a href="/legal/terms" className="hover:text-zinc-900 transition-colors">
+                    이용약관
+                  </a>
+                  <a href="/legal/privacy" className="hover:text-zinc-900 transition-colors">
+                    개인정보처리방침
+                  </a>
+                </div>
+
+                <div className="pt-1">
+                  <span className="text-zinc-500">주소</span>
+                  <div className="mt-1">
+                    대구광역시 동구 동호로7길 66, 1층 102호
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </footer>
+
+          <div className="mt-10 border-t border-[var(--border)] pt-4 text-xs text-zinc-500 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div>© 수림 스튜디오 · 마이티북스</div>
+            <div className="tracking-[0.14em] uppercase">
+              Writing, structure, and narrative experiments.
+            </div>
+          </div>
+        </div>
+      </footer>
 
         <MobileDock />
         <ScrollTopDesktop />
