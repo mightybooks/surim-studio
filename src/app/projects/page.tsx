@@ -103,6 +103,14 @@ const PROJECTS: Project[] = [
     tags: ["펀딩", "500자소설", "도전 기록"],
     thumb: "/projects/500funding_archive_thumb.webp",
   },
+  {
+    slug: "500fiction_shortpaper",
+    title: "소설이 성립되기 위한 최소 단위에 대한 고찰",
+    summary: "500자 서사의 가능성",
+    status: "archive",
+    tags: ["소논문", "500자소설", "서사가능성"],
+    thumb: "/projects/500fiction_shortpaper_thumb.webp",
+  },  
 ];
 
 const groups: { key: Status; label: string; desc: string }[] = [

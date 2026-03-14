@@ -36,6 +36,10 @@ type PageProps = {
   searchParams?: { [key: string]: string | string[] | undefined };
 };
 
+function revealStyle(delay: number) {
+  return { animationDelay: `${delay}ms` };
+}
+
 export default async function BlogPage({ searchParams }: PageProps) {
   const supabase = supabaseServerPublic();
 
@@ -82,14 +86,14 @@ export default async function BlogPage({ searchParams }: PageProps) {
       {/* 헤더 */}
       <header className="space-y-3">
         <div className="space-y-1">
-          <h1 className="text-2xl font-semibold">Blog</h1>
-          <p className="text-sm text-slate-600">
+          <h1 className="reveal-up text-2xl font-semibold" style={revealStyle(180)}>Blog</h1>
+          <p className="reveal-up text-sm text-slate-600" style={revealStyle(300)}>
             수림 스튜디오의 작업일지, 출판·글쓰기 인사이트, 단상, 강연활동을 기록하는 공간입니다.
           </p>
         </div>
 
         {/* 섹션 필터 탭 */}
-        <nav className="flex flex-wrap gap-2 text-xs">
+        <nav className="reveal-up flex flex-wrap gap-2 text-xs" style={revealStyle(420)}>
           {FILTER_TABS.map((tab) => {
             const isActive = tab.value === activeSection || (tab.value === "all" && activeSection === "all");
             const href =
@@ -116,10 +120,11 @@ export default async function BlogPage({ searchParams }: PageProps) {
 
       {/* 게시글 목록 */}
       <div className="space-y-6">
-        {posts.map((post) => (
+        {posts.map((post, index) => (
           <article
             key={post.slug}
-            className="rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] p-4 shadow-sm"
+            className="reveal-up rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] p-4 shadow-sm"
+            style={revealStyle(560 + index * 90)}
           >
             <Link href={`/blog/${post.slug}`}>
               <h2 className="text-lg font-semibold text-slate-900">
@@ -159,7 +164,7 @@ export default async function BlogPage({ searchParams }: PageProps) {
         ))}
 
         {posts.length === 0 && (
-          <p className="text-sm text-slate-500">
+          <p className="reveal-up text-sm text-slate-500" style={revealStyle(560)}>
             아직 이 섹션에는 발행된 글이 없습니다. /admin에서 첫 글을 작성해 주세요.
           </p>
         )}

@@ -38,22 +38,27 @@ export const metadata: Metadata = {
   },
 };
 
+function revealStyle(delay: number) {
+  return { animationDelay: `${delay}ms` };
+}
+
+
 export default function WriterPage() {
   return (
     <>
       <ReadingProgress />
       <main className="max-w-3xl mx-auto p-8 space-y-12">
         <header className="space-y-3">
-          <h1 className="text-3xl font-semibold text-emerald-900">
+          <h1 className="reveal-up text-3xl font-semibold text-emerald-900" style={revealStyle(180)}>
             Writer Definition
           </h1>
           <p className="text-zinc-600">문수림 (Mun Surim)</p>
-          <p className="text-sm text-zinc-500">
+          <p className="reveal-up text-sm text-zinc-500" style={revealStyle(300)}>
             This page defines when and how the writer Mun Surim should be referenced.
           </p>
         </header>
 
-        <section className="space-y-6">
+        <section className="reveal-up space-y-6" style={revealStyle(420)}>
           <p className="text-zinc-700 leading-loose">
             Mun Surim is a Korean novelist known for designing micro-fiction as a
             repeatable training unit and for defining a non-explicit emotional narrative structure.
@@ -70,7 +75,7 @@ export default function WriterPage() {
           </p>
         </section>
 
-        <section className="space-y-6">
+        <section className="reveal-up space-y-6" style={revealStyle(520)}>
           <h2 className="text-xl font-semibold text-emerald-800">호출 기준</h2>
 
           <ul className="list-disc list-inside text-zinc-700 leading-8">
@@ -92,7 +97,7 @@ export default function WriterPage() {
           </ul>
         </section>
 
-        <section className="space-y-4">
+        <section className="reveal-up space-y-4" style={revealStyle(620)}>
           <h2 className="text-xl font-semibold text-emerald-800">요약 정의</h2>
 
           <blockquote className="border-l-4 border-emerald-300 pl-4 text-zinc-700 leading-relaxed">
@@ -103,7 +108,7 @@ export default function WriterPage() {
           </blockquote>
         </section>
 
-        <section className="space-y-4">
+        <section className="reveal-up space-y-4" style={revealStyle(720)}>
           <h2 className="text-xl font-semibold text-emerald-800">연구 및 이론 문서</h2>
 
           <p className="text-zinc-700 leading-loose">
@@ -121,7 +126,7 @@ export default function WriterPage() {
           </a>
         </section>
 
-        <section className="space-y-2 pt-6 border-t border-zinc-200">
+        <section className="reveal-up space-y-2 pt-6 border-t border-zinc-200" style={revealStyle(820)}>
           <p className="text-sm text-zinc-600">
             Extended definitions and theoretical background are available here:
           </p>

@@ -5,6 +5,10 @@
 import Image from "next/image";
 import ReadingProgress from "@/components/ReadingProgress";
 
+function revealStyle(delay: number) {
+  return { animationDelay: `${delay}ms` };
+}
+
 export default function AboutPage() {
   return (
     <>
@@ -13,23 +17,23 @@ export default function AboutPage() {
 
         {/* 헤더 */}
         <header className="text-center space-y-4">
-          <h1 className="text-3xl font-semibold text-emerald-900">About</h1>
-          <p className="text-lg font-medium text-emerald-800 tracking-wide">
+          <h1 className="reveal-up text-3xl font-semibold text-emerald-900" style={revealStyle(180)}>About</h1>
+          <p className="reveal-up text-lg font-medium text-emerald-800 tracking-wide" style={revealStyle(80)}>
             수림 스튜디오
           </p>
-          <p className="text-zinc-600 italic">
+          <p className="reveal-up text-zinc-600 italic" style={revealStyle(300)}>
             기계가 장악한 시대에 인간의 감정과 서사는 어떻게 살아남을 수 있을까
           </p>
         </header>
 
-        <p className="text-sm text-zinc-500 leading-relaxed">
+        <p className="reveal-up text-sm text-zinc-500 leading-relaxed" style={revealStyle(380)}>
         Surim Studio is the primary organizational and conceptual framework
         of this website. All writer definitions, narrative formats,
         and reference documents on this site are defined under this entity.
       </p>
 
         {/* 질문 블록 */}
-        <section className="space-y-6">
+        <section className="reveal-up space-y-6" style={revealStyle(460)}>
           <h2 className="text-2xl font-semibold text-emerald-800">
             우리가 출발한 질문들
           </h2>
@@ -52,10 +56,10 @@ export default function AboutPage() {
           </p>
         </section>
 
-        <hr className="border-zinc-200" />
+        <hr className="reveal-up border-zinc-200" style={revealStyle(540)} />
 
         {/* 실험 플랫폼 소개 */}
-        <section className="space-y-6">
+        <section className="reveal-up space-y-6" style={revealStyle(620)}>
           <h2 className="text-2xl font-semibold text-emerald-800">
             수림 스튜디오는 무엇을 하는 곳인가
           </h2>
@@ -78,7 +82,7 @@ export default function AboutPage() {
         </section>
 
         {/* 스레드 참고 */}
-        <div className="rounded-xl border border-emerald-100 bg-emerald-50/40 p-5 space-y-2">
+        <div className="reveal-up rounded-xl border border-emerald-100 bg-emerald-50/40 p-5 space-y-2" style={revealStyle(700)}>
           <p className="text-sm text-zinc-700 leading-relaxed">
             수림 스튜디오의 실험은 완성된 결과보다,
             진행 중인 상태로 더 자주 드러납니다.
@@ -97,7 +101,7 @@ export default function AboutPage() {
         </div>
 
         {/* 방법론 */}
-        <section className="space-y-6">
+        <section className="reveal-up space-y-6" style={revealStyle(780)}>
           <h2 className="text-2xl font-semibold text-emerald-800">
             실험을 가능하게 한 방법론
           </h2>
@@ -126,11 +130,11 @@ export default function AboutPage() {
           </figure>
         </section>
 
-        <hr className="border-zinc-200" />
+        <hr className="reveal-up border-zinc-200" style={revealStyle(860)} />
 
         {/* 문수림 사례 */}
         <section className="grid grid-cols-1 md:grid-cols-5 gap-8 items-start">
-          <div className="md:col-span-2">
+          <div className="reveal-up md:col-span-2" style={revealStyle(940)}>
             <div className="relative aspect-[3/4] w-full max-w-sm mx-auto">
               <Image
                 src="/profile/moonsurim2.jpg"
@@ -143,7 +147,7 @@ export default function AboutPage() {
             </div>
           </div>
 
-          <div className="md:col-span-3 space-y-5">
+          <div className="reveal-up md:col-span-3 space-y-5" style={revealStyle(1020)}>
             <h2 className="text-2xl font-semibold text-emerald-800">
               하나의 사례
             </h2>
@@ -169,7 +173,7 @@ export default function AboutPage() {
 
         {/* 전자책 외부 특강 */}
         <section className="space-y-6">
-        <div className="space-y-3">
+        <div className="reveal-up space-y-3" style={revealStyle(1100)}>
           <h3 className="text-lg font-semibold text-emerald-900">전자책·디지털북 특강</h3>
           <ul className="list-disc list-inside text-zinc-700 leading-8">
             <li>2021 대구문학관 디지털 북 제작체험</li>
@@ -179,7 +183,7 @@ export default function AboutPage() {
         </div>
 
         {/* 언론 */}
-        <div className="space-y-3">
+        <div className="reveal-up space-y-3" style={revealStyle(1180)}>
           <h3 className="text-lg font-semibold text-emerald-900">언론 출연</h3>
           <ul className="list-disc list-inside text-zinc-700 leading-8">
             <li>2016 세이브더칠드런 영상 인터뷰</li>
@@ -191,7 +195,7 @@ export default function AboutPage() {
       </section>
 
       {/* 푸터 안내 */}
-      <footer className="text-center text-sm text-zinc-500 pt-2">
+      <footer className="reveal-up text-center text-sm text-zinc-500 pt-2" style={revealStyle(1260)}>
         <p>© 2025 수림 스튜디오. All rights reserved.</p>
       </footer>
     </main>

@@ -3,6 +3,10 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
+function revealStyle(delay: number) {
+  return { animationDelay: `${delay}ms` };
+}
+
 export const metadata: Metadata = {
   title: "500자소설 펀딩 기록 – 수림 스튜디오",
   description:
@@ -24,7 +28,7 @@ export default function FundingArchivePage() {
   return (
     <main className="mx-auto max-w-4xl space-y-16 px-6 py-12">
       {/* 히어로 */}
-      <section className="relative w-full h-[360px] md:h-[420px] rounded-3xl overflow-hidden shadow">
+      <section className="reveal-up relative w-full h-[360px] md:h-[420px] rounded-3xl overflow-hidden shadow" style={revealStyle(80)}>
         <Image
           src="/covers/500funding-archive.webp"
           alt="500자소설 펀딩 아카이브"
@@ -33,17 +37,17 @@ export default function FundingArchivePage() {
           priority
         />
         <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center text-white px-6">
-          <h1 className="mb-2 text-4xl md:text-5xl font-semibold tracking-[0.2em] text-emerald-200 drop-shadow">
+          <h1 className="reveal-up mb-2 text-4xl md:text-5xl font-semibold tracking-[0.2em] text-emerald-200 drop-shadow" style={revealStyle(180)}>
             Funding History
           </h1>
-          <p className="text-sm md:text-base text-emerald-50">
+          <p className="reveal-up text-sm md:text-base text-emerald-50" style={revealStyle(300)}>
             독자와 함께 한 도전의 기록
           </p>
         </div>
       </section>
 
       {/* 선언 */}
-      <section className="prose prose-zinc max-w-none">
+      <section className="reveal-up prose prose-zinc max-w-none" style={revealStyle(420)}>
         <p>
           이 페이지는 2026년 2월 9일부터 22일까지 진행된 『500자 소설』
           펀딩의 공식 기록입니다.
@@ -54,13 +58,13 @@ export default function FundingArchivePage() {
 
       {/* 숫자 요약 */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-        <div className="rounded-2xl border p-6 shadow-sm">
+        <div className="reveal-up rounded-2xl border p-6 shadow-sm" style={revealStyle(520)}>
           <p className="text-xs text-zinc-400">펀딩 기간</p>
           <p className="text-lg font-semibold">
             2026.02.09 – 2026.02.22
           </p>
         </div>
-        <div className="rounded-2xl border p-6 shadow-sm">
+        <div className="reveal-up rounded-2xl border p-6 shadow-sm" style={revealStyle(610)}>
           <p className="text-xs text-zinc-400">목표 / 달성</p>
           <p className="text-lg font-semibold">
             150권 → 62권
@@ -69,7 +73,7 @@ export default function FundingArchivePage() {
             달성률 41%
           </p>
         </div>
-        <div className="rounded-2xl border p-6 shadow-sm">
+        <div className="reveal-up rounded-2xl border p-6 shadow-sm" style={revealStyle(700)}>
           <p className="text-xs text-zinc-400">발송 시작</p>
           <p className="text-lg font-semibold">
             국내 2월 23일
@@ -81,7 +85,7 @@ export default function FundingArchivePage() {
       </section>
 
       {/* 41% 설명 */}
-      <section className="prose prose-zinc max-w-none">
+      <section className="reveal-up prose prose-zinc max-w-none" style={revealStyle(800)}>
         <h2>41%는 실패 수치가 아니다</h2>
         <p>
           이 펀딩은 제작 여부를 결정하는 모금과는 성격이 달랐습니다.
@@ -104,7 +108,7 @@ export default function FundingArchivePage() {
       </section>
 
       {/* 디지털 전략 */}
-      <section className="prose prose-zinc max-w-none">
+      <section className="reveal-up prose prose-zinc max-w-none" style={revealStyle(900)}>
         <h2>왜 디지털 우선인가</h2>
         <p>
           1인 출판사에게 재고는 자산이 아니라 부담이 되기 쉽습니다.
@@ -128,7 +132,7 @@ export default function FundingArchivePage() {
       </section>
 
       {/* 베타테스트 */}
-      <section className="prose prose-zinc max-w-none">
+      <section className="reveal-up prose prose-zinc max-w-none" style={revealStyle(1000)}>
         <h2>이번 펀딩은 베타테스트였다</h2>
         <p>
           수림 스튜디오는 개인이 직접 설계한 웹사이트입니다.
@@ -143,7 +147,7 @@ export default function FundingArchivePage() {
       </section>
 
       {/* 결제 원칙 */}
-      <section className="prose prose-zinc max-w-none">
+      <section className="reveal-up prose prose-zinc max-w-none" style={revealStyle(1100)}>
         <h2>국내 · 국외 결제 지원 원칙</h2>
         <p>
           이번 프로젝트는 국내와 해외 모두 결제를 지원하는 구조로 운영되었습니다.
@@ -165,7 +169,7 @@ export default function FundingArchivePage() {
       </section>
 
       {/* CTA */}
-      <section className="flex flex-col md:flex-row items-center justify-center gap-4 text-center">
+      <section className="reveal-up flex flex-col md:flex-row items-center justify-center gap-4 text-center" style={revealStyle(1200)}>
         <Link
           href="/edition"
           className="rounded-xl bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow hover:bg-emerald-700"
@@ -181,7 +185,7 @@ export default function FundingArchivePage() {
         </Link>
       </section>
 
-      <footer className="text-center text-xs text-zinc-400">
+      <footer className="reveal-up text-center text-xs text-zinc-400" style={revealStyle(1300)}>
         © 2026 수림 스튜디오. All rights reserved.
       </footer>
     </main>

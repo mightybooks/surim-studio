@@ -1,5 +1,9 @@
 import Link from "next/link";
 
+function revealStyle(delay: number) {
+  return { animationDelay: `${delay}ms` };
+}
+
 const works = [
   {
     slug: "winter-001",
@@ -36,13 +40,13 @@ const works = [
 export default function WinterWorksPage() {
   return (
     <main className="max-w-5xl mx-auto px-6 py-16">
-      <h1 className="text-2xl font-semibold mb-2">《겨울이었다》 기록</h1>
-      <p className="text-sm text-zinc-500 mb-10">
+      <h1 className="reveal-up text-2xl font-semibold mb-2" style={revealStyle(180)}>《겨울이었다》 기록</h1>
+      <p className="reveal-up text-sm text-zinc-500 mb-10" style={revealStyle(300)}>
         동일한 규칙 아래 생산된 텍스트들
       </p>
 
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {works.map((work) => (
+        {works.map((work, index) => (
           <Link
             key={work.slug}
             href={`/projects/winterwas/works/${work.slug}`}
@@ -54,6 +58,7 @@ export default function WinterWorksPage() {
               hover:shadow-sm
               hover:-translate-y-0.5
             "
+            style={revealStyle(420 + index * 90)}
           >
             <div className="space-y-3">
               <div>
@@ -80,7 +85,7 @@ export default function WinterWorksPage() {
         ))}
       </section>
 
-      <footer className="mt-16 text-center text-xs text-zinc-400">
+      <footer className="reveal-up mt-16 text-center text-xs text-zinc-400" style={revealStyle(1020)}>
         © 2026 수림 스튜디오. All rights reserved.
       </footer>
     </main>

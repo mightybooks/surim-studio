@@ -3,6 +3,10 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
+function revealStyle(delay: number) {
+  return { animationDelay: `${delay}ms` };
+}
+
 export const metadata: Metadata = {
   title: "500자소설 프로젝트 – 수림 스튜디오",
   description:
@@ -24,7 +28,7 @@ export default function ficionnovel500ProjectPage() {
   return (
     <main className="max-w-4xl mx-auto px-6 py-12 space-y-16">
       {/* 히어로 */}
-      <section className="relative w-full h-[360px] md:h-[420px] rounded-3xl overflow-hidden shadow">
+      <section className="reveal-up relative w-full h-[360px] md:h-[420px] rounded-3xl overflow-hidden shadow" style={revealStyle(80)}>
         <Image
           src="/covers/500_fiction_hero.webp"
           alt="500자 소설 메인 이미지"
@@ -33,17 +37,17 @@ export default function ficionnovel500ProjectPage() {
           priority
         />
         <div className="absolute inset-0 bg-black/40 flex flex-col justify-center items-center text-center text-white">
-          <h1 className="text-3xl md:text-5xl font-semibold mb-3">
+          <h1 className="reveal-up text-3xl md:text-5xl font-semibold mb-3" style={revealStyle(180)}>
             수림 스튜디오 1호 프로젝트<br />초단편 500자 소설
           </h1>
-          <p className="text-sm md:text-base text-zinc-200">
+          <p className="reveal-up text-sm md:text-base text-zinc-200" style={revealStyle(300)}>
             101편의 실험 기록
           </p>
         </div>
       </section>
 
       {/* 프로젝트 개요 */}
-      <article className="prose prose-zinc max-w-none news-body">
+      <article className="reveal-up prose prose-zinc max-w-none news-body" style={revealStyle(420)}>
         <h2>1호 프로젝트, 왜 ‘500자’였는가?</h2>
 
         <h3>1. 연구배경</h3>
@@ -88,7 +92,7 @@ export default function ficionnovel500ProjectPage() {
         </ul>
       </article>
 
-      <aside className="mt-10 rounded-2xl border border-zinc-200 p-5 bg-white/60">
+      <aside className="reveal-up mt-10 rounded-2xl border border-zinc-200 p-5 bg-white/60" style={revealStyle(520)}>
         <div className="flex items-center gap-4">
           <div className="relative w-14 h-14 overflow-hidden rounded-full">
             <Image src="/profile/moonsurim.png" alt="문수림" fill className="object-cover" />
@@ -101,7 +105,7 @@ export default function ficionnovel500ProjectPage() {
       </aside>
 
           {/* CTA */}
-          <section className="rounded-2xl border border-emerald-100 p-6 bg-emerald-50/60">
+          <section className="reveal-up rounded-2xl border border-emerald-100 p-6 bg-emerald-50/60" style={revealStyle(620)}>
             <h3 className="text-lg font-semibold text-emerald-900 mb-2">더 읽기</h3>
             <p className="text-zinc-700 mb-4">
               500자소설의 앱, 아카이브, 책으로 확장되는 여정을 확인하세요.
@@ -112,7 +116,7 @@ export default function ficionnovel500ProjectPage() {
                 href="/projects/500_fiction/sample"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 transition"
               >
-                작품 미리보기
+                샘플 보기
               </Link>
               
               <Link
@@ -123,6 +127,13 @@ export default function ficionnovel500ProjectPage() {
               </Link>
               
               <Link
+                href="/edition/surimseoga/500fiction_shortpaper"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-400 text-white hover:bg-emerald-500 transition"
+              >
+                소논문 보러가기
+              </Link>
+
+              <Link
                 href="/edition/surimseoga/500-fiction"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-400 text-white hover:bg-emerald-500 transition"
               >
@@ -130,10 +141,10 @@ export default function ficionnovel500ProjectPage() {
               </Link>
 
               <Link
-                href="#"
+                href="/projects/500_fiction/bookmaps"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-300 text-white hover:bg-emerald-500 transition"
               >
-                입고서점 확인(준비중)
+                입고서점 확인
               </Link>
 
               <Link
@@ -146,7 +157,7 @@ export default function ficionnovel500ProjectPage() {
           </section>
 
       {/* 푸터 */}
-      <footer className="text-center text-xs text-zinc-400">
+      <footer className="reveal-up text-center text-xs text-zinc-400" style={revealStyle(720)}>
         © 2025 수림 스튜디오. All rights reserved.
       </footer>
     </main>

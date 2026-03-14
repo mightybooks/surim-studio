@@ -6,20 +6,25 @@ export const metadata = {
   description: "수림 스튜디오 정책, 이용 안내, 공지 로그를 확인할 수 있습니다.",
 };
 
+function revealStyle(delay: number) {
+  return { animationDelay: `${delay}ms` };
+}
+
+
 export default function NoticeIndexPage() {
   return (
     <main className="mx-auto max-w-5xl px-6 py-12 space-y-8">
       <header className="space-y-3">
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-700">Notice</p>
-        <h1 className="text-3xl font-semibold text-emerald-950">SURIM STUDIO NOTICE</h1>
-        <p className="text-zinc-600">
+        <p className="reveal-up text-xs font-semibold uppercase tracking-[0.22em] text-emerald-700" style={revealStyle(80)}>Notice</p>
+        <h1 className="reveal-up text-3xl font-semibold text-emerald-950" style={revealStyle(180)}>SURIM STUDIO NOTICE</h1>
+        <p className="reveal-up text-zinc-600" style={revealStyle(300)}>
           운영 정책과 이용 가이드를 포함해 서비스 변화에 대한 상세 로그를 남깁니다.
         </p>
       </header>
 
       <ul className="space-y-5">
-        {NOTICE_ITEMS.map((item) => (
-          <li key={item.slug}>
+        {NOTICE_ITEMS.map((item, index) => (
+          <li key={item.slug} className="reveal-up" style={revealStyle(420 + index * 90)}>
             <Link
               href={`/notice/${item.slug}`}
               className="block rounded-2xl border border-zinc-200 bg-white/70 p-6 shadow-sm transition hover:border-emerald-200 hover:shadow-md"

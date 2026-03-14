@@ -1,5 +1,9 @@
 import Link from "next/link";
 
+function revealStyle(delay: number) {
+  return { animationDelay: `${delay}ms` };
+}
+
 const EDITION_SECTIONS = [
   {
     href: "/edition/surimji",
@@ -22,15 +26,15 @@ export default function EditionPage() {
   return (
     <main className="mx-auto max-w-6xl space-y-8 px-6 py-12">
       <header className="space-y-3">
-        <h1 className="text-3xl font-semibold text-emerald-900">Surim Edition</h1>
-        <p className="text-zinc-600">
+        <h1 className="reveal-up text-3xl font-semibold text-emerald-900" style={revealStyle(180)}>Surim Edition</h1>
+        <p className="reveal-up text-zinc-600" style={revealStyle(300)}>
           출판/콘텐츠/굿즈를 한 곳에서 볼 수 있도록 에디션 섹션으로 정리했습니다.
         </p>
       </header>
 
       <ul className="grid gap-4 sm:grid-cols-3">
-        {EDITION_SECTIONS.map((section) => (
-          <li key={section.href}>
+        {EDITION_SECTIONS.map((section, index) => (
+          <li key={section.href} className="reveal-up" style={revealStyle(420 + index * 90)}>
             <Link
               href={section.href}
               className="block rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] p-5 transition hover:bg-[#F5EEDC]"

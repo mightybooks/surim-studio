@@ -3,6 +3,10 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
+function revealStyle(delay: number) {
+  return { animationDelay: `${delay}ms` };
+}
+
 export const metadata: Metadata = {
   title: "500자소설 앱 – 수림 스튜디오",
   description:
@@ -24,7 +28,7 @@ export default function Fiction500AppPage() {
   return (
     <main className="mx-auto max-w-4xl space-y-16 px-6 py-12">
       {/* 히어로 섹션 */}
-      <section className="relative w-full h-[360px] md:h-[420px] rounded-3xl overflow-hidden shadow">
+      <section className="reveal-up relative w-full h-[360px] md:h-[420px] rounded-3xl overflow-hidden shadow" style={revealStyle(80)}>
         <Image
           src="/covers/500fiction_app.webp" // 쓰고 계신 실제 경로 유지
           alt="500자소설 앱 메인 이미지"
@@ -34,23 +38,23 @@ export default function Fiction500AppPage() {
         />
         {/* 어두운 오버레이 + 텍스트 */}
         <div className="absolute inset-0 bg-black/35 flex flex-col items-center justify-center text-center text-white px-6">
-          <h1 className="mb-2 md:text-5xl font-semibold tracking-[0.28em] text-emerald-200 drop-shadow">
+          <h1 className="reveal-up mb-2 md:text-5xl font-semibold tracking-[0.28em] text-emerald-200 drop-shadow" style={revealStyle(180)}>
             PROJECT<br/>500 FICTION APP
           </h1>
-          <p className="text-sm font-medium text-emerald-50">
+          <p className="reveal-up text-sm font-medium text-emerald-50" style={revealStyle(300)}>
             독자와 함께 확장하는 세계관의 첫 단추
           </p>
         </div>
       </section>
 
-      <section className="news-body prose prose-zinc max-w-none">
+      <section className="reveal-up news-body prose prose-zinc max-w-none" style={revealStyle(420)}>
         <h2>26년 1월, 500자 챌린지 웹앱이 등장합니다.</h2>
         <p>현재 정식 베타테스트 기간이 종료되어 이용자들의 피드백을 반영해 웹앱은 완공이 된 상태입니다.<br/>
            25년 12월 중 출시가 가능한 상태이지만, 다가오는 새해에 도서『500자 소설』출간과 함께 선보일 예정입니다.</p>
       </section>
 
       {/* 앱 한 줄 소개 */}
-      <section className="news-body prose prose-zinc max-w-none">
+      <section className="reveal-up news-body prose prose-zinc max-w-none" style={revealStyle(500)}>
         <h2>500자 쓰기 챌린지 앱이란?</h2>
 
         <p>
@@ -76,7 +80,7 @@ export default function Fiction500AppPage() {
         </p>
       </section>
 
-      <div className="my-8 flex justify-center">
+      <div className="reveal-up my-8 flex justify-center" style={revealStyle(620)}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/covers/surimbot_ver_01.webp"
@@ -86,7 +90,7 @@ export default function Fiction500AppPage() {
       </div>
 
       {/* 수림봇 소개 */}
-      <section className="news-body prose prose-zinc max-w-none">
+      <section className="reveal-up news-body prose prose-zinc max-w-none" style={revealStyle(580)}>
         <h2>수림봇이란 무엇인가?</h2>
         <p>
           수림봇은 한마디로 말해{" "}
@@ -123,7 +127,7 @@ export default function Fiction500AppPage() {
         </p>
       </section>
 
-      <div className="my-8 flex justify-center">
+      <div className="reveal-up my-8 flex justify-center" style={revealStyle(760)}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/covers/typographic_ver_01.webp"
@@ -133,7 +137,7 @@ export default function Fiction500AppPage() {
       </div>
 
       {/* 문수림 미학 · 평가 항목 소개 */}
-      <section className="news-body prose prose-zinc max-w-none">
+      <section className="reveal-up news-body prose prose-zinc max-w-none" style={revealStyle(660)}>
         <h2>문수림의 미학으로 채점합니다</h2>
         <p>
           500자소설 앱의 평가는 일반적인 작문 척도가 아니라{" "}
@@ -193,7 +197,7 @@ export default function Fiction500AppPage() {
       </section>
 
       {/* 앱 사용 흐름 */}
-      <section className="news-body prose prose-zinc max-w-none">
+      <section className="reveal-up news-body prose prose-zinc max-w-none" style={revealStyle(740)}>
         <h2>앱은 이렇게 흘러갑니다</h2>
         <ol>
           <li>
@@ -227,7 +231,7 @@ export default function Fiction500AppPage() {
       </section>
 
       {/* FAQ 느낌의 마무리 Q&A */}
-      <section className="news-body prose prose-zinc max-w-none">
+      <section className="reveal-up news-body prose prose-zinc max-w-none" style={revealStyle(820)}>
         <h2>이 점수, 진지하게 믿어도 될까요?</h2>
         <p>
           믿으셔도 되고, 가볍게 웃고 넘기셔도 됩니다. 다만 한 가지는 확실합니다.
@@ -249,7 +253,7 @@ export default function Fiction500AppPage() {
       </section>
 
      {/* 최종 CTA */}
-      <section className="flex flex-col items-center justify-center gap-4 text-center md:flex-row">
+      <section className="reveal-up flex flex-col items-center justify-center gap-4 text-center md:flex-row" style={revealStyle(980)}>
         <Link
           href="https://500challenge.vercel.app/"
           target="_blank"
@@ -280,7 +284,7 @@ export default function Fiction500AppPage() {
         </Link>
       </section>
 
-      <footer className="text-center text-xs text-zinc-400">
+      <footer className="reveal-up text-center text-xs text-zinc-400" style={revealStyle(1080)}>
         © 2025 수림 스튜디오. All rights reserved.
       </footer>
     </main>

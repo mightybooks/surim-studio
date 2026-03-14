@@ -1,6 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 
+function revealStyle(delay: number) {
+  return { animationDelay: `${delay}ms` };
+}
+
 export const metadata = {
   title: "토실토실 프로젝트 – 돌봄에너지 자가측정 앱",
   description:
@@ -17,7 +21,7 @@ export default function TosiltosilCarePage() {
   return (
     <main className="max-w-4xl mx-auto px-6 py-12 space-y-16">
       {/* 히어로 */}
-      <section className="relative w-full h-[360px] md:h-[420px] rounded-3xl overflow-hidden shadow">
+      <section className="reveal-up relative w-full h-[360px] md:h-[420px] rounded-3xl overflow-hidden shadow" style={revealStyle(80)}>
         <Image
           src="/covers/tosiltosil_care_hero.webp"
           alt="돌봄에너지 자가측정 어플리케이션"
@@ -26,17 +30,17 @@ export default function TosiltosilCarePage() {
           priority
         />
         <div className="absolute inset-0 bg-black/40 flex flex-col justify-center items-center text-center text-white">
-          <h1 className="text-3xl md:text-5xl font-semibold mb-3">
+          <h1 className="reveal-up text-3xl md:text-5xl font-semibold mb-3" style={revealStyle(180)}>
             돌봄에너지를 측정하고<br />결과를 공유해 모두와 함께 하자
           </h1>
-          <p className="text-sm md:text-base text-zinc-200">
+          <p className="reveal-up text-sm md:text-base text-zinc-200" style={revealStyle(300)}>
             『토실토실 토끼를 안았습니다』캠페인 프로젝트
           </p>
         </div>
       </section>
 
       {/* 프로젝트 개요 */}
-      <section className="text-zinc-700 leading-loose space-y-12">
+      <section className="reveal-up text-zinc-700 leading-loose space-y-12" style={revealStyle(420)}>
         <div className="space-y-4">
           <h2 className="text-lg font-semibold text-zinc-900">
             1. 이 앱은 무엇을 하는가
@@ -104,7 +108,7 @@ export default function TosiltosilCarePage() {
 
 
       {/* CTA */}
-      <section className="flex flex-col md:flex-row gap-4 justify-center text-center">
+      <section className="reveal-up flex flex-col md:flex-row gap-4 justify-center text-center" style={revealStyle(620)}>
         <Link
           href="/library/tosilbook"
           className="px-6 py-3 rounded-xl bg-emerald-600 text-white font-medium hover:bg-emerald-700"
@@ -133,7 +137,7 @@ export default function TosiltosilCarePage() {
       </section>
 
       {/* 푸터 */}
-      <footer className="text-center text-xs text-zinc-400">
+      <footer className="reveal-up text-center text-xs text-zinc-400" style={revealStyle(720)}>
         © 2025 수림 스튜디오. All rights reserved.
       </footer>
     </main>

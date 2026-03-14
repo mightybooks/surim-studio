@@ -3,6 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 
+function revealStyle(delay: number) {
+  return { animationDelay: `${delay}ms` };
+}
+
 export const metadata = {
   title: "500자 소설 샘플 – 수림 스튜디오",
   description: "문수림의 500자 소설 5편 샘플 페이지",
@@ -18,7 +22,7 @@ export default function Fiction500SamplePage() {
     <main className="max-w-4xl mx-auto px-6 py-12 space-y-16">
 
       {/* 히어로 */}
-      <section className="relative w-full h-[300px] md:h-[360px] rounded-3xl overflow-hidden shadow">
+      <section className="reveal-up relative w-full h-[300px] md:h-[360px] rounded-3xl overflow-hidden shadow" style={revealStyle(80)}>
         <Image
           src="/covers/fiction500_sample_hero.webp"
           alt="500자 소설 샘플"
@@ -27,17 +31,17 @@ export default function Fiction500SamplePage() {
           priority
         />
         <div className="absolute inset-0 bg-black/40 flex flex-col justify-center items-center text-center text-white">
-          <h1 className="text-3xl md:text-5xl font-semibold mb-3">
+          <h1 className="reveal-up text-3xl md:text-5xl font-semibold mb-3" style={revealStyle(180)}>
             500자 소설 샘플
           </h1>
-          <p className="text-sm md:text-base text-zinc-200">
+          <p className="reveal-up text-sm md:text-base text-zinc-200" style={revealStyle(300)}>
             문수림이 직접 집필한 5편의 샘플
           </p>
         </div>
       </section>
 
       {/* 서문 */}
-      <article className="prose prose-zinc max-w-none news-body">
+      <article className="reveal-up prose prose-zinc max-w-none news-body" style={revealStyle(420)}>
         <p>
           500자라는 제약은 문장을 더 선명하게 만들고, 이야기의 본질만을 남깁니다.<br/>
           아래의 5편은 문수림이 매일 쓰듯 쌓아온 이야기들 중 일부이며,
@@ -49,7 +53,7 @@ export default function Fiction500SamplePage() {
       <section className="space-y-20">
 
         {/* 2번 */}
-        <article className="prose prose-zinc max-w-none news-body">
+        <article className="reveal-up prose prose-zinc max-w-none news-body" style={revealStyle(520)}>
           <h2 className="text-xl font-semibold">2.</h2>
           <br/><br/>
           <p>
@@ -77,7 +81,7 @@ export default function Fiction500SamplePage() {
         </article>
 
         {/* 5번 */}
-        <article className="prose prose-zinc max-w-none news-body">
+        <article className="reveal-up prose prose-zinc max-w-none news-body" style={revealStyle(610)}>
           <h2 className="text-xl font-semibold">5.</h2>
           <br/><br/>
           <p>
@@ -95,7 +99,7 @@ export default function Fiction500SamplePage() {
         </article>
 
         {/* 45번 */}
-        <article className="prose prose-zinc max-w-none news-body">
+        <article className="reveal-up prose prose-zinc max-w-none news-body" style={revealStyle(700)}>
           <h2 className="text-xl font-semibold">45.</h2>
           <br/><br/>
           <p>
@@ -120,7 +124,7 @@ export default function Fiction500SamplePage() {
         </article>
 
         {/* 74번 */}
-        <article className="prose prose-zinc max-w-none news-body">
+        <article className="reveal-up prose prose-zinc max-w-none news-body" style={revealStyle(790)}>
           <h2 className="text-xl font-semibold">74.</h2>
           <br/><br/>
           <p>
@@ -135,7 +139,7 @@ export default function Fiction500SamplePage() {
         </article>
 
         {/* 96번 */}
-        <article className="prose prose-zinc max-w-none news-body">
+        <article className="reveal-up prose prose-zinc max-w-none news-body" style={revealStyle(880)}>
           <h2 className="text-xl font-semibold">96.</h2>
           <br/><br/>
           <p>
@@ -161,7 +165,7 @@ export default function Fiction500SamplePage() {
       </section>
 
       {/* CTA */}
-          <section className="rounded-2xl border border-violet-100 p-6 bg-violet-50/60">
+          <section className="reveal-up rounded-2xl border border-violet-100 p-6 bg-violet-50/60" style={revealStyle(980)}>
             <h3 className="text-lg font-semibold text-violet-900 mb-2">도전하고 공유하기</h3>
             <p className="text-zinc-700 mb-4">
               500자 쓰기에 도전해 보고, 결과를 공유해 보세요.
@@ -199,7 +203,7 @@ export default function Fiction500SamplePage() {
             </div>
           </section>
 
-      <footer className="text-center text-xs text-zinc-400 mt-12">
+      <footer className="reveal-up text-center text-xs text-zinc-400 mt-12" style={revealStyle(1080)}>
         © 2025 수림 스튜디오. All rights reserved.
       </footer>
     </main>

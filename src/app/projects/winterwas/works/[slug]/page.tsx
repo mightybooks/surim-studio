@@ -114,6 +114,10 @@ type Props = {
   params: { slug: string };
 };
 
+function revealStyle(delay: number) {
+  return { animationDelay: `${delay}ms` };
+}
+
 export default function WinterWasWorkPage({ params }: Props) {
   const work = WORKS[params.slug];
   if (!work) return notFound();
@@ -121,7 +125,7 @@ export default function WinterWasWorkPage({ params }: Props) {
   return (
     <main className="max-w-2xl mx-auto px-6 py-20 space-y-8">
       {/* 최소 내비게이션 (원하시면 제거 가능) */}
-      <div className="text-xs text-zinc-400">
+      <div className="reveal-up text-xs text-zinc-400" style={revealStyle(80)}>
         <Link href="/projects/winterwas/works" className="hover:text-zinc-600 transition">
           ← 목록
         </Link>
@@ -132,7 +136,7 @@ export default function WinterWasWorkPage({ params }: Props) {
       </div>
 
       {/* 본문 */}
-      <article className="prose prose-zinc max-w-none">
+      <article className="reveal-up prose prose-zinc max-w-none" style={revealStyle(300)}>
         {work.body.map((p, idx) => {
           const isLast = idx === work.body.length - 1;
           // 마지막 줄이 "겨울이었다."로 끝나는 편은 강조
@@ -148,7 +152,7 @@ export default function WinterWasWorkPage({ params }: Props) {
         })}
       </article>
 
-      <footer className="pt-8 text-center text-xs text-zinc-400">
+      <footer className="reveal-up pt-8 text-center text-xs text-zinc-400" style={revealStyle(420)}>
         © 2026 수림 스튜디오. All rights reserved.
       </footer>
     </main>

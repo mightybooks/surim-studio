@@ -8,6 +8,10 @@ import ProductInfoTable from "./ProductInfoTable";
 import ProductNotice from "./ProductNotice";
 import ProductPolicyBlock from "./ProductPolicyBlock";
 
+function revealStyle(delay: number) {
+  return { animationDelay: `${delay}ms` };
+}
+
 export default function ProductDetailPage({
   product,
   ctaLabel,
@@ -24,7 +28,7 @@ export default function ProductDetailPage({
 
       {/* 상단: 이미지 + 요약 */}
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-        <div className="rounded-2xl border overflow-hidden bg-white">
+        <div className="reveal-up rounded-2xl border overflow-hidden bg-white" style={revealStyle(300)}>
           <img
             src={product.thumbnail}
             alt={product.name}
@@ -32,7 +36,7 @@ export default function ProductDetailPage({
           />
         </div>
 
-        <div className="space-y-3">
+        <div className="reveal-up space-y-3" style={revealStyle(180)}>
           <div className="rounded-xl border border-zinc-200 bg-white p-4">
             <p className="text-xs uppercase tracking-wide text-zinc-500">Price</p>
             <p className="mt-1 text-2xl font-bold text-zinc-900">
@@ -70,10 +74,10 @@ export default function ProductDetailPage({
       </div>
 
       {/* 상단 소개 문구 (선택적) */}
-      {children}
+      <div className="reveal-up" style={revealStyle(420)}>{children}</div>
 
       {/* 상품 설명 (이미지) */}
-      <ProductDescription product={product} />
+      <div className="reveal-up" style={revealStyle(520)}><ProductDescription product={product} /></div>
 
       {/* 구성 / 규격 */}
       <ProductInfoTable product={product} />

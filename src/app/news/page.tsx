@@ -6,19 +6,24 @@ export const metadata = {
   description: "프로젝트 소식, 업데이트, 캠페인 소식을 전합니다.",
 };
 
+function revealStyle(delay: number) {
+  return { animationDelay: `${delay}ms` };
+}
+
+
 export default function NewsIndexPage() {
   return (
     <main className="max-w-5xl mx-auto px-6 py-12 space-y-10">
       <header className="space-y-3">
-        <h1 className="text-3xl font-semibold text-emerald-900">News</h1>
-        <p className="text-zinc-600">
+        <h1 className="reveal-up text-3xl font-semibold text-emerald-900" style={revealStyle(180)}>News</h1>
+        <p className="reveal-up text-zinc-600" style={revealStyle(300)}>
           수림 스튜디오의 최신 프로젝트 및 캠페인 소식을 전합니다.
         </p>
       </header>
 
       <ul className="space-y-6">
-        {NEWS.map((item) => (
-          <li key={item.slug}>
+        {NEWS.map((item, index) => (
+          <li key={item.slug} className="reveal-up" style={revealStyle(420 + index * 90)}>
             <Link
               href={item.href ?? `/news/${item.slug}`} // ← href 우선, 없으면 기본 /news
               className="block rounded-xl border border-zinc-200 bg-white/60 p-6 shadow-sm hover:shadow-md hover:border-emerald-200 transition"

@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 
+function revealStyle(delay: number) {
+  return { animationDelay: `${delay}ms` };
+}
+
 export const metadata: Metadata = {
   title: "겨울이었다 프로젝트 – 수림 스튜디오",
   description:
@@ -23,7 +27,7 @@ export default function WinterWasProjectPage() {
   return (
     <main className="max-w-4xl mx-auto px-6 py-12 space-y-16">
       {/* 히어로 (선택 사항) */}
-      <section className="relative w-full h-[300px] md:h-[360px] rounded-3xl overflow-hidden shadow">
+      <section className="reveal-up relative w-full h-[300px] md:h-[360px] rounded-3xl overflow-hidden shadow" style={revealStyle(80)}>
         <Image
           src="/covers/winterwas_hero.webp"
           alt="겨울이었다 프로젝트 이미지"
@@ -32,17 +36,17 @@ export default function WinterWasProjectPage() {
           priority
         />
         <div className="absolute inset-0 bg-black/40 flex flex-col justify-center items-center text-center text-white">
-          <h1 className="text-3xl md:text-5xl font-semibold mb-3">
+          <h1 className="reveal-up text-3xl md:text-5xl font-semibold mb-3" style={revealStyle(180)}>
             프로젝트 《겨울이었다》
           </h1>
-          <p className="text-sm md:text-base text-zinc-200">
+          <p className="reveal-up text-sm md:text-base text-zinc-200" style={revealStyle(300)}>
             감정 비서술형 마이크로 픽션 실험
           </p>
         </div>
       </section>
 
       {/* 프로젝트 설명 */}
-      <article className="prose prose-zinc max-w-none news-body">
+      <article className="reveal-up prose prose-zinc max-w-none news-body" style={revealStyle(420)}>
         <h2>프로젝트 《겨울이었다》에 대하여</h2>
 
         <h3>1. 이 프로젝트는 무엇인가</h3>
@@ -129,7 +133,7 @@ export default function WinterWasProjectPage() {
         </p>
       </article>
 
-    <section className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+    <section className="reveal-up mt-10 grid grid-cols-1 md:grid-cols-2 gap-6" style={revealStyle(620)}>
     {/* 작성자 블록 */}
     <aside className="rounded-2xl border border-zinc-200 p-5 bg-white/60">
         <div className="flex items-center gap-4">
@@ -173,7 +177,7 @@ export default function WinterWasProjectPage() {
     </section>
 
       {/* 푸터 */}
-      <footer className="text-center text-xs text-zinc-400">
+      <footer className="reveal-up text-center text-xs text-zinc-400" style={revealStyle(720)}>
         © 2025 수림 스튜디오. All rights reserved.
       </footer>
     </main>

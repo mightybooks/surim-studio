@@ -11,6 +11,16 @@ export type NewsItem = {
 
 export const NEWS: NewsItem[] = [
     {
+    slug: "main-rebuild-260314",
+    title: "홈페이지 메인 수정 ",
+    body:
+      "사용자들의 미감을 위해 홈페이지 메인이 수정되었습니다. " +       
+      "전체 페이지도 약간의 동적인 연출이 가미되었습니다. " +
+      "앞으로도 디자인적으로 보강해나갈 예정입니다. ",      
+    category: "News",
+    published_at: "2026-03-14",
+    },
+    {
     slug: "contest-2026-results",
     title: "자체 펀딩 및 문예경연대회 종료 ",
     body:

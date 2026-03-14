@@ -49,6 +49,10 @@ function buildDeck<T>(items: T[], size: number): T[] {
 
 /* ---------- 페이지 ---------- */
 
+function revealStyle(delay: number) {
+  return { animationDelay: `${delay}ms` };
+}
+
 export default async function FictionArchivePage() {
   const { data, error } = await supabase
     .from("fiction_500_archive")
@@ -90,8 +94,8 @@ export default async function FictionArchivePage() {
   return (
     <main className="mx-auto max-w-6xl px-6 py-16">
       <header className="mb-14 text-center">
-        <h1 className="text-2xl font-semibold">500자 소설 아카이브</h1>
-          <p className="mt-3 text-sm text-slate-500 leading-relaxed">
+        <h1 className="reveal-up text-2xl font-semibold" style={revealStyle(180)}>500자 소설 아카이브</h1>
+          <p className="reveal-up mt-3 text-sm text-slate-500 leading-relaxed" style={revealStyle(300)}>
             여러분이 쓴 작품들이 이곳에 랜덤하게 나타납니다.<br />
             천천히, 자유롭게 감상해 주세요.<br />
             <span className="block mt-2 text-xs text-slate-400">
@@ -107,11 +111,11 @@ export default async function FictionArchivePage() {
         - 셔플/좌우
         - 카드 ↔ 본문 동기화
       */}
-      <ArchiveClient
+      <div className="reveal-up" style={revealStyle(420)}><ArchiveClient
         cards={cards}
         entries={entries}
         initialIndex={initialIndex}
-      />
+      /></div>
     </main>
   );
 }

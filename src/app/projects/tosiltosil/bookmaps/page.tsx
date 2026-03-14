@@ -28,6 +28,10 @@ type MarkerEntry = {
   info: any;
 };
 
+function revealStyle(delay: number) {
+  return { animationDelay: `${delay}ms` };
+}
+
 export default function TosiltosilBookmapsPage() {
   const [region, setRegion] = useState<RegionKey>("seoul");
   const [isMapReady, setIsMapReady] = useState(false);
@@ -215,21 +219,21 @@ export default function TosiltosilBookmapsPage() {
     <main className="mx-auto max-w-6xl px-6 py-12 space-y-10">
       {/* 헤더 */}
       <header className="space-y-4">
-        <h1 className="text-2xl md:text-3xl font-semibold">동네 서점 입고 지도.</h1>
-        <p className="text-sm md:text-base text-zinc-700 leading-relaxed">
+        <h1 className="reveal-up text-2xl md:text-3xl font-semibold" style={revealStyle(180)}>동네 서점 입고 지도.</h1>
+        <p className="reveal-up text-sm md:text-base text-zinc-700 leading-relaxed" style={revealStyle(300)}>
           현재 전국 교보문고에도 입점되어 있지만, 수림 스튜디오는 동네책방과의 관계를 우선합니다.
           <br />
           아래에 표기된 책방들에는 『토실토실 토끼를 안았습니다』 증정본이 비치되어 있습니다. 가까운
           책방을 확인해 보세요.
         </p>
-        <p className="text-xs md:text-sm text-zinc-500">
+        <p className="reveal-up text-xs md:text-sm text-zinc-500" style={revealStyle(380)}>
           * 지금은 서울권 책방부터 정리되어 있으며, 순차적으로 경기 지역과 전국 광역시의 동네책방까지
           지도를 확장할 예정입니다.
         </p>
       </header>
 
       {/* 지역 탭 */}
-      <section className="space-y-2">
+      <section className="reveal-up space-y-2" style={revealStyle(420)}>
         <div className="inline-flex flex-wrap gap-2 rounded-full bg-zinc-100 px-3 py-2 text-xs md:text-sm">
           {REGIONS.map((r) => {
             const isActive = region === r.key;
@@ -259,7 +263,7 @@ export default function TosiltosilBookmapsPage() {
       </section>
 
       {/* 지도 + 리스트 */}
-      <section className="grid gap-6 md:grid-cols-[2fr,1.2fr] items-start">
+      <section className="reveal-up grid gap-6 md:grid-cols-[2fr,1.2fr] items-start" style={revealStyle(520)}>
         {/* 지도 영역 */}
         <div
           ref={mapRef}
@@ -309,7 +313,7 @@ export default function TosiltosilBookmapsPage() {
       </section>
 
       {/* 하단 CTA */}
-      <section className="pt-6 border-t border-zinc-200 flex flex-col md:flex-row gap-4 justify-center text-center">
+      <section className="reveal-up pt-6 border-t border-zinc-200 flex flex-col md:flex-row gap-4 justify-center text-center" style={revealStyle(620)}>
         <Link
           href="/projects/tosiltosil-care"
           className="px-6 py-3 rounded-xl bg-emerald-600 text-white font-medium hover:bg-emerald-700"

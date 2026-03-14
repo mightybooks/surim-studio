@@ -3,6 +3,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import ArchiveShowcase from "@/components/archive/ArchiveShowcase";
 
+function revealStyle(delay: number) {
+  return { animationDelay: `${delay}ms` };
+}
+
 export const metadata: Metadata = {
   title: "토실토실 돌봄에너지 확산 프로젝트 – 수림 스튜디오",
   description: "참여로 확산되는 돌봄에너지 아카이브",
@@ -31,7 +35,7 @@ export default async function Page() {
   return (
     <main className="max-w-4xl mx-auto px-6 py-12 space-y-16">
       {/* breadcrumb */}
-      <nav className="text-sm text-zinc-500 space-y-1">
+      <nav className="reveal-up text-sm text-zinc-500 space-y-1" style={revealStyle(80)}>
         <div>
           <Link href="/projects" className="hover:underline">
             Projects
@@ -47,7 +51,7 @@ export default async function Page() {
       </nav>
 
       {/* 설명 */}
-      <section className="prose prose-zinc max-w-none news-body space-y-4">
+      <section className="reveal-up prose prose-zinc max-w-none news-body space-y-4" style={revealStyle(300)}>
         <p>
           이곳은 돌봄에너지 자가측정 앱을 사용한 참여자들의 응원 메시지를
           모아두는 아카이브입니다. 모든 결과가 한 번에 보이지는 않지만,
@@ -61,10 +65,10 @@ export default async function Page() {
       </section>
 
       {/* 아카이브 쇼케이스 */}
-      <ArchiveShowcase archives={archives} />
+      <div className="reveal-up" style={revealStyle(420)}><ArchiveShowcase archives={archives} /></div>
 
       {/* 관련 링크 */}
-      <section className="flex justify-center">
+      <section className="reveal-up flex justify-center" style={revealStyle(520)}>
         <Link
           href="/projects/tosiltosil"
           className="px-6 py-3 rounded-xl border border-emerald-600 text-emerald-700 font-medium hover:bg-emerald-50"
@@ -76,7 +80,7 @@ export default async function Page() {
         </Link>
       </section>
 
-      <footer className="text-center text-xs text-zinc-400 space-y-1">
+      <footer className="reveal-up text-center text-xs text-zinc-400 space-y-1" style={revealStyle(620)}>
         <div>© 2025 수림 스튜디오. All rights reserved.</div>
         <div className="text-[10px]">
           Surim Studio — A global archive of creative participation
