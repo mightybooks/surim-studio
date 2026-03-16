@@ -124,6 +124,13 @@ export default function WriterPage() {
           >
             논문 보기 (Zenodo DOI)
           </a>
+
+          <a
+            href="/research"
+            className="block underline underline-offset-4 text-emerald-800 hover:text-emerald-600"
+          >
+            Research on 500-character fiction
+          </a>
         </section>
 
         <section className="reveal-up space-y-2 pt-6 border-t border-zinc-200" style={revealStyle(820)}>
