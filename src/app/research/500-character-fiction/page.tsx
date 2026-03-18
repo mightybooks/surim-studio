@@ -141,6 +141,21 @@ export default function Research500Page() {
           >
             View paper (Zenodo DOI)
           </a>
+
+          <p className="text-zinc-700 leading-loose">
+            A structured GitHub reference documenting the definition, comparative
+            positioning, structural characteristics, and related narrative method of
+            500-character fiction is also available below.
+          </p>
+
+          <a
+            href="https://github.com/mightybooks/500-character-fiction/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline underline-offset-4 text-emerald-800 hover:text-emerald-600"
+          >
+            View GitHub reference documents
+          </a>
         </section>
 
         <section
