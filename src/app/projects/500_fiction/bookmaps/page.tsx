@@ -1,10 +1,11 @@
-// src/app/projects/tosiltosil/bookmaps/page.tsx
+// src/app/projects/500_fiction/bookmaps/page.tsx
 "use client";
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
-  STORES_BY_REGION,
+  REGIONS,
+  FIVE_HUNDRED_STORES,
   type RegionKey,
   type FiveHundredStore,
 } from "@/lib/fivehundredStores";
@@ -14,12 +15,6 @@ declare global {
     kakao: any;
   }
 }
-
-const REGIONS: { key: RegionKey; label: string; subtitle?: string; ready: boolean }[] = [
-  { key: "seoul", label: "서울", subtitle: "현재 서울권 증정본 입고 서점", ready: true },
-  { key: "gyeonggi", label: "경기", subtitle: "추가 정리 예정", ready: false },
-  { key: "metro", label: "전국 광역시", subtitle: "추가 정리 예정", ready: false },
-];
 
 type MarkerEntry = {
   storeId: FiveHundredStore["id"];
@@ -40,7 +35,7 @@ export default function FiveHundredBookmapsPage() {
   const mapInstanceRef = useRef<any | null>(null);
   const markersRef = useRef<MarkerEntry[]>([]);
 
-  const stores: FiveHundredStore[] = STORES_BY_REGION[region] ?? [];
+  const stores: FiveHundredStore[] = FIVE_HUNDRED_STORES[region] ?? [];
 
   // Kakao SDK 로더
   const loadKakaoSdk = (onReady: () => void) => {
@@ -131,7 +126,7 @@ export default function FiveHundredBookmapsPage() {
       markersRef.current = [];
     }
 
-    const regionStores = STORES_BY_REGION[regionKey] ?? [];
+    const regionStores = FIVE_HUNDRED_STORES[regionKey] ?? [];
     if (regionStores.length === 0) {
       setIsMapReady(true);
       return;
@@ -236,22 +231,23 @@ export default function FiveHundredBookmapsPage() {
         <div className="inline-flex flex-wrap gap-2 rounded-full bg-zinc-100 px-3 py-2 text-xs md:text-sm">
           {REGIONS.map((r) => {
             const isActive = region === r.key;
+            const hasStores = (FIVE_HUNDRED_STORES[r.key] ?? []).length > 0;
             const base =
               "px-3 py-1.5 rounded-full border text-xs md:text-sm transition-colors";
             const activeClass = "bg-emerald-600 text-white border-emerald-600";
-            const inactiveClass = r.ready
+            const inactiveClass = hasStores
               ? "bg-white text-zinc-700 border-zinc-300 hover:bg-zinc-50"
-              : "bg-zinc-200 text-zinc-500 border-zinc-200 cursor-not-allowed";
+              : "bg-zinc-100 text-zinc-500 border-zinc-200 hover:bg-zinc-200/70";
 
             return (
               <button
                 key={r.key}
                 type="button"
-                onClick={() => r.ready && setRegion(r.key)}
+                onClick={() => setRegion(r.key)}
                 className={`${base} ${isActive ? activeClass : inactiveClass}`}
               >
                 {r.label}
-                {!r.ready && <span className="ml-1 text-[10px]">(준비 중)</span>}
+                {!hasStores && <span className="ml-1 text-[10px]">(준비 중)</span>}
               </button>
             );
           })}
