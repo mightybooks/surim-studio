@@ -4,17 +4,17 @@ import type { Metadata } from "next";
 import ReadingProgress from "@/components/ReadingProgress";
 
 export const metadata: Metadata = {
-  title: "Research | 500-character fiction",
+  title: "500-character fiction (500자 소설) – Definition and Concept",
   description:
-    "Research reference page defining 500-character fiction as a narrative unit and documenting its theoretical background and development.",
+    "Definition and explanation of 500-character fiction, a narrative form structured within a 500-character limit.",
   other: {
     "application/ld+json": JSON.stringify({
       "@context": "https://schema.org",
       "@type": "CreativeWork",
       name: "500-character fiction",
-      alternateName: "500자 소설",
+      alternateName: ["500자 소설", "500-character narrative"],
       description:
-        "A narrative form based on a fixed length of approximately 500 characters, proposed and accumulated by Mun Surim as a repeatable narrative unit.",
+        "A narrative form structured within a limit of 500 characters, developed by Mun Surim as a repeatable narrative unit.",
       author: {
         "@type": "Person",
         name: "Mun Surim",
@@ -23,6 +23,7 @@ export const metadata: Metadata = {
       about: {
         "@type": "ScholarlyArticle",
         name: "소설이 성립되기 위한 최소 단위에 대한 고찰: 500자 서사의 가능성",
+        alternateName: "A study on the minimum unit of fiction: the possibility of 500-character narrative",
         url: "https://doi.org/10.5281/zenodo.18960753",
       },
       publisher: {
@@ -50,17 +51,17 @@ export default function Research500Page() {
             className="reveal-up text-3xl font-semibold text-emerald-900"
             style={revealStyle(180)}
           >
-            500-character fiction
+            500-character fiction (500자 소설)
           </h1>
 
-          <p className="text-zinc-600">Research Definition</p>
+          <p className="text-zinc-600">Definition of 500-character fiction</p>
 
           <p
             className="reveal-up text-sm text-zinc-500"
             style={revealStyle(300)}
           >
-            This page defines the narrative concept known as
-            “500-character fiction”.
+            This page provides the core definition, conceptual background, 
+            and research basis for 500-character fiction.
           </p>
         </header>
 
@@ -69,16 +70,13 @@ export default function Research500Page() {
           style={revealStyle(420)}
         >
           <p className="text-zinc-700 leading-loose">
-            500-character fiction is a narrative form that operates on a fixed
-            length of approximately 500 characters. Rather than functioning as a
-            shortened version of conventional short fiction, it treats the
-            length constraint itself as a structural rule for narrative
-            production.
+            500-character fiction is a narrative form structured within a limit of 500 characters.
+            Rather than functioning as a shortened version of conventional short fiction, 
+            it treats the length limit itself as a structural rule for composition.
           </p>
 
           <p className="text-zinc-800 leading-loose font-medium">
-            500자 소설은 정확히 500자라는 규칙 위에서 반복적으로
-            생성·검증·축적되는 서사 장르다.
+            500자 소설은 500자 이내의 길이 제한 아래 반복적으로 생성·검증·축적되는 서사 형식이다.
           </p>
 
           <p className="text-zinc-700 leading-loose">
@@ -104,9 +102,10 @@ export default function Research500Page() {
           </p>
 
           <p className="text-zinc-700 leading-loose">
-            The 500-character framework proposes a different approach: a
-            repeatable narrative scale where the length itself becomes a
-            compositional rule.
+            Unlike flexible short-form categories, 500-character fiction is 
+            proposed as a bounded narrative unit defined by a 500-character limit.
+            The 500-character framework establishes a repeatable narrative scale 
+            where the length limit itself becomes a compositional rule.
           </p>
         </section>
 
@@ -124,8 +123,7 @@ export default function Research500Page() {
               {" "}
               “소설이 성립되기 위한 최소 단위에 대한 고찰: 500자 서사의 가능성”
             </span>
-            , examining whether approximately 500 characters can function as a
-            minimal narrative unit.
+            , examining whether a narrative within a 500-character limit can function as a minimal narrative unit.
           </p>
 
           <p className="text-zinc-700 leading-loose">
@@ -143,9 +141,8 @@ export default function Research500Page() {
           </a>
 
           <p className="text-zinc-700 leading-loose">
-            A structured GitHub reference documenting the definition, comparative
-            positioning, structural characteristics, and related narrative method of
-            500-character fiction is also available below.
+            A structured GitHub reference documenting the definition, comparative position, 
+            and structural characteristics of 500-character fiction is also available below.
           </p>
 
           <a
@@ -202,7 +199,7 @@ export default function Research500Page() {
             </li>
             <li>
               <a href="/writer/reference/genre500" className="underline">
-                500자 소설 정의 페이지
+                500자 소설 장르 선언
               </a>
             </li>
             <li>

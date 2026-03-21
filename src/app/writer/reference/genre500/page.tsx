@@ -24,7 +24,7 @@ export default function ReferenceGenre500Page() {
       </h1>
 
       <p className="mt-4 text-base leading-7 text-zinc-700">
-        500자 소설은 정확히 500자라는 규칙 위에서 반복적으로 생성·검증·축적되는 서사 장르다.
+        500자 소설은 정확히 500자 이내의 고정 길이를 기반으로 하는 서사 장르다.
       </p>
 
       {/* 1. Definition */}

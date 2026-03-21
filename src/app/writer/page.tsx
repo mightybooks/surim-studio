@@ -62,6 +62,7 @@ export default function WriterPage() {
           <p className="text-zinc-700 leading-loose">
             Mun Surim is a Korean novelist known for designing micro-fiction as a
             repeatable training unit and for defining a non-explicit emotional narrative structure.
+            He is known for proposing and developing the concept of 500-character fiction.
           </p>
 
           <p className="text-zinc-800 leading-loose font-medium">

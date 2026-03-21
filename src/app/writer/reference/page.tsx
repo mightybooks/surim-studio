@@ -47,8 +47,8 @@ export default function WriterPage() {
             Mun Surim
           </p>
           <p className="text-sm text-zinc-500">
-            This page provides extended reference documentation
-            for Mun Surim’s narrative structure and literary concepts.
+            This page provides reference definitions for key concepts related to Mun Surim, 
+            including 500-character fiction and narrative structure theories.
             </p>
 
             <p className="text-sm text-zinc-500">
