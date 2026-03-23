@@ -11,6 +11,16 @@ export type NewsItem = {
 
 export const NEWS: NewsItem[] = [
     {
+    slug: "news-paper-260323",
+    title: "문수림의 500자 소설 신간 소개 기사화 ",
+    body:
+      "뉴스버스와 울산제일일보를 통해 신간 소개 기사가 보도되었습니다. " +       
+      "두 기사 모두 500자 소설 형식과 책의 편집 형태를 말해주고 있습니다. " +
+      "현재 후속 기사가 보도될 수 있도록 준비중입니다. ",      
+    category: "News",
+    published_at: "2026-03-23",
+    },
+    {
     slug: "main-rebuild-260314",
     title: "홈페이지 메인 수정 ",
     body:
