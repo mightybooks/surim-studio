@@ -180,22 +180,31 @@ export default function ResearchPage() {
           style={revealStyle(820)}
         >
           <p className="text-sm text-zinc-600">
-            Related sections:
+            Related references:
           </p>
+
           <ul className="text-sm list-disc list-inside text-zinc-600">
             <li>
-              <a href="/writer" className="underline">
-                Writer
+              <a href="/research/500-character-fiction" className="underline">
+                Definition
               </a>
             </li>
+
+            <li>
+              <a href="/writer/press" className="underline">
+                Press coverage
+              </a>
+            </li>
+
+            <li>
+              <a href="/research/500-character-fiction/archive" className="underline">
+                Research archive
+              </a>
+            </li>
+
             <li>
               <a href="/writer/reference/genre500" className="underline">
-                500자 소설 정의 페이지
-              </a>
-            </li>
-            <li>
-              <a href="/projects/500_fiction" className="underline">
-                500 Fiction Project
+                Reference document
               </a>
             </li>
           </ul>

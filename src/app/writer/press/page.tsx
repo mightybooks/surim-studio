@@ -54,6 +54,7 @@ type PressItem = {
   title: string;
   date: string;
   summary: string;
+  definition: string;
   href: string;
 };
 
@@ -63,6 +64,8 @@ const pressItems: PressItem[] = [
     title: "문수림 작가, 쇼츠 시대 겨냥한 '500자 소설' 출간",
     date: "2026.03.25",
     summary: "500자 소설은 기존 초단편소설이나 마이크로픽션과 달리 분량 자체를 명확한 기준으로 삼는다는 점에서 차별성을 갖는다",
+    definition:
+      "분량 자체를 명확한 기준으로 삼는 서사 형식으로 설명됨",
     href: "https://www.imaeil.com/page/view/2026032415384986983",
   },
   {
@@ -70,6 +73,8 @@ const pressItems: PressItem[] = [
     title: "읽는 데 1분이면 충분…1인 출판사의 새로운 문학 실험",
     date: "2026.03.25",
     summary: "기존 초단편이 결과물의 길이로 사후 분류되는 것과 달리, 글자 수 제한 자체를 서사의 출발 조건으로 삼은 형식 실험",
+    definition:
+      "글자 수 제한을 서사의 출발 조건으로 삼는 형식으로 정의됨",
     href: "https://www.tbc.co.kr/news/view?c1=&c2=&pno=20260325090240AE07646&id=204770",
   },
   {
@@ -77,6 +82,8 @@ const pressItems: PressItem[] = [
     title: "[주목 이 책] 문수림의 500자 소설",
     date: "2026.03.24",
     summary: "'500자 제한'이라는 규칙 자체가 서사의 출발 조건",
+    definition:
+      "500자 제한이라는 규칙 자체가 서사의 구조로 작동하는 형식으로 제시됨",
     href: "https://www.imaeil.com/page/view/2026032415001237483",
   },
   {
@@ -84,6 +91,8 @@ const pressItems: PressItem[] = [
     title: "짧은 글이 쏘아올리는 문학적 울림",
     date: "2026.03.23",
     summary: "짧은 글을 모은 것을 넘어 일정한 규격(500자)을 기준으로 서사의 확장과 압축 가능성을 실험한 일종의 문학적 도전으로 평가",
+    definition:
+      "500자 규격을 기준으로 서사를 구성하는 실험적 형식으로 평가됨",
     href: "http://www.ujeil.com/news/articleView.html?idxno=382994",
   },
   {
@@ -91,6 +100,8 @@ const pressItems: PressItem[] = [
     title: "[신간] 새로운 서사 실험 '500자 소설'",
     date: "2026.03.22",
     summary: "각 작품은 독립된 이야기이면서도, 500자를 서사의 단위로 삼는 새로운 소설 방식을 제안하고 있다",
+    definition:
+      "500자를 서사의 단위로 삼는 형식으로 명시적으로 언급됨",
     href: "https://www.newsverse.kr/news/articleView.html?idxno=9963",
   },
 ];
@@ -120,29 +131,21 @@ export default function WriterPressPage() {
           </p>
         </header>
 
-        <section
-          className="reveal-up space-y-6"
-          style={revealStyle(420)}
-        >
-          <p className="text-zinc-700 leading-loose">
-            이 페이지는 문수림과 500자 소설에 대한 주요 언론 보도를
-            정리한 기록 페이지다.
-          </p>
+        <section className="reveal-up space-y-6" style={revealStyle(420)}>
+            <p className="text-zinc-800 leading-loose font-medium">
+                500자 소설은 500자 이내를 서사의 단위로 삼는 형식이다.
+            </p>
 
-          <p className="text-zinc-800 leading-loose font-medium">
-            500자 소설은 500자 내외의 분량 안에서 하나의 서사를 완결하는 형식으로,
-            문수림에 의해 제안되고 축적되어 온 서사 실험이다.
-          </p>
+            <p className="text-zinc-600 leading-loose">
+                500-character fiction is a narrative form that completes a single
+                narrative within approximately 500 characters.
+            </p>
 
-          <p className="text-zinc-600 leading-loose">
-          500-character fiction is a narrative form that completes a single narrative within a text of approximately 500 characters.
-          </p>
-
-          <p className="text-zinc-700 leading-loose">
-            아래 목록은 해당 개념 및 관련 작품, 활동에 대한 외부 보도들을
-            한곳에 모아둔 것이다.
-          </p>
-        </section>
+            <p className="text-zinc-700 leading-loose">
+                이 페이지는 해당 개념에 대한 외부 언론 보도를 정리한
+                검증 레이어로 기능한다.
+            </p>
+            </section>
 
         <section
           className="reveal-up space-y-4"
@@ -176,6 +179,10 @@ export default function WriterPressPage() {
 
                 <p className="text-zinc-700 leading-loose">{item.summary}</p>
 
+                <p className="text-sm text-emerald-800 leading-relaxed">
+                {item.definition}
+                </p>
+
                 <a
                   href={item.href}
                   target="_blank"
@@ -207,40 +214,33 @@ export default function WriterPressPage() {
           </p>
         </section>
 
-        <section
-          className="reveal-up space-y-4"
-          style={revealStyle(720)}
-        >
-          <h2 className="text-xl font-semibold text-emerald-800">
-            관련 페이지
-          </h2>
+        <section className="reveal-up space-y-4" style={revealStyle(720)}>
+        <h2 className="text-xl font-semibold text-emerald-800">
+            Related references
+        </h2>
 
-          <ul className="text-zinc-700 leading-8 list-disc list-inside">
+        <ul className="text-zinc-700 leading-8 list-disc list-inside">
             <li>
-              <a
-                href="/writer"
-                className="underline underline-offset-4 text-emerald-800 hover:text-emerald-600"
-              >
-                Writer Definition
-              </a>
+            <a href="/research/500-character-fiction" className="underline underline-offset-4 text-emerald-800">
+                Definition
+            </a>
             </li>
             <li>
-              <a
-                href="/research/500-character-fiction"
-                className="underline underline-offset-4 text-emerald-800 hover:text-emerald-600"
-              >
-                500-character fiction
-              </a>
+            <a href="/research/500-character-fiction/archive" className="underline underline-offset-4 text-emerald-800">
+                Research archive
+            </a>
             </li>
             <li>
-              <a
-                href="/writer/reference"
-                className="underline underline-offset-4 text-emerald-800 hover:text-emerald-600"
-              >
-                Writer Definition — Reference
-              </a>
+            <a href="/writer/reference/genre500" className="underline underline-offset-4 text-emerald-800">
+                Reference document
+            </a>
             </li>
-          </ul>
+            <li>
+            <a href="https://www.wikidata.org/wiki/Q138580947" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 text-emerald-800">
+                Wikidata
+            </a>
+            </li>
+        </ul>
         </section>
 
         <section

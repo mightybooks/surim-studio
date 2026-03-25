@@ -181,23 +181,31 @@ export default function Research500Page() {
           style={revealStyle(780)}
         >
           <h2 className="text-xl font-semibold text-emerald-800">
-            Related pages
+            Related references
           </h2>
 
           <ul className="list-disc list-inside text-zinc-700 leading-8">
             <li>
-              <a href="/writer" className="underline">
-                Writer
+              <a href="/research/500-character-fiction" className="underline">
+                Definition
               </a>
             </li>
+
+            <li>
+              <a href="/writer/press" className="underline">
+                Press coverage
+              </a>
+            </li>
+
+            <li>
+              <a href="/research/500-character-fiction/archive" className="underline">
+                Research archive
+              </a>
+            </li>
+
             <li>
               <a href="/writer/reference/genre500" className="underline">
-                500자 소설 장르 선언
-              </a>
-            </li>
-            <li>
-              <a href="/projects/500_fiction" className="underline">
-                500 Fiction Project
+                Reference document
               </a>
             </li>
           </ul>

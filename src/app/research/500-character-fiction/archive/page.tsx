@@ -197,35 +197,48 @@ export default function Research500ArchivePage() {
         </section>
 
         <section
-          className="reveal-up space-y-4"
-          style={revealStyle(720)}
+            className="reveal-up space-y-4"
+            style={revealStyle(720)}
           >
-          <h2 className="text-xl font-semibold text-emerald-800">
-            Linked research documents
-          </h2>
+            <h2 className="text-xl font-semibold text-emerald-800">
+              Related references
+            </h2>
 
-          <ul className="list-disc list-inside text-zinc-700 leading-8">
-            <li>
-              <a href="/research/500-character-fiction" className="underline">
-               Research definition of 500-character fiction
-              </a>
-            </li>
-            <li>
-              <a href="/writer/reference/genre500" className="underline">
-              500자 소설 정의 페이지
-              </a>
-            </li>
-            <li>
-              <a
-               href="https://doi.org/10.5281/zenodo.18960753"
-               target="_blank"
-               rel="noopener noreferrer"
-               className="underline"
-               >
-               View paper (Zenodo DOI)
-              </a>
-            </li>
-           </ul>
+            <ul className="list-disc list-inside text-zinc-700 leading-8">
+              <li>
+                <a href="/research/500-character-fiction" className="underline">
+                  Definition
+                </a>
+              </li>
+
+              <li>
+                <a href="/writer/press" className="underline">
+                  Press coverage
+                </a>
+              </li>
+
+              <li>
+                <a href="/writer/reference/genre500" className="underline">
+                  Reference document
+                </a>
+              </li>
+
+              <li>
+                <a
+                  href="https://doi.org/10.5281/zenodo.18960753"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline"
+                >
+                  Zenodo DOI
+                </a>
+              </li>
+              <li>
+                <a href="https://www.wikidata.org/wiki/Q138580947" className="underline">
+                  Wikidata
+                </a>
+              </li>
+            </ul>
           </section>
 
           <section

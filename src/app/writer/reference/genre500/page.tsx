@@ -172,30 +172,25 @@ export default function ReferenceGenre500Page() {
       {/* External references */}
         <section className="mt-12 border-t pt-10">
           <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-zinc-500">
-            Extended references
+            Related references
           </h2>
 
-            <ul className="list-disc space-y-2 pl-5 text-zinc-700">
+          <ul className="list-disc space-y-2 pl-5 text-zinc-700">
             <li>
               <a className="underline" href="/research/500-character-fiction">
-                Research definition of 500-character fiction
-              </a>
-            </li>
-            
-            <li>
-              <a className="underline" href="/writer/reference">
-                Writer Reference Hub
+                Definition
               </a>
             </li>
 
             <li>
-              <a
-                className="underline"
-                href="https://github.com/mightybooks/500-character-fiction"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                GitHub Definition
+              <a className="underline" href="/research/500-character-fiction/archive">
+                Research archive
+              </a>
+            </li>
+
+            <li>
+              <a className="underline" href="/writer/press">
+                Press coverage
               </a>
             </li>
 
@@ -206,18 +201,18 @@ export default function ReferenceGenre500Page() {
                 target="_blank"
                 rel="noopener noreferrer nofollow"
               >
-                Wikidata (Q138580947)
+                Wikidata
               </a>
             </li>
 
             <li>
               <a
-                href="https://simple-situation-7bc.notion.site/500-character-fiction-1dd696a7ff9280289f63d51abacff877"
+                className="underline"
+                href="https://doi.org/10.5281/zenodo.18960753"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="underline"
               >
-                Notion Knowledge Page
+                Zenodo DOI
               </a>
             </li>
           </ul>
