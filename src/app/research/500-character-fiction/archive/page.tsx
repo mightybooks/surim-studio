@@ -6,7 +6,7 @@ import ReadingProgress from "@/components/ReadingProgress";
 export const metadata: Metadata = {
   title: "Research Archive | 500-character fiction",
   description:
-    "Archive page documenting the development, accumulation, and research process behind 500-character fiction.",
+    "An archive documenting the development and recorded milestones of 500-character fiction.",
   other: {
     "application/ld+json": JSON.stringify({
       "@context": "https://schema.org",
@@ -158,6 +158,42 @@ export default function Research500ArchivePage() {
               narrative unit.
             </p>
           </div>
+        </section>
+
+        <section
+          className="reveal-up space-y-4"
+          style={revealStyle(680)}
+        >
+          <h2 className="text-xl font-semibold text-emerald-800">
+            Selected records
+          </h2>
+
+          <ul className="space-y-3 text-zinc-700 leading-loose">
+            <li>
+              <strong>2026</strong> — Initial definition of 500-character fiction published as a conceptual page.
+            </li>
+
+            <li>
+              <strong>2026</strong> — Repeated production of 500-character narratives accumulated as a body of work.
+            </li>
+
+            <li>
+              <strong>2026</strong> — Structural interpretation established: length constraint reframed as a compositional rule.
+            </li>
+
+            <li>
+              <strong>2026</strong> — Formal publication of the book 
+              <span className="italic"> 500-character fiction</span>.
+            </li>
+
+            <li>
+              <strong>2026</strong> — Theoretical paper published via Zenodo DOI.
+            </li>
+
+            <li>
+              <strong>2026</strong> — Initial press coverage and external references began to accumulate.
+            </li>
+          </ul>
         </section>
 
         <section

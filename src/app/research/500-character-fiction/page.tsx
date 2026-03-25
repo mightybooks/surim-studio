@@ -14,7 +14,7 @@ export const metadata: Metadata = {
       name: "500-character fiction",
       alternateName: ["500자 소설", "500-character narrative"],
       description:
-        "A narrative form structured within a limit of 500 characters, developed by Mun Surim as a repeatable narrative unit.",
+        "A narrative form that completes a single narrative within approximately 500 characters, developed by Mun Surim as a repeatable narrative unit.",
       author: {
         "@type": "Person",
         name: "Mun Surim",
@@ -70,19 +70,12 @@ export default function Research500Page() {
           style={revealStyle(420)}
         >
           <p className="text-zinc-700 leading-loose">
-            500-character fiction is a narrative form structured within a limit of 500 characters.
-            Rather than functioning as a shortened version of conventional short fiction, 
-            it treats the length limit itself as a structural rule for composition.
+            500-character fiction is a narrative form that completes a single narrative within 
+            a text of approximately 500 characters.
           </p>
 
           <p className="text-zinc-800 leading-loose font-medium">
-            500자 소설은 500자 이내의 길이 제한 아래 반복적으로 생성·검증·축적되는 서사 형식이다.
-          </p>
-
-          <p className="text-zinc-700 leading-loose">
-            In this framework, the constraint is not an editorial limitation but
-            a generative condition. The narrative unit is produced through
-            repetition, accumulation, and structural refinement.
+            500자 소설은 500자 내외의 분량 안에서 하나의 서사를 완결하는 형식이다.
           </p>
         </section>
 
@@ -123,7 +116,7 @@ export default function Research500Page() {
               {" "}
               “소설이 성립되기 위한 최소 단위에 대한 고찰: 500자 서사의 가능성”
             </span>
-            , examining whether a narrative within a 500-character limit can function as a minimal narrative unit.
+            , examining whether a narrative form that completes a single narrative within approximately 500 characters can function as a minimal narrative unit.
           </p>
 
           <p className="text-zinc-700 leading-loose">

@@ -8,7 +8,7 @@ const DOC = {
   slug: "genre500",
   title: "500자 소설은 장르다",
   description:
-    "500자 소설은 ‘짧은 소설’이 아니라, 정확히 500자라는 규칙 위에서 반복적으로 생성·검증·축적되는 서사 장르다. 기준 문서.",
+      "500자 소설은 500자 내외의 분량 안에서 하나의 서사를 완결하는 형식이다. 기준 문서.",
   keywords: ["500자 소설", "장르 정의", "초단편", "서사 규칙", "문수림"],
 } as const;
 
@@ -24,7 +24,7 @@ export default function ReferenceGenre500Page() {
       </h1>
 
       <p className="mt-4 text-base leading-7 text-zinc-700">
-        500자 소설은 정확히 500자 이내의 고정 길이를 기반으로 하는 서사 장르다.
+        500자 소설은 500자 내외의 분량 안에서 하나의 서사를 완결하는 형식이다.
       </p>
 
       {/* 1. Definition */}
@@ -33,31 +33,30 @@ export default function ReferenceGenre500Page() {
           1. Definition
         </h2>
 
-        <p className="mb-4">
-          500자 소설은 단순히 분량 제한을 가진 형식이 아니라, 독립적인 서사 장르다.
+        <p className="mb-4 text-zinc-700">
+          500-character fiction is a narrative form that completes a single narrative within a text of approximately 500 characters.
         </p>
 
         <p className="mb-4">
-          일반적으로 500자 소설은 초단편소설, 플래시픽션, 또는 짧은 글쓰기 형식의
-          하위 범주로 분류되어 왔다. 이 문서에서는 그러한 분류를 채택하지 않는다.
-          500자 소설은 “짧은 소설”이 아니라, 고정된 분량을 전제로 작동하는 장르적
-          규칙 체계를 가진다.
+          500자 소설은 500자 내외의 분량 안에서 하나의 서사를 완결하는 형식이다.
         </p>
 
         <p className="mb-4">
-          초단편소설이나 플래시픽션이 기존의 단편들보다 단순히 ‘짧음’을 특징으로
-          삼는다면, 500자 소설은 정확한 분량 수치(500자)를 규칙으로 전제한다는
-          점에서 구조적으로 다르다. 이 수치는 선택 사항이 아니며, 장르 성립의
-          조건이다.
+          500자 소설은 단순한 분량 제한 형식이 아니라, 하나의 독립적인 서사 단위로 기능한다.
+        </p>
+
+        <p className="mb-4">
+          이 형식은 단순히 짧은 글의 하위 범주로 설명되지 않는다. 핵심은 분량의 크기가 아니라,
+          제한된 범위 안에서 하나의 서사를 완결하는 방식에 있다.
+        </p>
+
+        <p className="mb-4">
+          따라서 500자 소설은 길이를 기준으로 분류되는 기존의 초단편 개념들과 달리,
+          서사의 완결 조건을 중심으로 이해되어야 한다.
         </p>
 
         <p className="mt-6 font-medium">
-          따라서 이 문서에서는 500자 소설을 다음과 같이 정의한다.
-        </p>
-
-        <p className="mt-3 font-semibold">
-          500자 소설은 정확히 500자라는 규칙 위에서 반복적으로 생성·검증·축적되는
-          서사 장르다.
+          이 문서는 그 기준을 고정하기 위한 정의 문서다.
         </p>
       </section>
 
@@ -68,8 +67,8 @@ export default function ReferenceGenre500Page() {
         </h2>
 
         <p className="mb-4">
-          분량은 보통 제약으로 취급된다. 그러나 특정 분량이 항상 동일하게 반복될
-          때, 그 분량은 제약이 아니라 규칙이 된다.
+          분량은 보통 제약으로 취급된다. 그러나 특정 분량 안에서 반복적으로
+          서사가 구성될 때, 그 분량은 하나의 구성 조건으로 작동하게 된다.
         </p>
 
         <p className="mb-4">
@@ -138,7 +137,7 @@ export default function ReferenceGenre500Page() {
         </p>
 
         <p className="mb-4">
-          500자 소설은 문수림의 작업에서 단순한 실험 형식이 아니라, 이후 등장하는
+          500자 소설은 문수림의 작업에서 반복적으로 실험되고 축적된 형식이며, 이후 등장하는
           서사 개념들의 상위 전제로 기능한다.
         </p>
 

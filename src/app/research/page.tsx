@@ -83,9 +83,9 @@ export default function ResearchPage() {
           </p>
 
           <p className="text-zinc-700 leading-loose">
-            The primary subject at this stage is 500-character fiction, a
-            narrative form proposed and accumulated by Mun Surim as a repeatable
-            unit of literary production and examination.
+            The primary subject at this stage is 500-character fiction, 
+            a narrative form that completes a single narrative within 
+            a text of approximately 500 characters.
           </p>
         </section>
 
@@ -99,7 +99,7 @@ export default function ResearchPage() {
 
           <ul className="list-disc list-inside text-zinc-700 leading-8">
             <li>Definition and scope of 500-character fiction</li>
-            <li>500자 전후 분량이 독립 서사 단위가 될 수 있는가에 대한 검토</li>
+            <li>500자 내외의 분량 안에서 하나의 서사가 완결될 수 있는가에 대한 검토</li>
             <li>Research archive of iterative narrative experiments</li>
             <li>Links between books, papers, and concept pages</li>
           </ul>
@@ -118,9 +118,9 @@ export default function ResearchPage() {
               Research on 500-character fiction
             </h3>
             <p className="text-zinc-700 leading-loose">
-              A structured reference page defining 500-character fiction as a
-              narrative form, outlining its core claims, and connecting related
-              books, papers, and archives.
+              A structured reference page defining 500-character fiction 
+              as a narrative form that completes a single narrative within 
+              a text of approximately 500 characters, while connecting related books, papers, and archives.
             </p>
             <a
               href="/research/500-character-fiction"
@@ -157,13 +157,13 @@ export default function ResearchPage() {
           </h2>
 
           <p className="text-zinc-700 leading-loose">
-            In 2026, Mun Surim published the paper{" "}
-            <span className="italic">
-              “소설이 성립되기 위한 최소 단위에 대한 고찰: 500자 서사의 가능성”
-            </span>
-            , examining whether a narrative around 500 characters can function as
-            an independent literary unit.
-          </p>
+          In 2026, Mun Surim published the paper{" "}
+          <span className="italic">
+            “소설이 성립되기 위한 최소 단위에 대한 고찰: 500자 서사의 가능성”
+          </span>
+          , examining whether a narrative form that completes a single narrative within 
+          a text of approximately 500 characters can function as an independent literary unit.
+        </p>
 
           <a
             href="https://doi.org/10.5281/zenodo.18960753"
