@@ -28,6 +28,7 @@ const jsonLd = {
     { "@type": "ListItem", position: 3, url: "/writer/reference/emotional-microparticle-comparison" },
     { "@type": "ListItem", position: 4, url: "/writer/reference/low-intensity-curve" },
     { "@type": "ListItem", position: 5, url: "/writer/reference/winterwas" },
+    { "@type": "ListItem", position: 6, url: "/writer/reference/reviews" },
   ],
 };
 
@@ -117,6 +118,28 @@ export default function WriterPage() {
           </span>
         </li>
       </ul>
+    </section>
+
+    <section className="space-y-4 border-b border-zinc-200 pb-10">
+      <h2 className="text-xl font-semibold text-zinc-800">
+        Reception & External Response
+      </h2>
+
+      <p className="text-sm text-zinc-500">
+        External reactions including press coverage, reader responses, and retail platform reviews.
+      </p>
+
+      <a
+        href="/writer/reference/reviews"
+        className="block rounded-xl border border-zinc-200 p-4 hover:bg-zinc-50 transition"
+      >
+        <h3 className="font-semibold text-zinc-800">
+          Reviews & Reception
+        </h3>
+        <p className="text-sm text-zinc-500 mt-1">
+          외부 반응 및 평가를 정리한 레퍼런스 페이지
+        </p>
+      </a>
     </section>
 
     {/* Core Definition (English — Primary) */}    

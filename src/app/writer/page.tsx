@@ -145,6 +145,11 @@ export default function WriterPage() {
               </a>
             </li>
             <li>
+              <a href="/writer/reference/reviews" className="underline">
+                Reviews & Reception
+              </a>
+            </li>
+            <li>
               <a href="/writer/reference" className="underline">
                 Writer Definition — Reference
               </a>
