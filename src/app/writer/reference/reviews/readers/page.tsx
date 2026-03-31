@@ -1,3 +1,5 @@
+// src/writer/reference/reviews/readers/page.tsx
+
 import { readerReviews } from "@/data/reviews";
 import ReaderReviewItem from "@/components/reviews/ReaderReviewItem";
 
@@ -6,13 +8,13 @@ const jsonLd = {
   "@type": "ItemList",
   "name": "Reader Reviews",
   "itemListElement": readerReviews.map((r, i) => ({
-    "@type": "Review",
+    "@type": "CreativeWork",
     "position": i + 1,
     "author": {
       "@type": "Person",
       "name": r.author
     },
-    "reviewBody": r.quote,
+    "text": r.quote,
     "url": r.url,
     "publisher": {
       "@type": "Organization",

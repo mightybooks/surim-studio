@@ -9,19 +9,31 @@ const jsonLd = {
     const item: any = {
       "@type": "Review",
       "position": i + 1,
+
+      "itemReviewed": {
+        "@type": "Book",
+        "name": "500자 소설",
+        "author": {
+          "@type": "Person",
+          "name": "문수림"
+        }
+      },
+
       "author": {
         "@type": "Organization",
         "name": r.platform
       },
+
       "reviewBody": r.quotes[0],
       "url": r.url
     };
 
-    // ✅ rating 있을 때만 추가
     if (r.rating) {
       item.reviewRating = {
         "@type": "Rating",
-        "ratingValue": r.rating
+        "ratingValue": r.rating,
+        "bestRating": 10,   // 🔥 추가
+        "worstRating": 1    // 🔥 있으면 더 안정
       };
     }
 
