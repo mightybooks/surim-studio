@@ -9,7 +9,7 @@ export const readerReviews = [
   {
     author: "스토리캐쳐",
     platform: "Brunch",
-    quote: "행간 여백에서 울려퍼지는 '내안의 매아리'를 들어보는 시간",
+    quote: "행간 여백에서 울려퍼지는 '내 안의 메아리'를 들어보는 시간",
     url: "https://brunch.co.kr/@kk02me/396",
     date: "2026-03-26"
   },
