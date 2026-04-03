@@ -104,6 +104,15 @@ const pressItems: PressItem[] = [
       "500자를 서사의 단위로 삼는 형식으로 명시적으로 언급됨",
     href: "https://www.newsverse.kr/news/articleView.html?idxno=9963",
   },
+  {
+    outlet: "한국아파트신문",
+    title: "‘500자 짧은 소설’ 101편 읽어볼까",
+    date: "2026.04.03",
+    summary: "감정의 서술과 상황 설명 등을 최대한 덜어내 건조하면서도 직관적인 문체가 특징이다",
+    definition:
+      "500자에 가까운 분량으로 작성된 101편의 짧은 소설들로만 구성된 실험적인 책",
+    href: "https://www.hapt.co.kr/news/articleView.html?idxno=168088",
+  },
 ];
 
 export default function WriterPressPage() {
