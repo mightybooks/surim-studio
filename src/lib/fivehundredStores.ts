@@ -33,7 +33,7 @@ export const REGIONS: { key: RegionKey; label: string; subtitle?: string }[] = [
   { key: "sejong", label: "세종특별시", subtitle: "추가 정리 예정" },
   { key: "gangwon", label: "강원도", subtitle: "추가 정리 예정" },
   { key: "chungcheong", label: "충청도", subtitle: "현재 충청권 입고 서점" },
-  { key: "jeolla", label: "전라도", subtitle: "추가 정리 예정" },
+  { key: "jeolla", label: "전라도", subtitle: "현재 전라권 입고 서점" },
   { key: "gyeongsang", label: "경상도", subtitle: "추가 정리 예정" },
   { key: "jeju", label: "제주도", subtitle: "추가 정리 예정" },
 ];
@@ -75,7 +75,14 @@ export const FIVE_HUNDRED_STORES: Record<RegionKey, FiveHundredStore[]> = {
       phone: "010-8812-0152",      
     },
   ],
-  jeolla: [],
+  jeolla: [
+    {
+      id: "quite-excitement-color",
+      name: "조용한흥분색",
+      address: "전북특별자치도 군산시 옥구읍 옥구남로 11 1층 조용한흥분색",
+      phone: "0507-1471-8770",
+    },
+  ],
   gyeongsang: [],
   jeju: [],
 };
