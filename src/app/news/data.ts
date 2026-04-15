@@ -11,6 +11,16 @@ export type NewsItem = {
 
 export const NEWS: NewsItem[] = [
     {
+    slug: "work-shop-260415",
+    title: "문수림의 500자 소설 워크숍 성공적 개최 ",
+    body:
+      "500자 소설 워크숍이 성공적으로 개최 되었습니다. " +       
+      "4명의 일반인 참여자로 진행되는 워크숍은 주 1회, 총 4회로 구성되었습니다. " +
+      "500자 소설의 형식화, 구조화를 통한 확산이 예상됩니다. ",      
+    category: "News",
+    published_at: "2026-04-15",
+    },
+    {
     slug: "news-paper-260323",
     title: "문수림의 500자 소설 신간 소개 기사화 ",
     body:
