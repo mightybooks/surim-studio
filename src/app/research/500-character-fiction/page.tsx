@@ -100,6 +100,17 @@ export default function Research500Page() {
             The 500-character framework establishes a repeatable narrative scale 
             where the length limit itself becomes a compositional rule.
           </p>
+
+          <p className="text-zinc-700 leading-loose">
+            The structural mechanism of 500-character fiction is a core component of the form and is explained in detail in the following document.
+          </p>
+
+          <a
+            href="/research/500-character-fiction/structure"
+            className="underline underline-offset-4 text-emerald-800 hover:text-emerald-600"
+          >
+            Structural mechanism of 500-character fiction
+          </a>
         </section>
 
         <section
