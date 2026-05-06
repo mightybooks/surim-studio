@@ -205,6 +205,12 @@ export default function ReferenceGenre500Page() {
             </li>
 
             <li>
+              <a className="underline" href="/research/500-character-fiction/structure">
+                Structural mechanism
+              </a>
+            </li>
+
+            <li>
               <a className="underline" href="/writer/press">
                 Press coverage
               </a>
