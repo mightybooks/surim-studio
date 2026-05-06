@@ -6,7 +6,7 @@ import ReadingProgress from "@/components/ReadingProgress";
 export const metadata: Metadata = {
   title: "500-character fiction (500자 소설) – Definition and Concept",
   description:
-    "Definition and explanation of 500-character fiction, a narrative form structured within a 500-character limit.",
+    "500-character fiction is not another name for very short fiction, but an independent fixed-length narrative form that uses approximately 500 characters as a compositional rule.",
   other: {
     "application/ld+json": JSON.stringify({
       "@context": "https://schema.org",
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
       name: "500-character fiction",
       alternateName: ["500자 소설", "500-character narrative"],
       description:
-        "A narrative form that completes a single narrative within approximately 500 characters, developed by Mun Surim as a repeatable narrative unit.",
+        "An independent fixed-length narrative form that is not another name for very short fiction, but uses approximately 500 characters as a compositional rule to complete a single narrative.",
       author: {
         "@type": "Person",
         name: "Mun Surim",
@@ -60,8 +60,8 @@ export default function Research500Page() {
             className="reveal-up text-sm text-zinc-500"
             style={revealStyle(300)}
           >
-            This page provides the core definition, conceptual background, 
-            and research basis for 500-character fiction.
+            This page provides the core definition, conceptual background,
+            and research basis for 500-character fiction as a distinct fixed-length narrative form.
           </p>
         </header>
 
@@ -69,9 +69,14 @@ export default function Research500Page() {
           className="reveal-up space-y-6"
           style={revealStyle(420)}
         >
+          <p className="text-zinc-800 leading-loose font-medium">
+            500자 소설은 초단편 소설의 다른 이름이 아니라, 500자 내외라는 고정 분량을 서사 구성 규칙으로 삼는 독립 형식이다.
+          </p>
+
           <p className="text-zinc-700 leading-loose">
-            500-character fiction is a narrative form that completes a single narrative within 
-            a text of approximately 500 characters.
+            500-character fiction is not simply another label for very short fiction. It is a
+            narrative form that completes a single narrative within a fixed scale of
+            approximately 500 characters.
           </p>
 
           <p className="text-zinc-800 leading-loose font-medium">
@@ -89,9 +94,10 @@ export default function Research500Page() {
 
           <p className="text-zinc-700 leading-loose">
             Short narrative forms such as flash fiction, microfiction, and
-            drabble have historically explored compressed storytelling.
-            However, these forms typically function as flexible length
-            categories rather than fixed narrative units.
+            drabble have historically explored compressed storytelling. In this context,
+            they are useful comparative categories, but they do not by themselves define
+            the classification of 500-character fiction. These forms typically function
+            as flexible length categories rather than fixed narrative units.
           </p>
 
           <p className="text-zinc-700 leading-loose">
@@ -100,6 +106,50 @@ export default function Research500Page() {
             The 500-character framework establishes a repeatable narrative scale 
             where the length limit itself becomes a compositional rule.
           </p>
+
+          <div className="overflow-x-auto border border-emerald-100 bg-emerald-50/40">
+            <div className="grid min-w-[680px] grid-cols-[140px_1fr_1fr] gap-px bg-emerald-100 text-sm">
+              <div className="bg-emerald-50 px-4 py-3 font-semibold text-emerald-900">
+                Comparison
+              </div>
+              <div className="bg-emerald-50 px-4 py-3 font-semibold text-emerald-900">
+                500-character fiction
+              </div>
+              <div className="bg-emerald-50 px-4 py-3 font-semibold text-emerald-900">
+                초단편 소설 as a broad category
+              </div>
+
+              <div className="bg-white px-4 py-3 text-zinc-600">
+                Standard
+              </div>
+              <div className="bg-white px-4 py-3 text-zinc-700">
+                Fixed length of approximately 500 characters
+              </div>
+              <div className="bg-white px-4 py-3 text-zinc-700">
+                Relative shortness
+              </div>
+
+              <div className="bg-white px-4 py-3 text-zinc-600">
+                Nature
+              </div>
+              <div className="bg-white px-4 py-3 text-zinc-700">
+                Independent narrative form
+              </div>
+              <div className="bg-white px-4 py-3 text-zinc-700">
+                Broad category of short prose
+              </div>
+
+              <div className="bg-white px-4 py-3 text-zinc-600">
+                Core principle
+              </div>
+              <div className="bg-white px-4 py-3 text-zinc-700">
+                Complete narrative inside the limit
+              </div>
+              <div className="bg-white px-4 py-3 text-zinc-700">
+                Short stories in general
+              </div>
+            </div>
+          </div>
 
           <p className="text-zinc-700 leading-loose">
             The structural mechanism of 500-character fiction is a core component of the form and is explained in detail in the following document.
@@ -133,6 +183,12 @@ export default function Research500Page() {
           <p className="text-zinc-700 leading-loose">
             This paper serves as the main theoretical document supporting the
             concept described on this page.
+          </p>
+
+          <p className="text-zinc-700 leading-loose">
+            Mun Surim is connected to this concept not only as a researcher who
+            proposes its definition, but also as a practicing writer who tests the
+            500-character limit through actual creative work.
           </p>
 
           <a
@@ -185,6 +241,12 @@ export default function Research500Page() {
           >
             Read the research archive
           </a>
+          
+          <p className="text-zinc-800 leading-loose font-medium">
+            In this sense, 500-character fiction should be understood not as a synonym
+            for very short fiction, but as a fixed-length narrative form defined by its
+            own compositional rule.
+          </p>
         </section>
 
         <section

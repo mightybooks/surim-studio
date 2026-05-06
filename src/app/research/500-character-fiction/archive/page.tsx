@@ -6,7 +6,7 @@ import ReadingProgress from "@/components/ReadingProgress";
 export const metadata: Metadata = {
   title: "Research Archive | 500-character fiction",
   description:
-    "An archive documenting the development and recorded milestones of 500-character fiction.",
+    "Research archive documenting the development of 500-character fiction as an independent fixed-length narrative form rather than a synonym for very short fiction.",
   other: {
     "application/ld+json": JSON.stringify({
       "@context": "https://schema.org",
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
       name: "500-character fiction research archive",
       alternateName: "500자 소설 연구 아카이브",
       description:
-        "An archive documenting the conceptual development, iterative accumulation, and research process of 500-character fiction by Mun Surim.",
+        "A research archive documenting the conceptual development, iterative accumulation, and research process of 500-character fiction by Mun Surim as an independent fixed-length narrative form, where the 500-character scale functions as a compositional rule distinct from very short fiction.",
       url: "https://surimstudio.com/research/500-character-fiction/archive",
       isPartOf: {
         "@type": "WebPage",
@@ -74,6 +74,14 @@ export default function Research500ArchivePage() {
             produced, examined, and reframed as a literary concept.
           </p>
 
+          <p className="text-zinc-700 leading-loose">
+            This archive documents the development of 500-character fiction as
+            an independent fixed-length narrative form. It does not treat
+            500-character fiction as merely another category of very short
+            prose; the accumulated records show how fixed length became a
+            compositional rule.
+          </p>
+
           <p className="text-zinc-800 leading-loose font-medium">
             이 페이지는 500자 소설이 단순한 짧은 글 형식이 아니라,
             반복 생산과 축적을 통해 하나의 서사 단위로 정리되어 온 과정을
@@ -129,7 +137,8 @@ export default function Research500ArchivePage() {
             <p className="text-zinc-700 leading-loose">
               Over time, the fixed length ceased to function as a mere limit and
               was interpreted instead as a narrative rule. This marked the shift
-              from short text to structured narrative unit.
+              from short text to structured narrative unit: not merely very
+              short prose, but an independent fixed-length narrative form.
             </p>
           </div>
 
@@ -194,6 +203,12 @@ export default function Research500ArchivePage() {
               <strong>2026</strong> — Initial press coverage and external references began to accumulate.
             </li>
           </ul>
+
+          <p className="text-zinc-700 leading-loose">
+            500-character fiction developed not as a general category of very
+            short prose, but as an independent fixed-length narrative form
+            structured around a repeatable compositional rule.
+          </p>
         </section>
 
         <section

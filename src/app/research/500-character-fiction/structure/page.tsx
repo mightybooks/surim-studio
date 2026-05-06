@@ -6,7 +6,7 @@ import ReadingProgress from "@/components/ReadingProgress";
 export const metadata: Metadata = {
   title: "500-character fiction – Structural mechanism and compositional rules",
   description:
-    "Structural definition and compositional rules of 500-character fiction as a fixed-length narrative form.",
+    "Structural mechanism of 500-character fiction, where the 500-character limit functions as a compositional rule rather than an editorial size.",
   other: {
     "application/ld+json": JSON.stringify({
       "@context": "https://schema.org",
@@ -71,9 +71,21 @@ export default function Research500StructurePage() {
           className="reveal-up space-y-6"
           style={revealStyle(420)}
           >
+          <p className="text-zinc-800 leading-loose font-medium">
+            The 500-character limit is not merely an editorial restriction, but a compositional mechanism.
+          </p>
+
           <p className="text-zinc-700 leading-loose">
             500-character fiction is a fixed-length narrative form in which the 
-            500-character constraint functions as a compositional rule rather than a descriptive limit.
+            500-character constraint functions as a structural rule rather than a descriptive limit.
+            In this form, length is not only a container for narrative. The fixed length becomes
+            part of the narrative structure itself.
+          </p>
+
+          <p className="text-zinc-700 leading-loose">
+            The form requires a complete narrative movement inside the limit. Character, situation,
+            event, and change must be arranged within the same bounded unit, so the limit shapes
+            what can appear, what must be implied, and where the narrative must close.
           </p>
 
           <p className="text-zinc-800 leading-loose font-medium">
@@ -111,7 +123,90 @@ export default function Research500StructurePage() {
               <li>Fixed-length constraint (~500 characters)</li>
               <li>Composition through omission</li>
               <li>Single narrative convergence</li>
+              <li>Complete narrative movement inside the limit</li>
             </ul>
+        </section>
+
+        <section
+            className="reveal-up space-y-6"
+            style={revealStyle(580)}
+            >
+            <h2 className="text-xl font-semibold text-emerald-800">
+                Why approximately 500 characters
+            </h2>
+
+            <p className="text-zinc-700 leading-loose">
+                The 500-character scale is significant because it sits near the lower boundary where
+                narrative completeness can still be maintained. If the form is too short, character,
+                situation, event, and change may collapse into a fragment, image, or slogan rather than
+                a completed narrative movement.
+            </p>
+
+            <p className="text-zinc-700 leading-loose">
+                If the form is too long, the pressure of compression becomes weaker. Additional space
+                allows explanation and expansion to replace structural necessity, making the text
+                closer to flexible short prose than to a fixed-length narrative unit.
+            </p>
+
+            <p className="text-zinc-700 leading-loose">
+                Around 500 characters, a minimal narrative unit can still hold character, situation,
+                event, and change together. The limit remains tight enough to enforce compression,
+                but large enough to preserve a complete movement from narrative setup to change.
+            </p>
+
+            <div className="overflow-x-auto border border-emerald-100 bg-emerald-50/40">
+                <div className="grid min-w-[700px] grid-cols-[150px_1fr_1fr] gap-px bg-emerald-100 text-sm">
+                    <div className="bg-emerald-50 px-4 py-3 font-semibold text-emerald-900">
+                        Comparison
+                    </div>
+                    <div className="bg-emerald-50 px-4 py-3 font-semibold text-emerald-900">
+                        500-character fiction
+                    </div>
+                    <div className="bg-emerald-50 px-4 py-3 font-semibold text-emerald-900">
+                        Flexible short prose
+                    </div>
+
+                    <div className="bg-white px-4 py-3 text-zinc-600">
+                        Role of length
+                    </div>
+                    <div className="bg-white px-4 py-3 text-zinc-700">
+                        Structural rule
+                    </div>
+                    <div className="bg-white px-4 py-3 text-zinc-700">
+                        Editorial size
+                    </div>
+
+                    <div className="bg-white px-4 py-3 text-zinc-600">
+                        Narrative pressure
+                    </div>
+                    <div className="bg-white px-4 py-3 text-zinc-700">
+                        Essential
+                    </div>
+                    <div className="bg-white px-4 py-3 text-zinc-700">
+                        Optional
+                    </div>
+
+                    <div className="bg-white px-4 py-3 text-zinc-600">
+                        Completion
+                    </div>
+                    <div className="bg-white px-4 py-3 text-zinc-700">
+                        Required inside the limit
+                    </div>
+                    <div className="bg-white px-4 py-3 text-zinc-700">
+                        Variable
+                    </div>
+
+                    <div className="bg-white px-4 py-3 text-zinc-600">
+                        Repeatability
+                    </div>
+                    <div className="bg-white px-4 py-3 text-zinc-700">
+                        Repeatable narrative unit
+                    </div>
+                    <div className="bg-white px-4 py-3 text-zinc-700">
+                        Flexible short prose
+                    </div>
+                </div>
+            </div>
         </section>
 
         <section
@@ -180,11 +275,23 @@ export default function Research500StructurePage() {
                 operate in practice.
             </p>
 
+            <p className="text-zinc-700 leading-loose">
+                This structural mechanism supports the definition of 500-character fiction as an
+                independent fixed-length narrative form, not as another name for very short fiction.
+            </p>
+
             <a
                 href="/research/500-character-fiction/archive"
                 className="underline underline-offset-4 text-emerald-800 hover:text-emerald-600"
             >
                 View structural archive
+            </a>
+
+            <a
+                href="/research/500-character-fiction"
+                className="block underline underline-offset-4 text-emerald-800 hover:text-emerald-600"
+            >
+                Return to the definition of 500-character fiction
             </a>
         </section>
 

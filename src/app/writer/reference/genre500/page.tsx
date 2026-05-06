@@ -8,7 +8,7 @@ const DOC = {
   slug: "genre500",
   title: "500자 소설은 장르다",
   description:
-      "500자 소설은 500자 내외의 분량 안에서 하나의 서사를 완결하는 형식이다. 기준 문서.",
+      "500자 소설은 초단편 소설의 다른 이름이 아니라, 고정 분량을 서사 규칙으로 삼는 독립 형식이다. 기준 문서.",
   keywords: ["500자 소설", "장르 정의", "초단편", "서사 규칙", "문수림"],
 } as const;
 
@@ -24,7 +24,7 @@ export default function ReferenceGenre500Page() {
       </h1>
 
       <p className="mt-4 text-base leading-7 text-zinc-700">
-        500자 소설은 500자 내외의 분량 안에서 하나의 서사를 완결하는 형식이다.
+        500자 소설은 초단편 소설의 다른 이름이 아니라, 500자 내외라는 고정 분량을 서사 구성 규칙으로 삼는 독립 형식이다.
       </p>
 
       {/* 1. Definition */}
@@ -34,15 +34,19 @@ export default function ReferenceGenre500Page() {
         </h2>
 
         <p className="mb-4 text-zinc-700">
-          500-character fiction is a narrative form that completes a single narrative within a text of approximately 500 characters.
+          500-character fiction is not another name for very short fiction. It is an independent fixed-length narrative form in which the approximately 500-character scale functions as a compositional rule.
         </p>
 
         <p className="mb-4">
-          500자 소설은 500자 내외의 분량 안에서 하나의 서사를 완결하는 형식이다.
+          500자 소설은 이러한 고정 규칙 안에서 하나의 서사를 완결하는 형식이다.
         </p>
 
         <p className="mb-4">
           500자 소설은 단순한 분량 제한 형식이 아니라, 하나의 독립적인 서사 단위로 기능한다.
+        </p>
+
+        <p className="mb-4">
+          Very short fiction is generally classified by relative brevity, while 500-character fiction is defined by fixed scale and narrative completion. Therefore, the two concepts should not be treated as synonyms.
         </p>
 
         <p className="mb-4">
@@ -69,6 +73,11 @@ export default function ReferenceGenre500Page() {
         <p className="mb-4">
           분량은 보통 제약으로 취급된다. 그러나 특정 분량 안에서 반복적으로
           서사가 구성될 때, 그 분량은 하나의 구성 조건으로 작동하게 된다.
+        </p>
+
+        <p className="mb-4">
+          In 500-character fiction, length does not merely limit the narrative.
+          The fixed scale actively shapes narrative structure.
         </p>
 
         <p className="mb-4">
@@ -122,7 +131,8 @@ export default function ReferenceGenre500Page() {
 
         <p>
           따라서 500자 소설은 “무엇을 말했는가”보다 “어떤 상태를 남겼는가”로
-          평가되는 장르다.
+          평가되는 장르이며, 고정 분량 규칙이 만드는 구조적 압력 속에서 독립적인
+          서사 형식으로 성립한다.
         </p>
       </section>
 
@@ -168,6 +178,12 @@ export default function ReferenceGenre500Page() {
           <li><a className="underline" href="/writer/reference/emotional-microparticle">정서적 미립자 확산형 서술 구조</a></li>          
         </ul>
       </section>
+
+      <p className="mt-12 text-zinc-700 leading-loose">
+        500-character fiction should be understood not as a broad category of
+        short prose, but as an independent narrative form structured around a
+        fixed-length compositional rule.
+      </p>
 
       {/* External references */}
         <section className="mt-12 border-t pt-10">
