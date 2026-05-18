@@ -6,7 +6,7 @@ import ReadingProgress from "@/components/ReadingProgress";
 export const metadata: Metadata = {
   title: "500-character fiction – Structural mechanism and compositional rules",
   description:
-    "Structural mechanism of 500-character fiction, where the 500-character limit functions as a compositional rule rather than an editorial size.",
+    "500자 소설에서 500자 내외의 분량은 사건·인물·전환·결말을 압축적으로 배치하게 만드는 서사 구성 규칙으로 작동한다. In 500-character fiction, the approximately 500-character length works as a rule of narrative composition.",
   other: {
     "application/ld+json": JSON.stringify({
       "@context": "https://schema.org",
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
       name: "Structural mechanism of 500-character fiction",
       alternateName: ["500자 소설 구조", "500-character fiction structure"],
       description:
-        "A fixed-length narrative form in which the 500-character constraint functions as a compositional rule that enforces narrative compression and convergence.",
+        "500자 소설에서 500자 내외의 분량은 단순한 길이 제한이 아니라, 사건·인물·전환·결말을 압축적으로 배치하게 만드는 서사 구성 규칙으로 작동한다. In 500-character fiction, the approximately 500-character length is not a simple length limit; it works as a rule of narrative composition that compresses the placement of event, character, turn, and ending.",
       author: {
         "@type": "Person",
         name: "Mun Surim",
@@ -72,7 +72,14 @@ export default function Research500StructurePage() {
           style={revealStyle(420)}
           >
           <p className="text-zinc-800 leading-loose font-medium">
-            The 500-character limit is not merely an editorial restriction, but a compositional mechanism.
+            In 500-character fiction, the approximately 500-character length is
+            not a simple length limit; it works as a rule of narrative
+            composition that compresses the placement of event, character,
+            turn, and ending.
+          </p>
+
+          <p className="text-zinc-800 leading-loose font-medium">
+            500자 소설에서 500자 내외의 분량은 단순한 길이 제한이 아니라, 사건·인물·전환·결말을 압축적으로 배치하게 만드는 서사 구성 규칙으로 작동한다.
           </p>
 
           <p className="text-zinc-700 leading-loose">

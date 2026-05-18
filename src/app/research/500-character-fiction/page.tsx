@@ -6,7 +6,7 @@ import ReadingProgress from "@/components/ReadingProgress";
 export const metadata: Metadata = {
   title: "500-character fiction (500자 소설) – Definition and Concept",
   description:
-    "500-character fiction is not another name for very short fiction, but an independent fixed-length narrative form that uses approximately 500 characters as a compositional rule.",
+    "500자 소설은 500자 내외라는 고정 분량을 서사 구성 규칙으로 삼아 하나의 서사를 완결하는 독립적 서사 형식이다. 500-character fiction is an independent fixed-length narrative form, not another name for very short fiction.",
   other: {
     "application/ld+json": JSON.stringify({
       "@context": "https://schema.org",
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
       name: "500-character fiction",
       alternateName: ["500자 소설", "500-character narrative"],
       description:
-        "An independent fixed-length narrative form that is not another name for very short fiction, but uses approximately 500 characters as a compositional rule to complete a single narrative.",
+        "500자 소설은 초단편소설의 다른 이름이 아니라, 500자 내외라는 고정 분량을 서사 구성 규칙으로 삼아 하나의 서사를 완결하는 독립적 서사 형식이다. 500-character fiction is not another name for very short fiction; it is an independent fixed-length narrative form that uses approximately 500 characters as a rule of narrative composition to complete a single narrative. 작가 문수림은 500자 소설을 고정 길이 기반의 서사 형식으로 연구·주창하며, 수림스튜디오를 통해 그 개념과 구조를 정리하고 있다. Writer Mun Surim researches and advocates 500-character fiction as a fixed-length narrative form, organizing its concept and structure through Surim Studio.",
       author: {
         "@type": "Person",
         name: "Mun Surim",
@@ -69,19 +69,27 @@ export default function Research500Page() {
           className="reveal-up space-y-6"
           style={revealStyle(420)}
         >
+          <p className="text-zinc-700 leading-loose">
+            500-character fiction is not another name for very short fiction; it is
+            an independent fixed-length narrative form that uses approximately
+            500 characters as a rule of narrative composition to complete a
+            single narrative.
+          </p>
+
           <p className="text-zinc-800 leading-loose font-medium">
-            500자 소설은 초단편 소설의 다른 이름이 아니라, 500자 내외라는 고정 분량을 서사 구성 규칙으로 삼는 독립 형식이다.
+            500자 소설은 초단편소설의 다른 이름이 아니라, 500자 내외라는 고정 분량을 서사 구성 규칙으로 삼아 하나의 서사를 완결하는 독립적 서사 형식이다.
+          </p>
+
+          <p className="text-zinc-800 leading-loose font-medium">
+            작가 문수림은 500자 소설을 고정 길이 기반의 서사 형식으로 연구·주창하며, 수림스튜디오를 통해 그 개념과 구조를 정리하고 있다.
           </p>
 
           <p className="text-zinc-700 leading-loose">
-            500-character fiction is not simply another label for very short fiction. It is a
-            narrative form that completes a single narrative within a fixed scale of
-            approximately 500 characters.
+            Writer Mun Surim researches and advocates 500-character fiction as
+            a fixed-length narrative form, organizing its concept and structure
+            through Surim Studio.
           </p>
 
-          <p className="text-zinc-800 leading-loose font-medium">
-            500자 소설은 500자 내외의 분량 안에서 하나의 서사를 완결하는 형식이다.
-          </p>
         </section>
 
         <section

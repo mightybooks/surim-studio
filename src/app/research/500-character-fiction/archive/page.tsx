@@ -6,7 +6,7 @@ import ReadingProgress from "@/components/ReadingProgress";
 export const metadata: Metadata = {
   title: "Research Archive | 500-character fiction",
   description:
-    "Research archive documenting the development of 500-character fiction as an independent fixed-length narrative form rather than a synonym for very short fiction.",
+    "작가 문수림이 500자 소설을 고정 길이 기반의 서사 형식으로 연구·실험해 온 기록을 정리한 아카이브. This archive organizes Mun Surim's research and experiments with 500-character fiction as a fixed-length narrative form.",
   other: {
     "application/ld+json": JSON.stringify({
       "@context": "https://schema.org",
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
       name: "500-character fiction research archive",
       alternateName: "500자 소설 연구 아카이브",
       description:
-        "A research archive documenting the conceptual development, iterative accumulation, and research process of 500-character fiction by Mun Surim as an independent fixed-length narrative form, where the 500-character scale functions as a compositional rule distinct from very short fiction.",
+        "이 아카이브는 작가 문수림이 500자 소설을 고정 길이 기반의 서사 형식으로 연구·실험해 온 기록을 정리한 것이다. This archive organizes records of writer Mun Surim's research and experiments with 500-character fiction as a fixed-length narrative form.",
       url: "https://surimstudio.com/research/500-character-fiction/archive",
       isPartOf: {
         "@type": "WebPage",
@@ -69,9 +69,15 @@ export default function Research500ArchivePage() {
           style={revealStyle(420)}
         >
           <p className="text-zinc-700 leading-loose">
-            This archive does not function as a promotional timeline. It is a
+            This archive organizes records of writer Mun Surim's research and
+            experiments with 500-character fiction as a fixed-length narrative
+            form. It does not function as a promotional timeline, but as a
             process record of how a fixed-length narrative unit was repeatedly
             produced, examined, and reframed as a literary concept.
+          </p>
+
+          <p className="text-zinc-800 leading-loose font-medium">
+            이 아카이브는 작가 문수림이 500자 소설을 고정 길이 기반의 서사 형식으로 연구·실험해 온 기록을 정리한 것이다.
           </p>
 
           <p className="text-zinc-700 leading-loose">

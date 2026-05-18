@@ -9,10 +9,12 @@ function revealStyle(delay: number) {
 
 export const metadata = {
   title: "500자 소설 샘플 – 수림 스튜디오",
-  description: "문수림의 500자 소설 5편 샘플 페이지",
+  description:
+    "500자 내외의 고정 분량 안에서 하나의 서사를 완결하는 500자 소설의 실제 예시. Practical examples of 500-character fiction that complete a single narrative within approximately 500 characters.",
   openGraph: {
     title: "500자 소설 샘플 – 수림 스튜디오",
-    description: "문수림의 500자 소설 샘플 5편",
+    description:
+      "500자 내외의 고정 분량 안에서 하나의 서사를 완결하는 500자 소설의 실제 예시. Practical examples of 500-character fiction that complete a single narrative within approximately 500 characters.",
     images: ["/og/500fiction_sample.webp"],
   },
 };
@@ -35,7 +37,7 @@ export default function Fiction500SamplePage() {
             500자 소설 샘플
           </h1>
           <p className="reveal-up text-sm md:text-base text-zinc-200" style={revealStyle(300)}>
-            문수림이 직접 집필한 5편의 샘플
+            Five examples completed within the fixed scale of approximately 500 characters
           </p>
         </div>
       </section>
@@ -43,9 +45,9 @@ export default function Fiction500SamplePage() {
       {/* 서문 */}
       <article className="reveal-up prose prose-zinc max-w-none news-body" style={revealStyle(420)}>
         <p>
-          500자라는 제약은 문장을 더 선명하게 만들고, 이야기의 본질만을 남깁니다.<br/>
-          아래의 5편은 문수림이 매일 쓰듯 쌓아온 이야기들 중 일부이며,
-          <strong>『500자 소설』</strong> 챌린지 앱의 기준이 되는 작품들입니다.
+          아래 작품들은 500자 내외의 고정 분량 안에서 하나의 서사를 완결하는 500자 소설의 실제 예시입니다.<br/>
+          The works below are practical examples of 500-character fiction, each completing a single narrative within the fixed scale of approximately 500 characters.<br/>
+          각 작품은 제한된 분량 안에서 인물, 사건, 전환, 결말을 압축적으로 배치해 하나의 서사 단위를 완성합니다.
         </p>
       </article>
 
