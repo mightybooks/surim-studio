@@ -197,12 +197,15 @@ export default function AdminBlogNewPage() {
       payload.published_at = now;
     }
 
-    const { error: dbError } = await supabase
-      .from("blog_posts")
-      .upsert(payload, { onConflict: "slug" });
+    const res = await fetch("/api/admin/blog-posts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
 
-    if (dbError) {
-      console.error(dbError);
+    if (!res.ok) {
+      const result = await res.json().catch(() => null);
+      console.error(result);
       setError("저장 중 오류가 발생했습니다.");
       setMessage(null);
       setSaving("idle");
