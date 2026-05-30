@@ -476,6 +476,36 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   border-color: rgba(167, 243, 208, 0.38);
  } 
 
+.surimji-reader-body :where(.copyright-notice) {
+  margin: 2rem 0;
+  border: 1px solid color-mix(in srgb, var(--reader-border) 70%, var(--reader-fg));
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--reader-panel) 88%, #fef3c7);
+  padding: 1rem 1.15rem;
+  color: var(--reader-muted);
+  font-family: var(--reader-accent-font-family);
+  font-size: 0.92em;
+ }
+
+.surimji-reader-body :where(.copyright-notice p) {
+  margin-bottom: 0.75em;
+  text-indent: 0;
+ }
+
+.surimji-reader-body :where(.copyright-notice p:last-child) {
+  margin-bottom: 0;
+ }
+
+.surimji-reader-body :where(.copyright-notice-compact) {
+  margin: 1.5rem 0 2.5rem;
+  font-size: 0.88em;
+ }
+
+.surimji-theme-night .surimji-reader-body :where(.copyright-notice) {
+  background: color-mix(in srgb, var(--reader-panel) 88%, #78350f);
+  border-color: rgba(251, 191, 36, 0.35);
+ }
+
 }
 
 .surimji-reader .surimji-reader-body :where(.cta-button-wrap) {

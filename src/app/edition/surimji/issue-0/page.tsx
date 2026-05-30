@@ -37,6 +37,28 @@ export default function SurimjiIssue0Page() {
         </div>
       </header>
 
+    <aside
+      className="reveal-up rounded-2xl border border-amber-200 bg-amber-50/70 p-5 text-sm leading-7 text-amber-950"
+      style={revealStyle(400)}
+    >
+      <p className="font-semibold">저작권 안내</p>
+
+      <p className="mt-2">
+        현재 열람 중인 《수림지 vol.0》는 ISBN 979-11-994493-8-1로
+        정식 도서 유통 중인 저작물을 기반으로 합니다.
+      </p>
+
+      <p className="mt-2">
+        본문에 수록된 글, 이미지, 구성, 편집 요소는 저작권법에 따라 보호받는
+        저작물입니다.<br/>저작권자 및 출판사의 사전 서면 동의 없이 내용의 전부
+        또는 일부를 무단 전재, 복제, 배포, 변형, 2차 이용하는 행위를 금합니다.
+      </p>
+
+      <p className="mt-2">
+        이를 위반할 경우 관련 법령에 따라 민·형사상 책임을 물을 수 있습니다.
+      </p>
+    </aside>
+
       <section className="reveal-up rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] p-6" style={revealStyle(460)}>
         <div className="flex items-center justify-between gap-4">
           <h2 className="text-xl font-semibold text-emerald-950">목차</h2>

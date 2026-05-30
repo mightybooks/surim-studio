@@ -101,6 +101,14 @@ export const issue0Chapters: SurimjiChapter[] = [
 
 <p style="text-align: right;">수림 스튜디오
 <br/>문수림</p>
+
+<hr class="zine-divider zine-divider-strong" />
+
+<div class="copyright-notice copyright-notice-compact">
+  <p>
+    《수림지 vol.0》는 ISBN 979-11-994493-8-1로 정식 유통 중인 저작물을 기반으로 하며, 본문 전체는 저작권법에 따라 보호됩니다. 무단 전재·복제·배포·2차 이용을 금합니다.
+  </p>
+</div>
       `,
   },
   {
@@ -1788,6 +1796,15 @@ export const issue0Chapters: SurimjiChapter[] = [
 
   <p><strong>구매도, 후원도, 공유도 모두 큰 도움이 됩니다.</strong></p>
 </div>
+
+<hr class="zine-divider zine-divider-strong" />
+
+<div class="copyright-notice copyright-notice-compact">
+  <p>
+    《수림지 vol.0》는 ISBN 979-11-994493-8-1로 정식 유통 중인 저작물을 기반으로 하며, 본문 전체는 저작권법에 따라 보호됩니다. 무단 전재·복제·배포·2차 이용을 금합니다.
+  </p>
+</div>
+
       `,
   },
 ];
