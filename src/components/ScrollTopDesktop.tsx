@@ -1,16 +1,21 @@
 // src/components/ScrollTopDesktop.tsx
 "use client";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 export default function ScrollTopDesktop() {
   const [show, setShow] = useState(false);
+  const pathname = usePathname();
+  const isSurimjiReader = pathname.startsWith("/edition/surimji/issue-0/read/");
+
   useEffect(() => {
     const onScroll = () => setShow(window.scrollY > 600);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-  if (!show) return null;
+
+  if (!show || isSurimjiReader) return null;
 
   return (
     <button

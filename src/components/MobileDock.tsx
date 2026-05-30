@@ -2,9 +2,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 export default function MobileDock() {
   const [visible, setVisible] = useState(false);
+  const pathname = usePathname();
+  const isSurimjiReader = pathname.startsWith("/edition/surimji/issue-0/read/");
 
   useEffect(() => {
     const onScroll = () => {
@@ -21,7 +24,7 @@ export default function MobileDock() {
     };
   }, []);
 
-  if (!visible) return null;
+  if (!visible || isSurimjiReader) return null;
 
   const baseBtn =
     "block w-full text-center text-[13px] leading-none py-2 rounded-full " +
