@@ -8,7 +8,7 @@ const EDITION_SECTIONS = [
   {
     href: "/edition/surimji",
     title: "수림지",
-    description: "곧 창간호가 발행됩니다.",
+    description: "서사 실험 웹매거진.",
   },
   {
     href: "/edition/surimseoga",

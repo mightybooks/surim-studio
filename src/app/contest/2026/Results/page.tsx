@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "제3회 문수림배 문예경연대회 결과 | Sulim Studio",
-  description: "제3회 문수림배 문예경연대회 당선작 발표 및 심사평.",
+  description:
+    "제3회 문수림배 문예경연대회 결과 안내 및 수림지 창간호 수록 소식.",
   robots: { index: true, follow: true },
 };
 
@@ -10,77 +12,66 @@ export default function Contest2026ResultsPage() {
   return (
     <main className="mx-auto max-w-3xl px-4 py-12">
       <section className="space-y-10">
-        <h1>제3회 문수림배 문예경연대회 결과</h1>
+        <header className="space-y-4">
+          <p className="text-sm font-medium text-emerald-700">
+            문수림배 문예경연대회
+          </p>
+          <h1 className="text-3xl font-semibold text-emerald-950">
+            제3회 문수림배 문예경연대회 결과
+          </h1>
+          <p className="leading-8 text-zinc-700">
+            제3회 문수림배 문예경연대회는 결과 발표를 마쳤으며, 수상자와
+            수상작은 《수림지》 창간호에 수록되어 있습니다.
+          </p>
+        </header>
 
-        <div className="rounded-2xl p-6 bg-slate-50 border-slate-200">
-          <h2 className="text-xl font-semibold mb-4">당선작 발표</h2>
-          <ul className="space-y-2">
-            <li>대상 : 글그림 (본명 김병걸) , 『항구의 전깃줄』</li>
-            <li>가작 : 엘리스레빗, 『안녕하세요, 소금 버터 롤입니다.』</li>
+        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+          <h2 className="mb-4 text-xl font-semibold">당선작 안내</h2>
+          <ul className="space-y-2 leading-7 text-zinc-700">
+            <li>
+              <strong>대상</strong> : 글그림, 『항구의 전깃줄』</li>
+            <li>
+              <strong>가작</strong> : 엘리스레빗, 『안녕하세요, 소금 버터 롤입니다.』</li>
           </ul>
         </div>
 
-        <div className="rounded-2xl p-6 bg-indigo-50/70 border-indigo-200 space-y-4">
-          <h2 className="text-xl font-semibold">심사평</h2>
-          <h3 className="text-lg font-semibold">제3회 문수림배 문예경연대회 심사평</h3>
+        <div className="space-y-5 rounded-2xl border border-indigo-200 bg-indigo-50/70 p-6">
+          <h2 className="text-xl font-semibold">수림지 창간호 수록 안내</h2>
 
-          <p>
-            이번 제3회 문수림배 문예경연대회에는 서로 다른 결을 지닌 작품들이 다수
-            접수되었습니다.
-            <br />
-            일상의 정서를 정제된 문장으로 끌어올린 작품부터 독특한 발상과 장르적
-            상상력을 시도한 작품까지, 각기 다른 방향의 시도가 눈에 띄었습니다. 심사
-            과정에서는 문장의 안정성, 서사의 완성도, 그리고 소설적 상상력이라는 세
-            가지 기준을 중심으로 작품을 검토했습니다.
+          <p className="leading-8 text-zinc-700">
+            제3회 문수림배 문예경연대회의 수상자와 수상작은 《수림지》
+            창간호에 수록되어 있습니다. 수상작과 함께, 공모전 결과 및
+            심사평도 《수림지》 안에서 확인하실 수 있습니다.
           </p>
 
-          <p>
-            대상으로 선정된 글그림(김병걸)의<strong>「항구의 전깃줄」</strong>은
-            안정된 문장과 절제된 서정성이 돋보인 작품입니다. 항구라는 고립된 공간
-            속에서 삶의 벼랑 끝에 놓인 두 인물이 서로의 존재를 통해 미묘한 위로와
-            연대를 형성해 가는 과정을 담담하게 그려냈습니다. 사업 실패로 삶의 기반을
-            잃은 도윤과 시한부 판정을 받은 세영이 거친 어판장의 노동 속에서 서로의
-            고통을 말없이 지켜보는 장면들은 과장되지 않은 방식으로 인간의 취약함과
-            연대의 가능성을 보여 줍니다. 특히 전깃줄이라는 상징적 이미지가 인물들의
-            불안한 삶을 자연스럽게 환기시키며 서사의 정서를 단단하게 묶어 주고 있다는
-            점이 인상적이었습니다. 절망의 상황 속에서도 타인의 존재가 어떻게 작은
-            희망의 형태로 남을 수 있는지를 서정적이고 절제된 문체로 설득력 있게 보여
-            준 작품이라 판단되어 대상으로 선정했습니다.<br/>
-            덧붙여, 원고와 함께 직접 그린 삽화를 동봉해 주신 점도 인상 깊었습니다. 텍스트 바깥의 이미지까지 함께 제시하려는 시도는, 작품 세계를 보다 구체적으로 전달하려는 의지로 읽혔습니다.
-            </p>
-          <p>
-            가작으로 선정된 엘리스레빗의
-            <strong>「안녕하세요, 소금 버터 롤입니다.」</strong>은 비교적 가벼운
-            출발점에서 시작하지만 독특한 상상력을 통해 이야기를 확장해 나가는
-            작품입니다. 빵집 점원에게 첫눈에 반한 주인공의 감정을 과학적 생체 반응의
-            언어로 설명하는 서술 방식은 독특한 리듬을 만들어 내며, 일상적인 감정의
-            과정을 색다른 방식으로 바라보게 합니다. 여기에 초월적 존재의 개입이라는
-            장치를 통해 이야기의 방향을 전환시키는 발상은 흥미로운 상상력을 보여
-            주었습니다. 서사의 밀도나 구조적 완성도 면에서는 다소 아쉬운 부분이
-            있었지만, 발상과 상상력의 신선함이 돋보인 작품이라는 점에서 가작으로
-            선정했습니다.
+          <p className="leading-8 text-zinc-700">
+            《수림지》 창간호는 수림 스튜디오가 앞으로 기록하고 실험해 나갈
+            이야기들의 첫 자리입니다. 이번 문예경연대회 수상작 역시 그 첫
+            기록의 일부로 함께 실었습니다.
           </p>
 
-          <p>
-            이번 공모를 통해 확인할 수 있었던 것은 소설이 여전히 다양한 방식으로
-            확장될 수 있는 장르라는 사실입니다. 문장과 정서의 밀도를 통해 서사를
-            완성하는 작품도 있었고, 발상과 아이디어를 통해 새로운 가능성을 모색하는
-            작품도 있었습니다. 앞으로도 이러한 다양한 시도가 이어지기를 기대합니다.
-          </p>
+          <div className="pt-2">
+            <Link
+              href="/edition/surimji/issue-0"
+              className="inline-flex items-center rounded-full bg-emerald-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-emerald-800"
+            >
+              《수림지》 창간호 보러가기
+            </Link>
+          </div>
         </div>
 
-        <div className="rounded-2xl p-6 bg-indigo-50/70 border-indigo-200 space-y-4">
-          <h2 className="text-xl font-semibold">수상 안내</h2>
-          <p>
-            당선 작품 전체는 사전에 공지된 대로 <strong>수림지 창간호</strong>에
-            수록됩니다.
-            <br />
-            이때 작품과 함께 수상자의 간략한 수상 소감도 함께 게재될 예정입니다.
+        <div className="space-y-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] p-6">
+          <h2 className="text-xl font-semibold">제4회 대회 안내</h2>
+
+          <p className="leading-8 text-zinc-700">
+            제4회 문수림배 문예창작대회는 아직 일정이 정해지지 않았습니다.
+            다음 대회의 형식, 주제, 모집 일정이 확정되면 이 페이지와 수림
+            스튜디오 공지를 통해 다시 안내드리겠습니다.
           </p>
-          <p>
-            또한 이번 공모는 디지털 기반 문예경연대회로 진행된 만큼,
-            <br />
-            상금 및 상품 전달은 수상자에게 개별 연락 후 전달될 예정입니다.
+
+          <p className="leading-8 text-zinc-700">
+            기다려주시는 분들께 감사드립니다. 다음 대회 역시 창작자의
+            저작권과 작품의 개별성을 존중하는 방식으로 준비하겠습니다.
           </p>
         </div>
       </section>

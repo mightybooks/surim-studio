@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 
 import type { SurimjiChapter } from "@/content/surimji/issue-0/chapters";
+import { prepareSurimjiContentHtml } from "@/lib/surimji/prepareContentHtml";
 import ReaderMenu, { type ReaderPreferences } from "./ReaderMenu";
 
 const PREFERENCES_KEY = "surimji:issue-0:reader-preferences";
@@ -105,6 +106,7 @@ export default function ReaderShell({ chapter, previousChapter, nextChapter, men
       }) as CSSProperties,
     [preferences],
   );
+  const preparedContentHtml = useMemo(() => prepareSurimjiContentHtml(chapter.contentHtml), [chapter.contentHtml]);
 
   return (
     <div className={`surimji-reader surimji-theme-${preferences.theme}`} style={readerStyle}>
@@ -119,7 +121,7 @@ export default function ReaderShell({ chapter, previousChapter, nextChapter, men
 
         <article
           className={`surimji-reader-body surimji-content-${chapter.contentType} mt-10`}
-          dangerouslySetInnerHTML={{ __html: chapter.contentHtml }}
+          dangerouslySetInnerHTML={{ __html: preparedContentHtml }}
         />
 
         <nav className="surimji-reader-nav mt-12 grid gap-3 border-t pt-6 sm:grid-cols-3">
