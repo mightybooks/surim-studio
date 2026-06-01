@@ -1,5 +1,36 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "수림지 | 문수림이 쓰고 편집하는 디지털 문예지",
+  description:
+    "《수림지》는 작가 문수림이 수림 스튜디오에서 발행하는 디지털 문예지입니다. 500자 소설, PPL 소설, 메타버스 원고, 문예경연대회 수상작과 창작 실험 기록을 수록합니다.",
+  alternates: {
+    canonical: "https://surimstudio.com/edition/surimji",
+  },
+  openGraph: {
+    title: "수림지 | 문수림이 쓰고 편집하는 디지털 문예지",
+    description:
+      "500자 소설, PPL 소설, 메타버스 원고, 창작 실험 기록을 담는 수림 스튜디오의 디지털 문예지입니다.",
+    url: "https://surimstudio.com/edition/surimji",
+    siteName: "수림 스튜디오",
+    type: "website",
+    images: [
+      {
+        url: "https://surimstudio.com/og/surimji-og.png",
+        alt: "수림지 Vol.0 창간호 표지",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "수림지 | 문수림이 쓰고 편집하는 디지털 문예지",
+    description:
+      "500자 소설, PPL 소설, 메타버스 원고, 창작 실험 기록을 담는 수림 스튜디오의 디지털 문예지입니다.",
+    images: ["https://surimstudio.com/surimji/issue-0/cover.webp"],
+  },
+};
 
 function revealStyle(delay: number) {
   return { animationDelay: `${delay}ms` };
@@ -80,4 +111,3 @@ export default function EditionSurimjiPage() {
     </main>
   );
 }
-

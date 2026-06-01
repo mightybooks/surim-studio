@@ -1,7 +1,38 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { issue0Chapters } from "@/content/surimji/issue-0/chapters";
 import { supabaseServerPublic } from "@/lib/supabase/server-public";
+
+export const metadata: Metadata = {
+  title: "수림지 Vol.0 | 수림 스튜디오 디지털 문예지 창간호",
+  description:
+    "《수림지 Vol.0》은 수림 스튜디오의 디지털 문예지 창간호입니다. 500자 소설, PPL 소설, 메타버스 원고, 문예경연대회 수상작과 창작 실험 기록을 담았습니다.",
+  alternates: {
+    canonical: "https://surimstudio.com/edition/surimji/issue-0",
+  },
+  openGraph: {
+    title: "수림지 Vol.0 | 수림 스튜디오 디지털 문예지 창간호",
+    description:
+      "500자 소설, PPL 소설, 메타버스 원고, 문예경연대회 수상작을 담은 수림지 창간호입니다.",
+    url: "https://surimstudio.com/edition/surimji/issue-0",
+    siteName: "수림 스튜디오",
+    type: "article",
+    images: [
+      {
+        url: "https://surimstudio.com/og/surimji-issue-0-og.png",
+        alt: "수림지 Vol.0 창간호 표지",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "수림지 Vol.0 | 수림 스튜디오 디지털 문예지 창간호",
+    description:
+      "500자 소설, PPL 소설, 메타버스 원고, 문예경연대회 수상작을 담은 수림지 창간호입니다.",
+    images: ["https://surimstudio.com/surimji/issue-0/cover.webp"],
+  },
+};
 
 function revealStyle(delay: number) {
   return { animationDelay: `${delay}ms` };

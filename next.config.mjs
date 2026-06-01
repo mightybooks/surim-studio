@@ -8,6 +8,21 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: "/surimzine/issue-0",
+        destination: "/edition/surimji/issue-0",
+        statusCode: 301,
+      },
+      {
+        source: "/surimzine",
+        destination: "/edition/surimji",
+        statusCode: 301,
+      },
+      {
+        source: "/surimzine/:path*",
+        destination: "/edition/surimji",
+        statusCode: 301,
+      },
+      {
         source: "/shop/books/:path*",
         destination: "/edition/surimseoga",
         permanent: true,

@@ -119,6 +119,12 @@ export default function Home() {
   const cards = useMemo<HeroCard[]>(
     () => [
       {
+        label: "수림지 창간호",
+        title: "수림지 vol.0",
+        description: "수림 스튜디오의 웹매거진 《수림지》 창간호 안내 페이지입니다.",
+        href: "/contest/2026/Results",
+      },
+      {
         label: "소설 성립을 위한 최소한의 단위를 실험하다",
         title: "500자 소설 프로젝트",
         description: "프로젝트 '500자 소설' 안내 페이지입니다.",
@@ -130,13 +136,7 @@ export default function Home() {
         description: "수림봇의 냉정한 평가를 견딜 자신이 있다면 도전해 보세요.",
         href: "https://500challenge.vercel.app/",
         external: true,
-      },
-      {
-        label: "공모전 결과",
-        title: "제 3회 문수림배 문예경연대회 수상작 발표",
-        description: "공모전 수상작 안내 페이지입니다.",
-        href: "/contest/2026/Results",
-      },
+      },      
     ],
     [],
   );

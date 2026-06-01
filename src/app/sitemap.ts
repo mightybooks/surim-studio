@@ -43,12 +43,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: post.updated_at ? new Date(post.updated_at) : new Date(),
   }));
 
-  return [
-    { url: `${base}/`, lastModified: new Date() },
-    { url: `${base}/about`, lastModified: new Date() },
-    { url: `${base}/projects`, lastModified: new Date() },
-    { url: `${base}/news`, lastModified: new Date() },
-    { url: `${base}/blog`, lastModified: new Date() },
+    return [
+    { url: `${base}/`, lastModified: new Date(), priority: 1 },
+    { url: `${base}/about`, lastModified: new Date(), priority: 0.8 },
+    { url: `${base}/projects`, lastModified: new Date(), priority: 0.8 },
+    { url: `${base}/news`, lastModified: new Date(), priority: 0.7 },
+    { url: `${base}/blog`, lastModified: new Date(), priority: 0.7 },
+
+    {
+      url: `${base}/edition/surimji`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    {
+      url: `${base}/edition/surimji/issue-0`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
 
     ...newsUrls,
     ...blogUrls,
