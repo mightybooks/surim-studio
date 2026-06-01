@@ -49,10 +49,12 @@ export default async function SurimjiIssue0Page() {
     >
       <p className="font-semibold">저작권 안내</p>
 
-      <p className="mt-2">
-        현재 열람 중인 《수림지 vol.0》는 ISBN 979-11-994493-8-1로
-        정식 도서 유통 중인 저작물을 기반으로 합니다.
-      </p>
+      {/*
+        <p className="mt-2">
+          현재 열람 중인 《수림지 vol.0》는 ISBN 979-11-994493-8-1로
+          정식 도서 유통 중인 저작물을 기반으로 합니다.
+        </p>
+        */}
 
       <p className="mt-2">
         본문에 수록된 글, 이미지, 구성, 편집 요소는 저작권법에 따라 보호받는
