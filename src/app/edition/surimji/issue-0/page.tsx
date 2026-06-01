@@ -1,12 +1,18 @@
 import Link from "next/link";
 
 import { issue0Chapters } from "@/content/surimji/issue-0/chapters";
+import { supabaseServerPublic } from "@/lib/supabase/server-public";
 
 function revealStyle(delay: number) {
   return { animationDelay: `${delay}ms` };
 }
 
-export default function SurimjiIssue0Page() {
+export default async function SurimjiIssue0Page() {
+  const supabase = supabaseServerPublic();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const isLoggedIn = Boolean(user);
   const chapterSections = issue0Chapters.reduce<Array<{ sectionTitle: string; chapters: typeof issue0Chapters }>>(
     (sections, chapter) => {
       const currentSection = sections[sections.length - 1];
@@ -99,12 +105,18 @@ export default function SurimjiIssue0Page() {
       </section>
 
       <div className="reveal-up flex flex-wrap gap-3" style={revealStyle(560)}>
-        <Link
-          href="/edition/surimji/issue-0/read/cover"
-          className="inline-flex items-center rounded-full border border-emerald-900 bg-emerald-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-800"
-        >
-          읽기 시작
-        </Link>
+        {isLoggedIn ? (
+          <Link
+            href="/edition/surimji/issue-0/read/cover"
+            className="inline-flex items-center rounded-full border border-emerald-900 bg-emerald-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-800"
+          >
+            읽기 시작
+          </Link>
+        ) : (
+          <Link href="/login?next=%2Fedition%2Fsurimji%2Fissue-0" className="surimji-login-cta">
+            로그인 후 무료로 전체 열람하기
+          </Link>
+        )}
         <Link
           href="/edition/surimji"
           className="inline-flex items-center rounded-full border border-[var(--border)] px-4 py-2 text-sm font-medium text-[color:var(--fg)] transition hover:bg-[#F5EEDC]"

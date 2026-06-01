@@ -464,7 +464,7 @@
     0 14px 30px rgba(4, 120, 87, 0.22),
     0 2px 0 rgba(255, 255, 255, 0.18) inset;
   padding: 0.9rem 1.35rem;
-  color: #ffffff;
+  color: #c89b00;
   font-family: var(--reader-accent-font-family);
   font-size: 1rem;
   font-weight: 800;
@@ -572,4 +572,56 @@
   border-color: var(--reader-border);
   background: var(--reader-panel);
   color: var(--reader-fg);
+}
+
+.surimji-login-cta,
+.surimji-reader .surimji-reader-body a.surimji-preview-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2rem auto 0;
+  border: 1px solid rgba(181, 138, 0, 0.34);
+  border-radius: 999px;
+  background: #0f5132;
+  box-shadow: 0 12px 28px rgba(15, 81, 50, 0.18);
+  padding: 0.9rem 1.5rem;
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.surimji-login-cta:hover,
+.surimji-reader .surimji-reader-body a.surimji-preview-cta:hover {
+  background: #0b3f28;
+  color: #e0ad00;
+}
+
+.surimji-login-cta-wrap,
+.surimji-reader .surimji-reader-body :where(.surimji-preview-cta-wrap) {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  text-indent: 0;
+}
+
+.surimji-reader .surimji-reader-body :where(.surimji-locked-preview, .surimji-restricted-preview) {
+  position: relative;
+  max-height: 18rem;
+  overflow: hidden;
+}
+
+.surimji-reader .surimji-reader-body :where(.surimji-locked-preview, .surimji-restricted-preview)::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 7rem;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--reader-bg) 0%, transparent),
+    color-mix(in srgb, var(--reader-bg) 78%, transparent) 46%,
+    var(--reader-bg) 100%
+  );
+  pointer-events: none;
 }

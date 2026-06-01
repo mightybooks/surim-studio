@@ -54,6 +54,7 @@ type ReaderShellProps = {
   previousChapter?: Pick<SurimjiChapter, "slug">;
   nextChapter?: Pick<SurimjiChapter, "slug">;
   menuChapters: Array<Pick<SurimjiChapter, "slug" | "sectionTitle" | "title">>;
+  hideNavigation?: boolean;
 };
 
 function isReaderPreferences(value: unknown): value is ReaderPreferences {
@@ -69,7 +70,7 @@ function isReaderPreferences(value: unknown): value is ReaderPreferences {
   );
 }
 
-export default function ReaderShell({ chapter, previousChapter, nextChapter, menuChapters }: ReaderShellProps) {
+export default function ReaderShell({ chapter, previousChapter, nextChapter, menuChapters, hideNavigation = false }: ReaderShellProps) {
   const [preferences, setPreferences] = useState<ReaderPreferences>(DEFAULT_PREFERENCES);
   const [hasLoadedPreferences, setHasLoadedPreferences] = useState(false);
 
@@ -184,36 +185,38 @@ export default function ReaderShell({ chapter, previousChapter, nextChapter, men
           dangerouslySetInnerHTML={{ __html: preparedContentHtml }}
         />
 
-        <nav className="surimji-reader-nav mt-12 grid gap-3 border-t pt-6 sm:grid-cols-3">
-          {previousChapter ? (
+        {!hideNavigation ? (
+          <nav className="surimji-reader-nav mt-12 grid gap-3 border-t pt-6 sm:grid-cols-3">
+            {previousChapter ? (
+              <Link
+                href={`/edition/surimji/issue-0/read/${previousChapter.slug}`}
+                className="inline-flex items-center justify-center rounded-full border px-4 py-2 text-sm font-medium transition"
+              >
+                ← 이전
+              </Link>
+            ) : (
+              <span className="hidden sm:block" />
+            )}
+
             <Link
-              href={`/edition/surimji/issue-0/read/${previousChapter.slug}`}
+              href="/edition/surimji/issue-0"
               className="inline-flex items-center justify-center rounded-full border px-4 py-2 text-sm font-medium transition"
             >
-              ← 이전
+              목차로 돌아가기
             </Link>
-          ) : (
-            <span className="hidden sm:block" />
-          )}
 
-          <Link
-            href="/edition/surimji/issue-0"
-            className="inline-flex items-center justify-center rounded-full border px-4 py-2 text-sm font-medium transition"
-          >
-            목차로 돌아가기
-          </Link>
-
-          {nextChapter ? (
-            <Link
-              href={`/edition/surimji/issue-0/read/${nextChapter.slug}`}
-              className="inline-flex items-center justify-center rounded-full border px-4 py-2 text-sm font-medium transition"
-            >
-              다음 →
-            </Link>
-          ) : (
-            <span className="hidden sm:block" />
-          )}
-        </nav>
+            {nextChapter ? (
+              <Link
+                href={`/edition/surimji/issue-0/read/${nextChapter.slug}`}
+                className="inline-flex items-center justify-center rounded-full border px-4 py-2 text-sm font-medium transition"
+              >
+                다음 →
+              </Link>
+            ) : (
+              <span className="hidden sm:block" />
+            )}
+          </nav>
+        ) : null}
 
         <ReaderMenu
           chapters={menuChapters}
