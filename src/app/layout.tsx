@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";  
 import { Suspense } from "react";
 import "./globals.css";
+import "@/styles/surimji.css";
+import "@/styles/metaverse-delivery.css";
 import ClientNav from "@/components/ClientNav";
 import MobileDock from "@/components/MobileDock";
 import ScrollTopDesktop from "@/components/ScrollTopDesktop";
