@@ -108,6 +108,66 @@ export default function ReaderShell({ chapter, previousChapter, nextChapter, men
   );
   const preparedContentHtml = useMemo(() => prepareSurimjiContentHtml(chapter.contentHtml), [chapter.contentHtml]);
 
+  useEffect(() => {
+    const replayClass = (element: Element | null | undefined, className: string) => {
+      if (!element) return;
+
+      element.classList.remove(className);
+      void (element as HTMLElement).offsetWidth;
+      element.classList.add(className);
+    };
+
+    const handleMetaverseIconClick = (event: MouseEvent) => {
+      const rawTarget = event.target;
+
+      if (!(rawTarget instanceof Element)) return;
+
+      const trigger = rawTarget.closest<HTMLButtonElement>(".mv-icon-trigger");
+      if (!trigger) return;
+
+      const root = trigger.closest(".metaverse-delivery");
+      if (!root) return;
+
+      event.preventDefault();
+
+      const scene = trigger.closest(".mv-scene");
+      const effect = trigger.dataset.effect;
+
+      replayClass(trigger, "is-triggered");
+
+      if (effect === "ring") {
+        const ringText = trigger.nextElementSibling?.classList.contains("mv-ring-text")
+          ? trigger.nextElementSibling
+          : trigger.parentElement?.querySelector(".mv-ring-text");
+
+        replayClass(ringText, "is-triggered");
+        replayClass(scene, "is-ring-visible");
+        return;
+      }
+
+      if (effect === "impact") {
+        const impactTarget = scene?.querySelector(".mv-impact-word");
+
+        replayClass(impactTarget, "is-visible");
+        replayClass(scene, "is-impact-visible");
+        return;
+      }
+
+      if (effect === "crash") {
+        const crashTarget = scene?.querySelector(".mv-crash");
+
+        replayClass(crashTarget, "is-visible");
+        replayClass(scene, "is-crash-visible");
+      }
+    };
+
+    document.addEventListener("click", handleMetaverseIconClick);
+
+    return () => {
+      document.removeEventListener("click", handleMetaverseIconClick);
+    };
+  }, []);
+
   return (
     <div className={`surimji-reader surimji-theme-${preferences.theme}`} style={readerStyle}>
       <main className="mx-auto max-w-5xl px-6 py-10">

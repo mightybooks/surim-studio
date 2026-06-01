@@ -904,7 +904,15 @@ export const issue0Chapters: SurimjiChapter[] = [
     isPreview: false,
     contentType: "metaverse",
     contentHtml: `
-<h3>1.</h3>
+<article class="metaverse-delivery" aria-label="배송완료">
+<aside class="mv-interaction-note">
+  <p>이 원고는 현재 보이는 형태만으로도 완성된 작품입니다. 그대로 읽으셔도 충분히 전달될 수 있도록 구성했습니다.</p>
+  <p>다만 인터랙티브한 감상을 원하는 독자를 위해, 본문 곳곳에 작은 아이콘을 배치했습니다. 아이콘을 클릭하면 해당 장면에 어울리는 짧은 연출이 함께 나타납니다.</p>
+  <p>아이콘을 누르지 않아도 원고의 흐름에는 아무런 문제가 없습니다. 원하시는 방식으로 천천히 읽어주시면 됩니다.</p>
+</aside>
+
+<section class="mv-scene mv-kim mv-intro" data-scene="1">
+<div class="mv-scene-no" aria-hidden="true">1</div>
 
 <p>김씨의 애창곡은 최근까지 동요 〈멋쟁이 토마토〉였다.
 <br/>엉금엉금 기어 다니던 딸이 어느새 교복을 입을 나이가 되었지만, 그는 여전히 자신의 품 안에서 칭얼거리던 갓난쟁이를 떠올리며 '멋쟁이 토마토'를 흥얼거렸던 것이다. 그런 김씨가 동요를 흥얼거리지 않게 된 건 순전히 아내 때문이었다.</p>
@@ -921,7 +929,9 @@ export const issue0Chapters: SurimjiChapter[] = [
 
 <p>이번에도 역시다.</p>
 
-<h3>2.</h3>
+</section>
+<section class="mv-scene mv-org mv-underground" data-scene="2">
+<div class="mv-scene-no" aria-hidden="true">2</div>
 
 <p>어둠 속 큼직한 손들이 신문지 위에 지폐 다발을 올렸다.
 <br/>손들은 돈을 세지 않았다. 이미 기계가 세어 놓은 돈을 다시 기계적으로 신문지에 접어 넣을 뿐이었다. 신문지는 접힐 때마다 마른 소리를 냈고, 그 위로 육중한 덩치들이 흘리는 땀과 욕설이 섞여 떨어졌다.</p>
@@ -959,7 +969,9 @@ export const issue0Chapters: SurimjiChapter[] = [
 
 <p>그렇다, 이 이야기는 나머지 한 건에 대한 이야기다.</p>
 
-<h3>3.</h3>
+</section>
+<section class="mv-scene mv-kim mv-labor" data-scene="3">
+<div class="mv-scene-no" aria-hidden="true">3</div>
 
 <p>김씨는 오늘도 기계처럼 눈을 떴지만, 몸은 쉽게 일으키질 못했다. 죽은 사람처럼 숨을 뱉으며 느릿느릿 몸을 일으켰다. 거기까지만 5분이 넘게 걸렸다. 화장실로 이동해서 씻는 데 또 5분이 넘게 걸렸다. 제대로 된 아침을 챙기는 건 아무래도 욕심이었다. 김씨는 운전석에 앉고 나서야 비로소 움직이는 사람이 되었다. 그의 두 다리와 팔을 대신하듯, 1톤 탑차는 골목을 빠져나와 물류터미널 쪽으로 미끄러졌다.</p>
 
@@ -975,9 +987,11 @@ export const issue0Chapters: SurimjiChapter[] = [
 
 <p>아직 짐을 차에 싣지도 않았는데, 이미 반나절은 보낸 기분이었다. 김씨는 잠시 허리를 펴고 땀을 닦았다. 바람 한 점 불어오지 않았는데, 등골이 서늘해지며 발끝에 저릿함이 스쳤다. 언제부터였는지 모르지만, 가끔씩 몸이 이런 알 수 없는 신호를 보내곤 했다.</p>
 
-<p>그의 몸도 그를 기다려주지 않고 있었다.</p>
+<p class="mv-line mv-warning">그의 몸도 그를 기다려주지 않고 있었다.</p>
 
-<h3>4.</h3>
+</section>
+<section class="mv-scene mv-org mv-violence" data-scene="4">
+<div class="mv-scene-no" aria-hidden="true">4</div>
 
 <p>단두대는 칼날이 떨어지기 전부터 공포다.
 <br/>머리 위에 매달린 칼날이 언제 떨어질지 알 수 없다는 공포, 떨어지기만 하면 죽음이 확정적이라는 공포, 죽음 이후를 전혀 알 수 없다는 공포.
@@ -1003,9 +1017,9 @@ export const issue0Chapters: SurimjiChapter[] = [
 <p>큰형님이 자리에서 일어섰다. 목을 조이던 긴장감이 한순간 느슨해졌다. 고개를 숙이고 있던 덩치들이 조심스레 몸을 꿈틀거렸다.</p>
 
 <p>“세상이 원래가 그래요. 윗대가리들 뒤 닦아줄 때는 거기에도 돈이 들어. 그래서 요구 금액보다 내가 더 챙긴 거야. 모지리인 너희들이 사고 칠 수도 있고, 택배가 중간에 사고 칠 수도 있고, 정말 유실될 수도 있지. 그래서 돈이 생각보다 늘 더 필요한 거야. 일을 해도 그냥 해서는 안 되고, 좆나게 열심히 해야 한다는 소리지. 무슨 말인지 알아?”</p>
-<p>“알 거 같습니다, 형님.”</p>
+<p>“알 거 같습니다, 형님.”</p><button class="mv-icon-trigger mv-impact-trigger" type="button" aria-label="충격 연출 보기" data-effect="impact">👊</button>
 
-<p>쩍.</p>
+<p class="mv-impact-word">쩍.</p>
 
 <p>웅이가 대답하자마자 따귀가 날아들었다. 
 <br/>도끼로 두꺼운 장작을 팰 때나 나는 소리가 연이어 울려 퍼졌다. 숨을 고르던 덩치들이 덜덜 떨면서 공벌레마냥 한없이 움츠러들었다.</p>
@@ -1022,7 +1036,9 @@ export const issue0Chapters: SurimjiChapter[] = [
 
 <p>그제야 덩치들이 하나, 둘, 조심스레 몸을 일으켰다.</p>
 
-<h3>5.</h3>
+</section>
+<section class="mv-scene mv-kim mv-break" data-scene="5">
+<div class="mv-scene-no" aria-hidden="true">5</div>
 
 <p>가끔 운이 좋은 날이 있다. 그런 날은 분류와 상차가 일찍 마감되고, 배송 출발이 빨라진다. 그런다고 그날의 물량이 적다거나 퇴근이 극적으로 빨라지는 건 아니지만, 한 가지는 확실하다. 조금이나마 여유로운 식사가 가능하다는 것. 
 <br/>그래봤자 느긋하게 식당에 앉아서 먹는 밥은 될 수 없었지만, 운전석에 앉아 간단하게 먹는 거라도 조금이나마 마음 편하게 먹을 수가 있다. 적어도 엑셀을 밟고, 핸들을 돌려가며 허겁지겁 씹어 먹을 필요는 없다는 소리다.</p>
@@ -1040,7 +1056,9 @@ export const issue0Chapters: SurimjiChapter[] = [
 
 <p>통화를 마칠 때쯤에는 이미 김씨가 아파트에 진입해 배송할 짐을 정리하는 중이었다. 중도에 인계 건이 생겼을 때부터 느긋한 점심은 이미 물 건너갔던 것이다. 그의 조수석에는 뜯다 만 빵 봉지와 뜯지도 못한 우유가 김씨를 기다렸지만, 김씨는 수레에 옮겨 담은 박스를 조심스레 옮기느라 돌아볼 겨를조차 없었다.</p>
 
-<h3>6.</h3>
+</section>
+<section class="mv-scene mv-org mv-tracking" data-scene="6">
+<div class="mv-scene-no" aria-hidden="true">6</div>
 
 <p>지하를 벗어난 덩치들 중 일부가 지상의 허름한 상가 사무실로 숨어들었다. 이번에는 여전히 얼굴을 알아보기 힘든 웅이가 상석에 앉아 있었다.</p>
 
@@ -1060,7 +1078,9 @@ export const issue0Chapters: SurimjiChapter[] = [
 
 <p>말을 마친 웅이는 자신의 앞에 놓여 있던 음료를 들이켰다. 얼음이 한가득 들어 있던 음료가 단숨에 비워졌고, 사무실에는 웅이가 얼음을 이로 부수는 소리만 요란하게 울렸다.</p>
 
-<h3>7.</h3>
+</section>
+<section class="mv-scene mv-kim mv-family mv-foreshadow-scene" data-scene="7">
+<div class="mv-scene-no" aria-hidden="true">7</div>
 
 <p>최 기사와의 통화는 아파트 한 동이 끝나갈 무렵에 이루어졌다.</p>
 
@@ -1071,7 +1091,8 @@ export const issue0Chapters: SurimjiChapter[] = [
 
 <p>열을 한껏 받아 달구어진 차는 시트에 올라타기 부담스러울 정도였지만, 딱히 선택권은 없었다. 김씨에게 남겨진 선택권은 찜통 속에 갇혀 있던 우유를 마실 거냐, 마시지 않을 거냐 정도였다.</p> 
 
-<p>빵 봉지를 뜯으려는데, 아직 바꾸지 못한 송대관의〈네 박자〉컬러링이 울렸다. 아내였다.</p> 
+<p>빵 봉지를 뜯으려는데, 아직 바꾸지 못한 <button class="mv-icon-trigger mv-phone-trigger" type="button" aria-label="전화벨 연출 보기" data-effect="ring">📞</button><span class="mv-ring-text">송대관의〈네 박자〉컬러링이 울렸다.</p>
+<p>아내였다.</p> 
 
 <p>“아침에 조금만 더 일찍 일어나서 미역국 먹고 가지 그랬어? 일부러 어제 저녁에 끓여뒀는데.”</p>
 <p>“귀빠진 날도 아닌데 굳이?”</p>
@@ -1094,18 +1115,20 @@ export const issue0Chapters: SurimjiChapter[] = [
 <p>“그게 오늘 물량이 많지는 않은데, 오분류 건도 있고, 코스가 좀 꼬였어.”</p>
 <p>“아니, 있어, 없어?”</p>
 
-<p>잠시 신호등 앞에서 정차하는 순간, 김씨는 대답보다 먼저 PDA를 들었다. 옆좌석에 던져둔 박스 하나를 끌어당겨 바코드를 읽혔다. 이건 그의 오랜 습관이었다. 다음 골목에서 주택가로 진입하기 전에 미리 스캔해서 배송완료로 찍어두는 게 일을 훨씬 수월하게 만들어줬다.</p>
+<p>잠시 신호등 앞에서 정차하는 순간, 김씨는 대답보다 먼저 PDA를 들었다. 옆좌석에 던져둔 박스 하나를 끌어당겨 바코드를 읽혔다. 이건 그의 오랜 습관이었다. 다음 골목에서 주택가로 진입하기 전에 미리 스캔해서 <span class="mv-foreshadow">배송완료로 찍어두는 게 일을 훨씬 수월하게 만들어줬다.</span></p>
 
 <p>“대답 안 해?”</p>
 <p>“아, 미안, 미안. 잠시 스캔 좀 하느라. 일단 최 기사를 만나기로 되어 있으니까 사정해볼게. 아, 신호 바뀌었다. 일단 끊어.”</p>
 
 <p>아내의 잔소리가 되돌아오기 전에 얼른 전화를 끊었다. 사거리를 지나 우회전을 하며, 김씨는 그제야 빵 한 조각을 씹을 수 있었다.</p>
 
-<p>삐리리리.</p>
+<p><button class="mv-icon-trigger mv-phone-trigger" type="button" aria-label="전화벨 연출 보기" data-effect="ring">📞</button><span class="mv-ring-text">삐리리리.</span></p>
 
 <p>벨이 울렸다. 저장되지 않은 번호였다.</p>
 
-<h3>8.</h3>
+</section>
+<section class="mv-scene mv-org mv-waiting" data-scene="8">
+<div class="mv-scene-no" aria-hidden="true">8</div>
 
 <p>오후 3시가 다 되어 가고 있었지만, 울려야 할 전화벨이 울리지 않았다. 웅이는 슬슬 초조해지기 시작했다. 많이 늦어도 4시쯤에는 수령해야 오늘 중으로 다시 발송이 가능했다. 그렇다고 다시 배송기사에게 연락을 하려니 그것도 조심스러웠다. 이번 일은 최대한 흔적을 남기지 않는 게 중요했다.</p>
 
@@ -1127,7 +1150,9 @@ export const issue0Chapters: SurimjiChapter[] = [
 
 <p>웅이의 속이 타들어 가는 것과 달리 벽에 걸린 시계의 초침은 정직하게 한 발, 한 발, 앞으로 나아가고 있었다.</p>
 
-<h3>9.</h3>
+</section>
+<section class="mv-scene mv-kim mv-transfer" data-scene="9">
+<div class="mv-scene-no" aria-hidden="true">9</div>
 
 <p>최 기사를 만났을 때, 이미 김씨의 입에서는 단내가 풀풀 나고 있었다. 결국 망설이다 한 모금 마셨던 우유는 그새 상했는지 속도 불편해서 이젠 식은땀까지 흘러내렸다. 그런 모양새는 최 기사라고 해도 크게 다를 건 없었다. 시커먼 얼굴에 팔뚝에는 말라버린 소금 덩어리가 잔뜩 달려 있었다.</p>
 
@@ -1147,7 +1172,7 @@ export const issue0Chapters: SurimjiChapter[] = [
 
 <p>미리 부탁했던 게 아니라, 뒤늦게 사정하기도 힘들었다. 성수기라 하루에 고정적으로 쏟아지는 기본 물량만 해도 감당이 어려운 시기였다. 혹시나 하고 물어봤지만, 역시는 역시였다.</p>
 
-<p>삐리리리.</p>
+<p><button class="mv-icon-trigger mv-phone-trigger" type="button" aria-label="전화벨 연출 보기" data-effect="ring">📞</button><span class="mv-ring-text">삐리리리.</span></p>
 
 <p>인계받은 택배를 스캔하자마자 전화벨이 울렸다.</p>
 
@@ -1174,7 +1199,9 @@ export const issue0Chapters: SurimjiChapter[] = [
 
 <p>다시 짐칸이 열리고 5층 빌라의 계단이 펼쳐졌다.</p>
 
-<h3>10.</h3>
+</section>
+<section class="mv-scene mv-org mv-reward" data-scene="10">
+<div class="mv-scene-no" aria-hidden="true">10</div>
 
 <p>“네, 형님. 동네 권역으로 들어왔고, 7시쯤에는 배달 완료가 된다고 합니다. 그럼, 들어가서 쉬십시오. 제가 또 연락드리겠습니다.”</p>
 
@@ -1185,7 +1212,7 @@ export const issue0Chapters: SurimjiChapter[] = [
 
 <p>말은 그렇게 했지만, 웅이의 얼굴도 한층 밝아져 있었다. 이미 시계는 4시 언저리였다. 이제는 택배를 전달받더라도 어차피 오늘 재발송은 힘든 시간이었다. 저녁이든, 밤이든, 배송만 받으면 문제될 게 없었다.</p>
 
-<p>삐리리리.</p>
+<p><button class="mv-icon-trigger mv-phone-trigger" type="button" aria-label="전화벨 연출 보기" data-effect="ring">📞</button><span class="mv-ring-text">삐리리리.</span></p>
 
 <p>그때, 전화벨이 울렸다. 방금 전화를 끊었던 큰형님이었다. 웅이의 얼굴이 다시 흙빛으로 굳었다.</p>
 
@@ -1198,7 +1225,9 @@ export const issue0Chapters: SurimjiChapter[] = [
 
 <p>웅이는 매값으로 받는 돈이라 찝찝하면서도 동생들 앞에서 면은 세우겠다 싶어 내심 후련하기도 했다. 어쨌든, 다, 먹고 살기 위해서 한 짓이니까.</p>
 
-<h3>11.</h3>
+</section>
+<section class="mv-scene mv-kim mv-body" data-scene="11">
+<div class="mv-scene-no" aria-hidden="true">11</div>
 
 <p>세상에는 여러 고문이 있다. 먹이고, 태우고, 물속에 처박고, 손발톱을 뽑는 식의 고문들. 그러나 그중에서도 유독 불쾌하고 비인간적인 고문이 있다. 바로 배설을 틀어막는 고문이다. 싸고 싶을 때 제대로 편히 싸지 못하는 고통이란 겪어본 자만이 안다. 그건 그 자체로 모욕이다. 아픈 것보다 먼저 사람이 작아지고, 오래 참을수록 몸은 주인을 원망하듯 안쪽에서부터 뒤틀린다.</p>
 
@@ -1207,7 +1236,7 @@ export const issue0Chapters: SurimjiChapter[] = [
 
 <p>김씨는 오늘도 모욕을 견디고 있다. 아무래도 찜통에 던져뒀던 우유가 문제인 것 같다. 부글부글 끓던 속이 이제 더는 견디지 못하고 튀어나갈 곳을 찾기 시작했다. 김씨는 반사적으로 시계를 봤다. 가장 가까운 화장실은 이번에 도착하게 되는 주상복합 건물의 화장실이었다. 그런데 이번에는 누구에게 부탁해야 할까? 꼬이는 날은 끝도 없이 꼬이는 법이다. 오늘은 상가의 누구도 택배 받을 게 없었다.</p>
 
-<p>삐리리리.</p>
+<p><button class="mv-icon-trigger mv-phone-trigger" type="button" aria-label="전화벨 연출 보기" data-effect="ring">📞</button><span class="mv-ring-text">삐리리리.</span></p>
 
 <p>그러는 와중에도 벨이 울렸다.</p>
 
@@ -1226,10 +1255,10 @@ export const issue0Chapters: SurimjiChapter[] = [
 
 <p>참다 못 한 김씨가 일방적으로 전화를 끊어버리고 말았다. 눈앞이 노랬다. 서둘러 주차장으로 진입한 김씨는 짐도 내리지 않고, 가장 먼저 보이는 부동산의 문을 열어젖혔다.</p>
 
-<p>끼기기긱.
+<p class="mv-door-line"><span class="mv-door">끼기기긱.</span>
 <br/>내부는 불을 환히 켜두었지만, 문은 단단히 잠겨 있었다. 고객을 안내하러 나간 모양이었다. 이번에는 그 옆에 있는 미용실의 문을 밀었다.</p>
 
-<p>끼기기긱.
+<p class="mv-door-line"><span class="mv-door">끼기기긱.</span>
 <br/>다시 보니 예약제로만 운영한다는 안내문이 붙어 있었다. 김씨는 정신이 끊어질 것 같았지만, 다시 또 걸음을 내딛었다. 이번에는 약국이었다. 문이 활짝 열렸다.</p>
 
 <p>“사장님, 저 좀 급해서 그런데 화장실 좀 쓸 수 있을까요?”</p>
@@ -1237,7 +1266,7 @@ export const issue0Chapters: SurimjiChapter[] = [
 <p>“아니, 지금 당장 나올 거 같아서 그래요, 좀, 제발, 부탁 좀 드립니다!”</p>
 
 <p>약사가 불만스러운 표정으로 열쇠를 내주었다.
-<br/>그때, 송대관의 〈네 박자〉가 울렸다. 집이었다.</p>
+<br/>그때, <button class="mv-icon-trigger mv-phone-trigger" type="button" aria-label="전화벨 연출 보기" data-effect="ring">📞</button><span class="mv-ring-text">송대관의 〈네 박자〉가 울렸다.</p><p>집이었다.</p>
 
 <p>“그래서 올 수 있어, 없어? 왜 아직 답이 없어?”</p>
 <p>“내가 조금만 이따가 전화 줄게.”</p>
@@ -1262,10 +1291,12 @@ export const issue0Chapters: SurimjiChapter[] = [
 <p>“가, 감사합니다. 제가 오늘 상한 우유를 먹었나 봐요.”</p>
 <p>“음, 병원에 한번 가보세요. 배탈만은 아닌 것 같은데요. 얼굴색이 너무 안 좋아요.”</p>
 
-<p>김씨는 꾸벅 인사를 하고는 급히 주차장으로 발걸음을 돌렸다.
-<br/>너무 늦었다.</p>
+<p>김씨는 꾸벅 인사를 하고는 급히 주차장으로 발걸음을 돌렸다.</p>
+<p class="mv-too-late">너무 늦었다.</p>
 
-<h3>12.</h3>
+</section>
+<section class="mv-scene mv-org mv-threat" data-scene="12">
+<div class="mv-scene-no" aria-hidden="true">12</div>
 
 <p>예고했던 6시가 되었다. 여전히 전화가 울리지 않자, 웅이가 몸을 일으켰다.</p>
 
@@ -1294,9 +1325,11 @@ export const issue0Chapters: SurimjiChapter[] = [
 
 <p>웅이는 절로 헛웃음이 나왔다. 시킨 일은 비실비실하게 처리하더니, 자기네들 주머니에도 용돈 들어올 일이라고 하자마자 알아서 뒷조사까지 마친 게 괘씸하기까지 했다.</p>
 
-<h3>13.</h3>
+</section>
+<section class="mv-scene mv-kim mv-crash-scene" data-scene="13">
+<div class="mv-scene-no" aria-hidden="true">13</div>
 
-<p>김씨는 조수석에 던져뒀던 박스를 들어 흔들어봤다. 가볍지만 박스 안에서 크게 흔들리지는 않았다. 대체 무엇이 들어서 하루 종일 사람을 말렸을까? 꽉 막힌 퇴근길 도로 위에서 박스를 보고 있는데, 송대관의 〈네 박자〉가 또 흘러나왔다.</p>
+<p>김씨는 조수석에 던져뒀던 박스를 들어 흔들어봤다. 가볍지만 박스 안에서 크게 흔들리지는 않았다. 대체 무엇이 들어서 하루 종일 사람을 말렸을까? 꽉 막힌 퇴근길 도로 위에서 박스를 보고 있는데, <button class="mv-icon-trigger mv-phone-trigger" type="button" aria-label="전화벨 연출 보기" data-effect="ring">📞</button><span class="mv-ring-text">송대관의 〈네 박자〉가 또 흘러나왔다.</p>
 
 <p>“그럼, 케이크 우리끼리 자른다?”</p>
 <p>“알았어. 내가… 미안해.”</p>
@@ -1304,7 +1337,7 @@ export const issue0Chapters: SurimjiChapter[] = [
 
 <p>또 한숨이었다. 아내는 자주 한숨을 쉬었다. 김씨는 대체 자신의 뭐가 그리 답답한지 다 알 수가 없어서 더 답답했지만, 한 번도 내색하진 않았다. 다만, 지금은 딸에게 전화 연결도 시켜주지 않고 바로 끊어버린 게 너무 야속했다.</p>
 
-<p>삐리리리.</p>
+<p><button class="mv-icon-trigger mv-phone-trigger" type="button" aria-label="전화벨 연출 보기" data-effect="ring">📞</button><span class="mv-ring-text">삐리리리.</span></p>
 
 <p>전화벨이 울리자 속이 부글부글 끓었다. 그런데 이번에는 좀 다르다. 누가 위를 꽉 잡고 흔드는 느낌이었다. 김씨는 헛구역질이 올라왔지만, 애써 참아냈다. 다행히 전화는 사무실이었다.</p>
 
@@ -1318,21 +1351,23 @@ export const issue0Chapters: SurimjiChapter[] = [
 
 <p>김씨는 핸들을 힘주어 잡았다. 이제 신호 두 번만 더 받고 나서 우회전만 하면 일단 끝이었다. 전화로 시달릴 일은 없었다. 김씨의 차는 신호등 앞에서 두 번째 열에 있었다. 이 구간은 신호가 바뀌면 바로 이어서 달릴 수 있는 구간이었다. 김씨는 빠른 처리를 위해 습관대로 미리 완료 처리 화면을 열고 운송장을 읽혔다.</p>
 
-<p>삐리리리.</p>
+<p><button class="mv-icon-trigger mv-phone-trigger" type="button" aria-label="전화벨 연출 보기" data-effect="ring">📞</button><span class="mv-ring-text">삐리리리.</span></p>
 
-<p>“마, 일을 좆같이 하네? 도착도 안 했는데, 배송완료가 와 뜨노?”</p>
+<p class="mv-completion-call">“마, 일을 좆같이 하네? 도착도 안 했는데, 배송완료가 와 뜨노?”</p>
 
 <p>순간 김씨의 뒤통수가 얼얼해지며 굳어버리나 싶더니 그대로 눈앞이 깜깜해졌다. 김씨는 의식이 아득해지는 마지막 순간까지 반사적으로 핸들을 왼편으로 꺾고 있었다. 집하 내릴 짐들이 오른편에 실려 있었기 때문이다.</p>
 
 <p>왼편으로 잔뜩 꺾인 핸들.
 <br/>저릿하던 발이 김씨의 몸무게를 그대로 싣고 엑셀을 밟아버렸다. 
-<br/>왼편으로 돌면서 기우뚱하는 탑차.</p>
+<br/>왼편으로 돌면서 기우뚱하는 탑차. <button class="mv-icon-trigger mv-crash-trigger" type="button" aria-label="충돌 연출 보기" data-effect="crash">💥</button></p>
 
-<p>쿵.</p>
+<p class="mv-crash">쿵.</p>
 
 <p>왼편 차선에서 달려오던 차량은 그대로 운전석을 들이받았다. 그 순간만큼은, 우연도 김씨를 기다려주지 않았다.</p>
 
-<h3>14.</h3>
+</section>
+<section class="mv-scene mv-org mv-after" data-scene="14">
+<div class="mv-scene-no" aria-hidden="true">14</div>
 
 <p>웅이는 어이가 없었다.
 <br/>물건은 도착하지 않았는데, 6시 55분에 배송완료가 먼저 찍혔다. 게다가 전화를 하니 택배기사는 무슨 깡인지 일방적으로 전화를 끊었고, 이젠 아예 전화기 전원 자체를 꺼버렸던 것이다.</p>
@@ -1344,10 +1379,10 @@ export const issue0Chapters: SurimjiChapter[] = [
 <p>“지금 바로 애들한테 차량 번호 뿌리고, 금마 집으로 가자.”</p>
 <p>“네, 형님!”</p>
 
-<p>돌아서는 웅이의 구둣발을 따라 노을보다 짙은 어둠이 따라붙었다.
-<br/>웅이는 더는 기다릴 생각이 없었다.</p>
-
-
+<p>돌아서는 웅이의 구둣발을 따라 노을보다 짙은 어둠이 따라붙었다.</p>
+<p class="mv-final-line">웅이는 더는 기다릴 생각이 없었다.</p>
+</section>
+</article>
       `,
   },
   {
