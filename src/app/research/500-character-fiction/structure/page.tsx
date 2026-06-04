@@ -304,6 +304,27 @@ export default function Research500StructurePage() {
 
         <section
             className="reveal-up space-y-4"
+            style={revealStyle(740)}
+            >
+            <h2 className="text-xl font-semibold text-emerald-800">
+                Official Sample Work
+            </h2>
+
+            <p className="text-zinc-700 leading-loose">
+                This official sample demonstrates how a complete narrative can be
+                constructed within the constraints of 500-character fiction.
+            </p>
+
+            <a
+                href="/research/500-character-fiction/examples"
+                className="underline underline-offset-4 text-emerald-800 hover:text-emerald-600"
+            >
+                Representative Sample: &quot;Alihya&quot;
+            </a>
+        </section>
+
+        <section
+            className="reveal-up space-y-4"
             style={revealStyle(780)}
             >
             <h2 className="text-xl font-semibold text-emerald-800">

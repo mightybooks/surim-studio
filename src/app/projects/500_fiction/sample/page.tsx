@@ -49,14 +49,27 @@ export default function Fiction500SamplePage() {
           The works below are practical examples of 500-character fiction, each completing a single narrative within the fixed scale of approximately 500 characters.<br/>
           각 작품은 제한된 분량 안에서 인물, 사건, 전환, 결말을 압축적으로 배치해 하나의 서사 단위를 완성합니다.
         </p>
+
+        <p>
+          대표 샘플로 공개된 「알리햐」 전문과 인용 허용 안내는{" "}
+          <Link href="/research/500-character-fiction/examples" className="text-violet-700 underline underline-offset-4">
+            500자 소설 대표 샘플 페이지
+          </Link>
+          에서 확인할 수 있습니다.<br />
+          The official representative sample and citation notice for “Alihya” are available on the{" "}
+          <Link href="/research/500-character-fiction/examples" className="text-violet-700 underline underline-offset-4">
+            500-Character Fiction Representative Sample page
+          </Link>
+          .
+        </p>
       </article>
 
       {/* 작품들 */}
       <section className="space-y-20">
 
-        {/* 2번 */}
+        {/* 1번 */}
         <article className="reveal-up prose prose-zinc max-w-none news-body" style={revealStyle(520)}>
-          <h2 className="text-xl font-semibold">2.</h2>
+          <h2 className="text-xl font-semibold">1. 마지막 대화</h2>
           <br/><br/>
           <p>
             “네가 헤밍웨이도 아니고, 그런 게 소설이 되겠냐?”
@@ -84,7 +97,7 @@ export default function Fiction500SamplePage() {
 
         {/* 5번 */}
         <article className="reveal-up prose prose-zinc max-w-none news-body" style={revealStyle(610)}>
-          <h2 className="text-xl font-semibold">5.</h2>
+          <h2 className="text-xl font-semibold">5. 삼켜진 말</h2>
           <br/><br/>
           <p>
            노부부의 손이 허공에 맞닿아있다. 두 사람의 지난 시간이 결코 녹록치 않았음을 주름에 파묻힌 자잘한 상처들과 거칠어진 두 손이 대신 말해준다.
@@ -102,7 +115,7 @@ export default function Fiction500SamplePage() {
 
         {/* 45번 */}
         <article className="reveal-up prose prose-zinc max-w-none news-body" style={revealStyle(700)}>
-          <h2 className="text-xl font-semibold">45.</h2>
+          <h2 className="text-xl font-semibold">45. 국경</h2>
           <br/><br/>
           <p>
             애써 달려왔지만, 기다리고 있는 건 높다랗게 쌓아 올려진 방벽이었다. 
@@ -125,9 +138,9 @@ export default function Fiction500SamplePage() {
           </p>
         </article>
 
-        {/* 74번 */}
+        {/* 101번 */}
         <article className="reveal-up prose prose-zinc max-w-none news-body" style={revealStyle(790)}>
-          <h2 className="text-xl font-semibold">74.</h2>
+          <h2 className="text-xl font-semibold">101. 알리햐</h2>
           <br/><br/>
           <p>
             결국 알리햐는 홀로 남아 몇 번의 생을 다시 더 살아야 했다.
@@ -138,11 +151,19 @@ export default function Fiction500SamplePage() {
             <br/><br/>
             “어때? 이번 소설 괜찮지 않아? 알리햐는 내가 정말 애정하는 캐릭터야.”
           </p>
+
+          <p className="mt-4 text-sm text-zinc-600">
+            「알리햐」의 공식 공개 전문 및 인용 허용 안내는{" "}
+            <Link href="/research/500-character-fiction/examples" className="text-violet-700 underline underline-offset-4">
+              대표 샘플 페이지
+            </Link>
+            에서 확인할 수 있습니다.
+          </p>
         </article>
 
         {/* 96번 */}
         <article className="reveal-up prose prose-zinc max-w-none news-body" style={revealStyle(880)}>
-          <h2 className="text-xl font-semibold">96.</h2>
+          <h2 className="text-xl font-semibold">96. 작가와 작가</h2>
           <br/><br/>
           <p>
             얼지 않는 하늘.<br/>
@@ -179,28 +200,35 @@ export default function Fiction500SamplePage() {
                 target="_blank"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-violet-600 text-white hover:bg-violet-700 transition"
               >
-                나도 500자 쓰러 가기 
+                500자 쓰기 도전
               </Link>
               
               <Link
                 href="/projects/500fiction_archive"                
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-violet-500 text-white hover:bg-violet-600 transition"
               >
-                참여자들 작품 보러 가기
+                참여자들 작품 보기
               </Link>
               
               <Link
-                href="#"
+                href="/edition/surimseoga/500-fiction"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-violet-400 text-white hover:bg-violet-500 transition"
               >
-                책 보러가기(준비중)
+                책 보러가기
               </Link>
 
               <Link
-                href="#"
+                href="/projects/500_fiction/bookmaps"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-violet-300 text-white hover:bg-violet-500 transition"
               >
-                입고서점 확인(준비중)
+                입고서점 확인
+              </Link>
+
+              <Link
+                href="/research/500-character-fiction/examples"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-violet-300 text-white hover:bg-violet-500 transition"
+              >
+                공식 대표 샘플 보기
               </Link>
             </div>
           </section>

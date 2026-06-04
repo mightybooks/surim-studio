@@ -11,6 +11,16 @@ export type NewsItem = {
 
 export const NEWS: NewsItem[] = [
     {
+    slug: "surimji-vol0-260601",
+    title: "수림지 창간호 《수림지 vol.0》발행 ",
+    body:
+      "2026년 1월 1일, 수림지 창간호가 발간되었습니다. " +       
+      "창간호는 수림 스튜디오 홈페이지를 통해 열람할 수 있습니다. " +
+      "누구나 회원가입 후, 로그인만 하시면 무료열람이 가능합니다. ",      
+    category: "News",
+    published_at: "2026-04-15",
+    },  
+    {
     slug: "work-shop-260415",
     title: "문수림의 500자 소설 워크숍 성공적 개최 ",
     body:
