@@ -271,13 +271,13 @@ export const issue0Chapters: SurimjiChapter[] = [
       `,
   },
   {
-    slug: "thread-paska-june",
+    slug: "thread-dam.chan._poe.try",
     sectionTitle: "스레드 미니 이벤트 참여작",
-    title: "paska_june",
+    title: "dam.chan._poe.try",
     isPreview: false,
     contentType: "fiction",
     contentHtml: `
-<h3>@paska_june</h3>
+<h3>@dam.chan._poe.try</h3>
 <p>에릭은 준의 이야기를 듣고 헛웃음을 삼켰다.</p>
 <p>“…그게 말이 돼?”</p>
 <p>준은 남은 커피를 천천히 마셨다.</p>
