@@ -106,7 +106,7 @@ export const issue0Chapters: SurimjiChapter[] = [
 
 <div class="copyright-notice copyright-notice-compact">
   <p>
-    《수림지 vol.0》는 고유 저작물입니다. 본문 전체는 저작권법에 따라 보호됩니다. 무단 전재·복제·배포·2차 이용을 금합니다.
+    《수림지 vol.0》는 ISSN 3140-2496, ISBN 979-11-994493-8-1로 정식 도서 유통하고 있는 고유 저작물입니다. 본문 전체는 저작권법에 따라 보호됩니다. 무단 전재·복제·배포·2차 이용을 금합니다.
   </p>
 </div>
       `,
@@ -1836,7 +1836,7 @@ export const issue0Chapters: SurimjiChapter[] = [
 
 <div class="copyright-notice copyright-notice-compact">
   <p>
-    《수림지 vol.0》는 고유 저작물입니다. 본문 전체는 저작권법에 따라 보호됩니다. 무단 전재·복제·배포·2차 이용을 금합니다.
+    《수림지 vol.0》는 ISSN 3140-2496, ISBN 979-11-994493-8-1로 정식 도서 유통하고 있는 고유 저작물입니다. 본문 전체는 저작권법에 따라 보호됩니다. 무단 전재·복제·배포·2차 이용을 금합니다.
   </p>
 </div>
 

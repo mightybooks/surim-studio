@@ -122,7 +122,7 @@ export default function Home() {
         label: "수림지 창간호",
         title: "수림지 vol.0",
         description: "수림 스튜디오의 웹매거진 《수림지》 창간호 안내 페이지입니다.",
-        href: "/contest/2026/Results",
+        href: "/edition/surimji/issue-0",
       },
       {
         label: "소설 성립을 위한 최소한의 단위를 실험하다",
