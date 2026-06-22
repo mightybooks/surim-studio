@@ -35,6 +35,11 @@ const works = [
     date: "2026.03.12",
     tags: ["항구", "충전케이블", "메시지"],
   },
+  {
+    slug: "winter-007",
+    date: "2026.06.20",
+    tags: ["장마", "파이프", "바람"],
+  },
 ];
 
 export default function WinterWorksPage() {
