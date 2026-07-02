@@ -16,7 +16,7 @@ export default function LoginForm({
 }) {
   const router = useRouter();
   const supabase = supabaseBrowser();
-  const safeNext = isSafeInternalRedirect(nextPath) ? nextPath : "/my";
+  const returnTo = isSafeInternalRedirect(nextPath) ? nextPath : "/my";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -44,12 +44,12 @@ export default function LoginForm({
 
     const isVerified = Boolean(data.user?.email_confirmed_at);
     if (!isVerified) {
-      router.replace(`/verify-email?next=${encodeURIComponent(safeNext)}`);
+      router.replace(`/verify-email?returnTo=${encodeURIComponent(returnTo)}`);
       router.refresh();
       return;
     }
 
-    router.replace(safeNext);
+    router.replace(returnTo);
     router.refresh();
   }
 
@@ -62,7 +62,7 @@ export default function LoginForm({
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(safeNext)}`,
+        redirectTo: `${window.location.origin}/auth/callback?returnTo=${encodeURIComponent(returnTo)}`,
       },
     });
 
@@ -78,7 +78,7 @@ export default function LoginForm({
       footer={
         <>
           <span>아직 계정이 없으신가요? </span>
-          <a href="/signup" className="underline">
+          <a href={`/signup?returnTo=${encodeURIComponent(returnTo)}`} className="underline">
             회원가입
           </a>
         </>
@@ -88,13 +88,13 @@ export default function LoginForm({
         <p className="mb-4 text-sm text-green-700">
           인증이 확인되었습니다.
           <br />
-          로그인하시면 자동으로 원래 페이지로 이동합니다.
+          로그인하면 원래 페이지로 이동합니다.
         </p>
       )}
 
       <form onSubmit={onLogin} className="space-y-3">
         <label className="block text-sm">
-          이메일(로그인 ID)
+          이메일
           <input
             className="mt-1 w-full rounded border px-3 py-2"
             type="email"
@@ -135,7 +135,7 @@ export default function LoginForm({
           disabled={Boolean(oauthLoadingProvider)}
           className="w-full rounded border px-3 py-2 text-sm disabled:opacity-60"
         >
-          카카오로 계속하기
+          {oauthLoadingProvider === "kakao" ? "카카오로 이동 중..." : "카카오로 계속하기"}
         </button>
 
         <button
@@ -147,10 +147,10 @@ export default function LoginForm({
           {oauthLoadingProvider === "google" ? (
             <>
               <span className="h-4 w-4 animate-spin rounded-full border-2 border-neutral-300 border-t-neutral-800" />
-              <span>구글로 이동 중</span>
+              <span>Google로 이동 중...</span>
             </>
           ) : (
-            <span>구글로 계속하기</span>
+            <span>Google로 계속하기</span>
           )}
         </button>
       </div>

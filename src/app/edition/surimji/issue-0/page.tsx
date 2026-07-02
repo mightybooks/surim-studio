@@ -146,7 +146,7 @@ export default async function SurimjiIssue0Page() {
             읽기 시작
           </Link>
         ) : (
-          <Link href="/login?next=%2Fedition%2Fsurimji%2Fissue-0" className="surimji-login-cta">
+          <Link href="/login?returnTo=%2Fedition%2Fsurimji%2Fissue-0" className="surimji-login-cta">
             로그인 후 무료로 전체 열람하기
           </Link>
         )}

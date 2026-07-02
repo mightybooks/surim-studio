@@ -4,10 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabaseBrowser } from "@/lib/supabase/client";
 import AuthCard from "@/components/auth/AuthCard";
+import { isSafeInternalRedirect } from "@/lib/inAppBrowser";
 
-/* =========================
-   비밀번호 규칙
-   ========================= */
 function isValidPassword(pw: string): boolean {
   if (pw.length < 8) return false;
 
@@ -18,9 +16,10 @@ function isValidPassword(pw: string): boolean {
   return hasLetter && hasNumber && hasSpecial;
 }
 
-export default function SignupForm() {
+export default function SignupForm({ returnTo = "/my" }: { returnTo?: string }) {
   const router = useRouter();
   const supabase = supabaseBrowser();
+  const safeReturnTo = isSafeInternalRedirect(returnTo) ? returnTo : "/my";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,9 +33,6 @@ export default function SignupForm() {
   const [errMsg, setErrMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  /* =========================
-     회원가입
-     ========================= */
   async function onSignup(e: React.FormEvent) {
     e.preventDefault();
     if (loading) return;
@@ -54,9 +50,7 @@ export default function SignupForm() {
     }
 
     if (!isValidPassword(password)) {
-      setErrMsg(
-        "비밀번호는 8자 이상이며, 영문자·숫자·특수문자를 모두 포함해야 합니다."
-      );
+      setErrMsg("비밀번호는 8자 이상이며, 영문자, 숫자, 특수문자를 모두 포함해야 합니다.");
       return;
     }
 
@@ -67,10 +61,13 @@ export default function SignupForm() {
 
     setLoading(true);
 
+    const emailRedirectTo = `${window.location.origin}/auth/callback?returnTo=${encodeURIComponent(safeReturnTo)}`;
+
     const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
+        emailRedirectTo,
         data: {
           username,
           phone,
@@ -85,7 +82,8 @@ export default function SignupForm() {
       return;
     }
 
-    router.push("/login");
+    router.replace(`/verify-email?returnTo=${encodeURIComponent(safeReturnTo)}`);
+    router.refresh();
   }
 
   return (
@@ -94,7 +92,7 @@ export default function SignupForm() {
       footer={
         <>
           <span>이미 계정이 있으신가요? </span>
-          <a href="/login" className="underline">
+          <a href={`/login?returnTo=${encodeURIComponent(safeReturnTo)}`} className="underline">
             로그인
           </a>
         </>
@@ -102,7 +100,7 @@ export default function SignupForm() {
     >
       <form onSubmit={onSignup} className="space-y-3">
         <label className="block text-sm">
-          이메일 (로그인 ID)
+          이메일
           <input
             className="mt-1 w-full rounded border px-3 py-2"
             type="email"
@@ -124,7 +122,7 @@ export default function SignupForm() {
             onChange={(e) => setPassword(e.target.value)}
           />
           <p className="mt-1 text-xs text-zinc-500">
-            8자 이상, 영문자·숫자·특수문자를 모두 포함해야 합니다.
+            8자 이상, 영문자, 숫자, 특수문자를 모두 포함해야 합니다.
           </p>
         </label>
 
@@ -141,6 +139,15 @@ export default function SignupForm() {
         </label>
 
         <label className="block text-sm">
+          표시 이름
+          <input
+            className="mt-1 w-full rounded border px-3 py-2"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </label>
+
+        <label className="block text-sm">
           연락처
           <input
             className="mt-1 w-full rounded border px-3 py-2"
@@ -149,7 +156,6 @@ export default function SignupForm() {
           />
         </label>
 
-        {/* ===== 법적 필수 체크 ===== */}
         <div className="space-y-2 pt-2">
           <label className="flex items-start gap-2 text-sm">
             <input
@@ -179,6 +185,7 @@ export default function SignupForm() {
               <a
                 href="/legal/privacy"
                 target="_blank"
+                rel="noopener noreferrer"
                 className="underline"
               >
                 개인정보처리방침

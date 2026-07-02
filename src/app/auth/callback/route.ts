@@ -5,11 +5,15 @@ import { isSafeInternalRedirect } from "@/lib/inAppBrowser";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL!;
 
+function loginUrl(error: string, returnTo: string) {
+  return new URL(`/login?error=${error}&returnTo=${encodeURIComponent(returnTo)}`, SITE_URL);
+}
+
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
-  const nextRaw = url.searchParams.get("next");
-  const safeNext = isSafeInternalRedirect(nextRaw) ? nextRaw : "/my";
+  const returnToRaw = url.searchParams.get("returnTo") ?? url.searchParams.get("next");
+  const returnTo = isSafeInternalRedirect(returnToRaw) ? returnToRaw : "/my";
 
   const cookieStore = cookies();
 
@@ -32,37 +36,25 @@ export async function GET(request: Request) {
   );
 
   if (!code) {
-    return NextResponse.redirect(
-      new URL(`/login?error=oauth_missing_code&next=${encodeURIComponent(safeNext)}`, SITE_URL),
-    );
+    return NextResponse.redirect(loginUrl("oauth_missing_code", returnTo));
   }
 
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);
   if (error) {
-    return NextResponse.redirect(
-      new URL(`/login?error=oauth_failed&next=${encodeURIComponent(safeNext)}`, SITE_URL),
-    );
+    return NextResponse.redirect(loginUrl("oauth_failed", returnTo));
   }
 
   const user = data.user ?? data.session?.user ?? null;
 
   if (!user) {
-    return NextResponse.redirect(
-      new URL(`/login?error=oauth_no_user&next=${encodeURIComponent(safeNext)}`, SITE_URL),
-    );
+    return NextResponse.redirect(loginUrl("oauth_no_user", returnTo));
   }
 
   if (!user.email_confirmed_at) {
     return NextResponse.redirect(
-      new URL(`/verify-email?next=${encodeURIComponent(safeNext)}`, SITE_URL),
+      new URL(`/verify-email?returnTo=${encodeURIComponent(returnTo)}`, SITE_URL),
     );
   }
 
-  if (safeNext === "/my") {
-    return NextResponse.redirect(
-      new URL(`/welcome?next=${encodeURIComponent(safeNext)}`, SITE_URL),
-    );
-  }
-
-  return NextResponse.redirect(new URL(safeNext, SITE_URL));
+  return NextResponse.redirect(new URL(returnTo, SITE_URL));
 }

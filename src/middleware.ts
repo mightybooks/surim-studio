@@ -6,12 +6,12 @@ const PROTECTED_PREFIXES = ["/my", "/admin"];
 
 function isProtectedPath(pathname: string) {
   return PROTECTED_PREFIXES.some(
-    (p) => pathname === p || pathname.startsWith(p + "/")
+    (p) => pathname === p || pathname.startsWith(p + "/"),
   );
 }
 
 export async function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
+  const { pathname, search } = req.nextUrl;
 
   if (!isProtectedPath(pathname)) {
     return NextResponse.next();
@@ -25,11 +25,11 @@ export async function middleware(req: NextRequest) {
   if (!user) {
     const url = req.nextUrl.clone();
     url.pathname = "/login";
-    url.searchParams.set("next", pathname);
+    url.search = "";
+    url.searchParams.set("returnTo", `${pathname}${search}`);
     return NextResponse.redirect(url);
   }
 
-  // ✅ admins 테이블 기준 관리자 판별
   if (pathname.startsWith("/admin")) {
     const { data: admin } = await supabase
       .from("admins")

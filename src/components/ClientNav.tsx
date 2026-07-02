@@ -71,6 +71,9 @@ export default function ClientNav() {
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  const currentPath = pathname ?? "/";
+  const loginHref = `/login?returnTo=${encodeURIComponent(currentPath)}`;
+
   const groupsToRender = isLoggedIn
     ? [...NAV_GROUPS, MY_GROUP]
     : NAV_GROUPS;
@@ -203,7 +206,7 @@ export default function ClientNav() {
     {!isLoggedIn && (
       <li className="relative min-w-0">
         <Link
-        href="/login"
+        href={loginHref}
         className={[
         "cursor-pointer rounded-full px-3 py-1 text-[0.8rem] font-semibold uppercase tracking-[0.18em]",
         "transition-colors duration-150 border",

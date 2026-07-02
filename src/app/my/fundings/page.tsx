@@ -11,7 +11,7 @@ export default async function MyFundingsPage() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/login");
+    redirect("/login?returnTo=%2Fmy%2Ffundings");
   }
 
   // ✅ 펀딩 참여 내역 = orders 중 source가 funding_500인 것

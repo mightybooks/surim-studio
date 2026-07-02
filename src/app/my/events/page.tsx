@@ -10,7 +10,7 @@ export default async function MyEventsPage() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/login");
+    redirect("/login?returnTo=%2Fmy%2Fevents");
   }
 
   // ✅ 이벤트 참여 내역 조회 (경연대회 투고)

@@ -10,9 +10,9 @@ export default function AuthVerifyPage() {
   const supabase = supabaseBrowser();
 
   useEffect(() => {
-    const nextRaw =
-      typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("next") : null;
-    const safeNext = isSafeInternalRedirect(nextRaw) ? nextRaw : "/my";
+    const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+    const returnToRaw = params?.get("returnTo") ?? params?.get("next") ?? null;
+    const returnTo = isSafeInternalRedirect(returnToRaw) ? returnToRaw : "/my";
 
     async function resolveAccess() {
       const {
@@ -20,7 +20,7 @@ export default function AuthVerifyPage() {
       } = await supabase.auth.getSession();
 
       if (!session) {
-        router.replace(`/login?next=${encodeURIComponent(safeNext)}`);
+        router.replace(`/login?returnTo=${encodeURIComponent(returnTo)}`);
         return;
       }
 
@@ -29,16 +29,16 @@ export default function AuthVerifyPage() {
       } = await supabase.auth.getUser();
 
       if (!user) {
-        router.replace(`/login?next=${encodeURIComponent(safeNext)}`);
+        router.replace(`/login?returnTo=${encodeURIComponent(returnTo)}`);
         return;
       }
 
       if (!user.email_confirmed_at) {
-        router.replace(`/verify-email?next=${encodeURIComponent(safeNext)}`);
+        router.replace(`/verify-email?returnTo=${encodeURIComponent(returnTo)}`);
         return;
       }
 
-      router.replace(safeNext);
+      router.replace(returnTo);
     }
 
     void resolveAccess();

@@ -48,7 +48,7 @@ function createPreviewChapter(chapter: SurimjiChapter): SurimjiChapter {
   <p>${escapeHtml(previewText)}...</p>
 </div>
 <p class="surimji-preview-cta-wrap">
-  <a class="surimji-preview-cta" href="/login?next=${next}">
+  <a class="surimji-preview-cta" href="/login?returnTo=${next}">
     로그인 후 무료로 전체 열람하기
   </a>
 </p>

@@ -4,10 +4,11 @@ import { isSafeInternalRedirect } from "@/lib/inAppBrowser";
 export default function LoginPage({
   searchParams,
 }: {
-  searchParams?: { from?: string; next?: string };
+  searchParams?: { from?: string; next?: string; returnTo?: string };
 }) {
   const fromVerify = searchParams?.from === "verify";
-  const nextPath = isSafeInternalRedirect(searchParams?.next) ? searchParams.next : "/my";
+  const requestedPath = searchParams?.returnTo ?? searchParams?.next;
+  const nextPath = isSafeInternalRedirect(requestedPath) ? requestedPath : "/my";
 
   return (
     <main className="p-6">
