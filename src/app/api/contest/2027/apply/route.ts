@@ -16,19 +16,6 @@ const CATEGORY_LABELS: Record<(typeof ALLOWED_CATEGORIES)[number], string> = {
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-function sanitizeFileName(fileName: string) {
-  const normalized = fileName.normalize("NFKC");
-  const extension = normalized.split(".").pop()?.toLowerCase() ?? "";
-  const baseName = normalized
-    .replace(/\.[^.]+$/, "")
-    .replace(/[^a-zA-Z0-9가-힣._-]+/g, "_")
-    .replace(/_+/g, "_")
-    .replace(/^_+|_+$/g, "")
-    .slice(0, 80);
-
-  return `${baseName || "manuscript"}.${extension}`;
-}
-
 function getExtension(fileName: string) {
   return fileName.split(".").pop()?.toLowerCase() ?? "";
 }
@@ -122,7 +109,7 @@ export async function POST(req: Request) {
 
   const submittedAt = new Date();
   const submissionId = crypto.randomUUID();
-  const safeFileName = sanitizeFileName(file.name);
+  const safeFileName = `${submissionId}.${extension}`;
   const storagePath = `2027/${user.id}/${submissionId}/${safeFileName}`;
   const adminEmail = process.env.CONTEST_ADMIN_EMAIL || "surimstudio@gmail.com";
   const mailFrom = process.env.MAIL_FROM || "Sulim Studio <no-reply@surimstudio.com>";

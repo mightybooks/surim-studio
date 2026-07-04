@@ -134,7 +134,7 @@ Dashboard에서 수동 생성:
 
 파일 저장 경로:
 
-`2027/{user_id}/{submission_id}/{safe_file_name}`
+`2027/{user_id}/{submission_id}/{submission_id}.{ext}`
 
 Storage RLS policy는 `(storage.foldername(name))[1] = '2027'` 및 `(storage.foldername(name))[2] = auth.uid()::text` 조건으로 로그인 사용자가 자기 `user_id` 경로에만 insert/select 가능하도록 작성되어 있습니다.
 
@@ -147,7 +147,7 @@ Storage RLS policy는 `(storage.foldername(name))[1] = '2027'` 및 `(storage.fol
 3. 파일 확장자 검증
 4. 파일 크기 5MB 이하 검증
 5. 서버에서 `submissionId` 생성
-6. `2027/{user_id}/{submission_id}/{safe_file_name}` 형태로 Storage path 구성
+6. `2027/{user_id}/{submission_id}/{submission_id}.{ext}` 형태로 Storage path 구성
 7. Supabase Storage private bucket에 파일 업로드
 8. 업로드 성공 후 DB에 접수 row 생성
 9. private file에 대해 signed download URL 생성
@@ -169,7 +169,8 @@ Storage RLS policy는 `(storage.foldername(name))[1] = '2027'` 및 `(storage.fol
 - `reference_link`: 선택 입력값
 - `file_bucket`: `contest-submissions`
 - `file_path`: Supabase Storage 저장 경로
-- `original_file_name`: 사용자가 업로드한 원본 파일명
+- original_file_name: 사용자가 업로드한 원본 파일명. 한글 파일명도 그대로 보존
+- Storage 저장 파일명: 원본 파일명을 쓰지 않고 {submission_id}.{ext} 형식 사용
 - `file_size_bytes`: 파일 크기
 - `file_mime_type`: 파일 MIME type
 - `consent_original`: `true`
