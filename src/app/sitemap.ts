@@ -11,26 +11,39 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const supabase = createClient(
     process.env.SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY! // 서버 전용
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
   );
 
-  async function fetchSection(section: "news" | "blog") {
+  async function fetchBlogPosts() {
     const { data, error } = await supabase
       .from("blog_posts")
       .select("slug, updated_at")
-      .eq("section", section)
       .eq("status", "published");
 
     if (error) {
-      console.error(`sitemap: ${section} fetch failed`, error);
+      console.error("sitemap: blog fetch failed", error);
+      return [] as Row[];
+    }
+    return (data ?? []) as Row[];
+  }
+
+  async function fetchNewsPosts() {
+    const { data, error } = await supabase
+      .from("news_posts")
+      .select("slug, updated_at")
+      .eq("status", "published")
+      .lte("published_at", new Date().toISOString());
+
+    if (error) {
+      console.error("sitemap: news fetch failed", error);
       return [] as Row[];
     }
     return (data ?? []) as Row[];
   }
 
   const [newsPosts, blogPosts] = await Promise.all([
-    fetchSection("news"),
-    fetchSection("blog"),
+    fetchNewsPosts(),
+    fetchBlogPosts(),
   ]);
 
   const newsUrls: MetadataRoute.Sitemap = newsPosts.map((post) => ({
@@ -43,7 +56,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: post.updated_at ? new Date(post.updated_at) : new Date(),
   }));
 
-    return [
+  return [
     { url: `${base}/`, lastModified: new Date(), priority: 1 },
     { url: `${base}/about`, lastModified: new Date(), priority: 0.8 },
     { url: `${base}/projects`, lastModified: new Date(), priority: 0.8 },
@@ -55,7 +68,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly",
       priority: 0.8,
     },
-
     {
       url: `${base}/edition/surimji`,
       lastModified: new Date(),
@@ -68,7 +80,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly",
       priority: 0.8,
     },
-
     ...newsUrls,
     ...blogUrls,
   ];

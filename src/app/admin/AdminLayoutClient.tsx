@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -12,12 +13,27 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="min-h-screen bg-[var(--bg)]">
-      <header className="w-full border-b border-[var(--border)] px-6 py-3 flex items-center justify-between">
-        <h1 className="text-sm font-semibold text-slate-700">ADMIN PANEL</h1>
+      <header className="flex w-full flex-col gap-3 border-b border-[var(--border)] px-6 py-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-wrap items-center gap-4">
+          <Link href="/admin" className="text-sm font-semibold text-slate-700">
+            ADMIN PANEL
+          </Link>
+          <nav className="flex flex-wrap gap-3 text-xs text-slate-600">
+            <Link href="/admin/blog/new" className="hover:text-emerald-700">
+              블로그 작성
+            </Link>
+            <Link href="/admin/news" className="hover:text-emerald-700">
+              뉴스관리
+            </Link>
+            <Link href="/admin/orders" className="hover:text-emerald-700">
+              주문관리
+            </Link>
+          </nav>
+        </div>
 
         <button
           onClick={handleLogout}
-          className="text-xs rounded-full border border-slate-300 px-3 py-1 hover:bg-slate-100"
+          className="w-fit rounded-full border border-slate-300 px-3 py-1 text-xs hover:bg-slate-100"
         >
           Logout
         </button>
