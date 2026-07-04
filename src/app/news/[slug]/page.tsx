@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { unstable_noStore as noStore } from "next/cache";
 import { notFound, redirect } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import { createClient } from "@supabase/supabase-js";
@@ -7,6 +8,7 @@ import { getPrevNextPost } from "@/lib/postsNav";
 import { NEWS } from "../data";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 type Props = {
   params: { slug: string };
@@ -39,6 +41,7 @@ function isVisiblePublishedNews(item: Pick<NewsPost, "status" | "published_at">)
 }
 
 async function getDbPost(slug: string) {
+  noStore();
   const { data, error } = await newsSupabase()
     .from("news_posts")
     .select("slug, title, summary, content_markdown, published_at, status")

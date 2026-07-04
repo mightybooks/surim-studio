@@ -1,8 +1,10 @@
-﻿import Link from "next/link";
+import Link from "next/link";
+import { unstable_noStore as noStore } from "next/cache";
 import { createClient } from "@supabase/supabase-js";
 import { NEWS } from "./data";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export const metadata = {
   title: "News - 수림 스튜디오",
@@ -48,6 +50,7 @@ function isVisiblePublishedNews(item: Pick<DbNewsPost, "status" | "published_at"
 }
 
 export default async function NewsIndexPage() {
+  noStore();
   const { data, error } = await newsSupabase()
     .from("news_posts")
     .select("slug, title, summary, published_at, status")
