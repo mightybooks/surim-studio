@@ -1,9 +1,8 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Link from "next/link";
 
 const contestTitle = "제4회 문수림배 문예경연대회";
 const contactEmail = "surimstudio@gmail.com";
-const submissionStartsAt = "2026년 7월 6일 접수 시작";
 
 const summaryItems = [
   { label: "접수기간", value: "2026.07.06 ~ 2026.10.31" },
@@ -100,19 +99,29 @@ export default function Contest2027Page() {
               사용 이메일을 기준으로 접수자를 확인합니다.
             </p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <button
-                type="button"
-                disabled
-                className="inline-flex cursor-not-allowed items-center justify-center rounded-xl bg-zinc-400 px-6 py-3 font-medium text-white"
+              <Link
+                href="/contest/2027/apply"
+                className="inline-flex items-center justify-center rounded-xl bg-emerald-900 px-6 py-3 font-medium text-white transition hover:bg-emerald-800"
               >
-                {submissionStartsAt}
-              </button>
+                접수하기
+              </Link>
               <Link
                 href="/contest/2026/Results"
                 className="inline-flex items-center justify-center rounded-xl border border-emerald-200 bg-white px-6 py-3 font-medium text-emerald-900 transition hover:bg-emerald-50"
               >
                 지난 대회 결과 보기
               </Link>
+            </div>
+            <div className="mt-5 space-y-2 text-sm leading-6 text-zinc-600">
+              <p>
+                접수는 로그인 후 가능합니다. 실명은 필요하지 않으며, 필명 또는
+                SNS 닉네임으로 응모할 수 있습니다.
+              </p>
+              <p>
+                원고 파일은 hwp, hwpx, doc, docx, pdf, txt 형식만 접수합니다.
+                파일 용량은 1개당 최대 5MB이며, zip 등의 압축파일은 접수하지
+                않습니다.
+              </p>
             </div>
           </div>
         </header>
