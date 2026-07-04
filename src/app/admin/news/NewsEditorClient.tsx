@@ -5,17 +5,20 @@ import { useRouter } from "next/navigation";
 import { insertAtCursor } from "@/lib/editor/insertAtCursor";
 import { editorButtonClass } from "@/app/admin/blog/new/editorButtonStyle";
 
+type NewsStatus = "draft" | "published";
+
 type NewsPost = {
   slug: string;
   title: string;
   summary: string | null;
   content_markdown: string;
-  status: "draft" | "published";
+  status: NewsStatus;
   published_at: string | null;
 };
 
 type Props = {
   initialPost?: NewsPost | null;
+  saved?: "created" | "updated";
 };
 
 function slugifyFromTitle(title: string) {
@@ -36,7 +39,13 @@ function fromDatetimeLocal(value: string) {
   return date.toISOString();
 }
 
-export default function NewsEditorClient({ initialPost }: Props) {
+function savedMessage(saved?: Props["saved"]) {
+  if (saved === "created") return "뉴스가 저장되었습니다.";
+  if (saved === "updated") return "변경사항이 저장되었습니다.";
+  return null;
+}
+
+export default function NewsEditorClient({ initialPost, saved }: Props) {
   const router = useRouter();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -50,8 +59,10 @@ export default function NewsEditorClient({ initialPost }: Props) {
     toDatetimeLocal(initialPost?.published_at ?? null),
   );
   const [saving, setSaving] = useState<"idle" | "draft" | "publish">("idle");
-  const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const currentStatus = initialPost?.status ?? "draft";
+  const notice = savedMessage(saved);
 
   function insertMarkdown(text: string) {
     if (!textareaRef.current) return;
@@ -66,16 +77,14 @@ export default function NewsEditorClient({ initialPost }: Props) {
   async function handleSave(mode: "draft" | "publish") {
     if (!title.trim() || !slug.trim() || !contentMarkdown.trim()) {
       setError("제목, 슬러그, 본문을 입력해 주세요.");
-      setMessage(null);
       return;
     }
 
     setSaving(mode);
     setError(null);
-    setMessage(null);
 
     const now = new Date().toISOString();
-    const status = mode === "publish" ? "published" : "draft";
+    const status: NewsStatus = mode === "publish" ? "published" : "draft";
     const payload = {
       title,
       slug,
@@ -103,7 +112,10 @@ export default function NewsEditorClient({ initialPost }: Props) {
     }
 
     setSaving("idle");
-    router.push(`/admin/news/${encodeURIComponent(slug)}`);
+    const savedState = initialPost ? "updated" : "created";
+    router.push(
+      `/admin/news/${encodeURIComponent(slug)}?saved=${savedState}`,
+    );
   }
 
   return (
@@ -119,6 +131,28 @@ export default function NewsEditorClient({ initialPost }: Props) {
           공식 공지 성격의 소식만 사실 중심 문체로 작성합니다.
         </p>
       </header>
+
+      {notice && (
+        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
+          <p className="font-semibold">{notice}</p>
+          {currentStatus === "published" ? (
+            <a
+              href={`/news/${initialPost?.slug ?? slug}`}
+              className="mt-2 inline-flex rounded-full bg-emerald-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-800"
+            >
+              공개 페이지 보기
+            </a>
+          ) : (
+            <p className="mt-1 text-emerald-800">임시저장 상태입니다.</p>
+          )}
+        </div>
+      )}
+
+      {error && (
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          {error}
+        </div>
+      )}
 
       <div className="space-y-4 rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] p-4 shadow-sm">
         <div className="space-y-1">
@@ -220,13 +254,6 @@ export default function NewsEditorClient({ initialPost }: Props) {
             placeholder="공개 가능한 사실만 Markdown으로 작성해 주세요."
           />
         </div>
-
-        {(error || message) && (
-          <div className="text-sm">
-            {error && <p className="text-red-600">{error}</p>}
-            {message && <p className="text-emerald-700">{message}</p>}
-          </div>
-        )}
 
         <div className="flex flex-wrap justify-between gap-2 pt-2">
           <a

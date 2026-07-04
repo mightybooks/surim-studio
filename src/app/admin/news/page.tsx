@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { unstable_noStore as noStore } from "next/cache";
 import { createClient } from "@supabase/supabase-js";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 const adminSupabase = createClient(
   process.env.SUPABASE_URL!,
@@ -23,6 +25,8 @@ function formatDate(value: string | null) {
 }
 
 export default async function AdminNewsPage() {
+  noStore();
+
   const { data, error } = await adminSupabase
     .from("news_posts")
     .select("slug, title, summary, status, published_at, updated_at")
@@ -39,7 +43,7 @@ export default async function AdminNewsPage() {
           </p>
           <h1 className="text-2xl font-semibold text-slate-900">뉴스관리</h1>
           <p className="text-sm text-slate-600">
-            공식 공지와 프로젝트 소식을 작성하고 발행합니다.
+            news_posts 테이블에 저장된 공식 공지와 프로젝트 소식을 관리합니다.
           </p>
         </div>
         <Link
@@ -52,7 +56,7 @@ export default async function AdminNewsPage() {
 
       {error ? (
         <p className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-          뉴스 목록을 불러오지 못했습니다. news_posts 테이블과 마이그레이션을 확인해 주세요.
+          뉴스 목록을 불러오지 못했습니다. news_posts 테이블과 마이그레이션, 서버 환경변수를 확인해 주세요.
         </p>
       ) : (
         <div className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] shadow-sm">
@@ -101,7 +105,7 @@ export default async function AdminNewsPage() {
               {posts.length === 0 && (
                 <tr>
                   <td className="px-4 py-8 text-sm text-slate-500" colSpan={4}>
-                    아직 DB에 저장된 뉴스가 없습니다. 기존 data.ts 뉴스는 공개 페이지에 계속 노출됩니다.
+                    news_posts 테이블에 저장된 DB 뉴스가 없습니다. 공개 /news 페이지에 보이는 항목은 기존 data.ts fallback 뉴스일 수 있습니다.
                   </td>
                 </tr>
               )}
