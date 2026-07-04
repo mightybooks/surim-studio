@@ -58,8 +58,8 @@ export default function NavBar() {
         </>
       )}
 
-      <Link href="/contest/2026" className={base}>
-       문수림배 제3회 문예경연대회
+      <Link href="/contest/2027" className={base}>
+       문수림배 제4회 문예경연대회
       </Link>
 
       <Link
