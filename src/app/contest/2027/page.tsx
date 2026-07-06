@@ -1,4 +1,5 @@
 ﻿import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 
 const contestTitle = "제4회 문수림배 문예경연대회";
@@ -125,6 +126,45 @@ export default function Contest2027Page() {
             </div>
           </div>
         </header>
+
+        <section
+          aria-labelledby="contest-poster-title"
+          className="space-y-4 rounded-3xl border border-emerald-200 bg-stone-50 p-5"
+        >
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-medium text-emerald-700">
+                공식 포스터
+              </p>
+              <h2
+                id="contest-poster-title"
+                className="mt-2 text-2xl font-semibold text-emerald-950"
+              >
+                제4회 문수림배 문예경연대회 안내 포스터
+              </h2>
+            </div>
+            <a
+              href="/projects/gongmo.png"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center rounded-xl border border-emerald-200 bg-white px-5 py-2.5 text-sm font-medium text-emerald-900 transition hover:bg-emerald-50"
+            >
+              크게 보기
+            </a>
+          </div>
+
+          <figure className="mx-auto max-w-2xl rounded-2xl border border-stone-200 bg-white p-3">
+            <Image
+              src="/projects/gongmo.png"
+              alt="제4회 문수림배 문예경연대회 공식 포스터"
+              width={1080}
+              height={1350}
+              className="h-auto w-full rounded-xl"
+              sizes="(min-width: 768px) 672px, 100vw"
+            />
+          </figure>
+        </section>
+
 
         <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {summaryItems.map((item) => (
