@@ -335,6 +335,22 @@ export default function Contest2027Page() {
             </Link>
           </div>
         </section>
+
+        <section className="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-6 text-center">
+          <h2 className="text-2xl font-semibold text-emerald-950">
+            작품 접수하기
+          </h2>
+          <p className="mx-auto mt-3 max-w-2xl leading-8 text-zinc-700">
+            안내 내용을 확인했다면 접수 페이지에서 응모 부문과 원고 파일을
+            제출해 주세요.
+          </p>
+          <Link
+            href="/contest/2027/apply"
+            className="mt-6 inline-flex items-center justify-center rounded-xl bg-emerald-900 px-6 py-3 font-medium text-white transition hover:bg-emerald-800"
+          >
+            접수하기
+          </Link>
+        </section>
       </section>
     </main>
   );
