@@ -6,7 +6,7 @@ import ReadingProgress from "@/components/ReadingProgress";
 export const metadata: Metadata = {
   title: "500-character fiction (500자 소설) – Definition and Concept",
   description:
-    "500자 소설은 500자 내외라는 고정 분량을 서사 구성 규칙으로 삼아 하나의 서사를 완결하는 독립적 서사 형식이다. 500-character fiction is an independent fixed-length narrative form, not another name for very short fiction.",
+    "500자 소설은 500자 내외라는 고정 분량을 서사 구성 규칙으로 삼아 하나의 서사를 완결하는 독립적 서사 형식이다. 숏폼 시대의 독서 생태계와 외부 칼럼 맥락도 함께 정리한다. 500-character fiction is an independent fixed-length narrative form, not another name for very short fiction.",
   other: {
     "application/ld+json": JSON.stringify({
       "@context": "https://schema.org",
@@ -276,6 +276,52 @@ export default function Research500Page() {
           >
             Representative Sample: &quot;Alihya&quot;
           </a>
+        </section>
+
+        <section
+          className="reveal-up space-y-4"
+          style={revealStyle(760)}
+        >
+          <h2 className="text-xl font-semibold text-emerald-800">
+            External coverage
+          </h2>
+
+          <div className="space-y-3 rounded-2xl border border-zinc-200 bg-white/70 p-5">
+            <p className="text-sm font-medium text-emerald-800">
+              한국독서교육신문 · 백원근 · 2026.04.02
+            </p>
+
+            <h3 className="text-lg font-semibold text-zinc-900 leading-snug">
+              [백원근의 독서출판] 짧게, 영상과 함께…독서 생태계 변화 추동할까
+            </h3>
+
+            <p className="text-zinc-700 leading-loose">
+              백원근 독서출판평론가는 한국독서교육신문 칼럼에서 숏폼 영상과 짧아지는 콘텐츠 소비 환경 속에서 『문수림의 500자 소설』을 1분 만에 읽는 500자 소설의 등장이라는 맥락으로 소개했다.
+            </p>
+
+            <p className="text-sm text-zinc-600 leading-relaxed">
+              A column by reading and publishing critic Baek Won-geun introduces Mun Surim's 500-character fiction in the context of short-form media, changing reading habits, and the evolving reading ecosystem.
+            </p>
+
+            <div className="flex flex-wrap gap-x-4 gap-y-2">
+              <a
+                href="https://www.readingnews.kr/news/articleView.html?idxno=20303"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block underline underline-offset-4 text-emerald-800 hover:text-emerald-600"
+              >
+                한국독서교육신문 원문
+              </a>
+              <a
+                href="https://v.daum.net/v/20260402140939865?f=p"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block underline underline-offset-4 text-zinc-600 hover:text-zinc-900"
+              >
+                Daum 송고본
+              </a>
+            </div>
+          </div>
         </section>
 
         <section

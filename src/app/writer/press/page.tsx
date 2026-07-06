@@ -5,14 +5,14 @@ import ReadingProgress from "@/components/ReadingProgress";
 export const metadata: Metadata = {
   title: "Press | Mun Surim",
   description:
-    "문수림과 500자 소설에 대한 주요 언론 보도를 정리한 페이지.",
+    "문수림과 500자 소설에 대한 주요 언론 보도와 외부 칼럼을 정리한 페이지.",
   alternates: {
     canonical: "https://surimstudio.com/writer/press",
   },
   openGraph: {
     title: "Press | Mun Surim",
     description:
-      "문수림과 500자 소설에 대한 주요 언론 보도를 정리한 페이지.",
+      "문수림과 500자 소설에 대한 주요 언론 보도와 외부 칼럼을 정리한 페이지.",
     url: "https://surimstudio.com/writer/press",
     siteName: "Surim Studio",
     type: "website",
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
       name: "Press | Mun Surim",
       url: "https://surimstudio.com/writer/press",
       description:
-        "문수림과 500자 소설에 대한 주요 언론 보도를 정리한 페이지.",
+        "문수림과 500자 소설에 대한 주요 언론 보도와 외부 칼럼을 정리한 페이지.",
       about: [
         {
           "@type": "Person",
@@ -56,9 +56,21 @@ type PressItem = {
   summary: string;
   definition: string;
   href: string;
+  mirrorHref?: string;
 };
 
 const pressItems: PressItem[] = [
+  {
+    outlet: "한국독서교육신문",
+    title: "[백원근의 독서출판] 짧게, 영상과 함께…독서 생태계 변화 추동할까",
+    date: "2026.04.02",
+    summary:
+      "숏폼 시대의 독서 생태계 변화라는 맥락에서 『문수림의 500자 소설』과 500자 소설 형식을 언급한 외부 칼럼.",
+    definition:
+      "독서출판평론가 백원근이 1분 만에 읽는 500자 소설의 등장이라는 맥락으로 소개함",
+    href: "https://www.readingnews.kr/news/articleView.html?idxno=20303",
+    mirrorHref: "https://v.daum.net/v/20260402140939865?f=p",
+  },
   {
     outlet: "매일신문",
     title: "문수림 작가, 쇼츠 시대 겨냥한 '500자 소설' 출간",
@@ -165,7 +177,7 @@ export default function WriterPressPage() {
           </h2>
 
           <p className="text-sm text-zinc-500">
-            현재까지 확인된 주요 언론 보도는 총 {pressItems.length}건이다.
+            현재까지 확인된 주요 언론 보도 및 외부 칼럼은 총 {pressItems.length}건이다.
           </p>
 
           <div className="space-y-6">
@@ -192,14 +204,27 @@ export default function WriterPressPage() {
                 {item.definition}
                 </p>
 
-                <a
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block underline underline-offset-4 text-emerald-800 hover:text-emerald-600"
-                >
-                  기사 보기
-                </a>
+                <div className="flex flex-wrap gap-x-4 gap-y-2">
+                  <a
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block underline underline-offset-4 text-emerald-800 hover:text-emerald-600"
+                  >
+                    기사 보기
+                  </a>
+
+                  {item.mirrorHref && (
+                    <a
+                      href={item.mirrorHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block underline underline-offset-4 text-zinc-600 hover:text-zinc-900"
+                    >
+                      Daum 송고본
+                    </a>
+                  )}
+                </div>
               </article>
             ))}
           </div>
