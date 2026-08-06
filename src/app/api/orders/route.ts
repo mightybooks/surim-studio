@@ -4,7 +4,13 @@ import { supabaseServer } from "@/lib/supabase/server";
 import { calculateOrderAmount, getOrderCatalogProduct, type Currency, type PaymentGateway } from "@/lib/orderCatalog";
 import { majorToMinor } from "@/lib/formatMoney";
 import { isValidPaymentId } from "@/lib/paymentId";
-import { cleanSingleLine, hasValidOrigin, readJsonBody, serviceRoleClient } from "@/lib/securityServer";
+import {
+  cleanSingleLine,
+  getAdminContext,
+  hasValidOrigin,
+  readJsonBody,
+  serviceRoleClient,
+} from "@/lib/securityServer";
 
 const MAX_QTY_PER_ORDER = 100;
 const PRODUCT_ID_PATTERN = /^[a-z0-9][a-z0-9_-]{1,79}$/i;
@@ -25,6 +31,10 @@ export async function POST(req: Request) {
   if (!productId || !PRODUCT_ID_PATTERN.test(productId)) return error("상품 ID가 올바르지 않습니다.", 400);
   const product = getOrderCatalogProduct(productId);
   if (!product) return error("존재하지 않는 상품입니다.", 404);
+  if (product.internalOnly) {
+    const adminContext = await getAdminContext();
+    if (!adminContext.ok) return error("존재하지 않는 상품입니다.", 404);
+  }
   if (!product.active) return error("판매가 종료된 상품입니다.", 410);
   if (!product.shippable) return error("현재 배송할 수 없는 상품입니다.", 403);
 

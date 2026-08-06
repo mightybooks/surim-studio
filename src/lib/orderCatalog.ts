@@ -15,6 +15,7 @@ export type OrderCatalogProduct = {
   id: string;
   name: string;
   active: boolean;
+  internalOnly?: boolean;
   source: "shop" | "funding_500";
   prices: Partial<Record<Currency, CatalogPrice>>;
   allowedPgs: PaymentGateway[];
@@ -30,6 +31,22 @@ const FUNDING_PRODUCTS: OrderCatalogProduct[] = [
     prices: {
       KRW: { currency: "KRW", unitAmountMinor: 11000 },
       USD: { currency: "USD", unitAmountMinor: 2200 },
+    },
+    allowedPgs: ["inicis", "paypal"],
+    shippable: true,
+  },
+];
+
+const INTERNAL_PRODUCTS: OrderCatalogProduct[] = [
+  {
+    id: "payment-channel-smoke-20260806",
+    name: "결제수단 점검용 상품",
+    active: true,
+    internalOnly: true,
+    source: "shop",
+    prices: {
+      KRW: { currency: "KRW", unitAmountMinor: 1000 },
+      USD: { currency: "USD", unitAmountMinor: 100 },
     },
     allowedPgs: ["inicis", "paypal"],
     shippable: true,
@@ -61,7 +78,11 @@ export function getOrderCatalogProduct(id: string): OrderCatalogProduct | null {
       shippable: true,
     };
   }
-  return FUNDING_PRODUCTS.find((product) => product.id === normalized) ?? null;
+  return (
+    FUNDING_PRODUCTS.find((product) => product.id === normalized) ??
+    INTERNAL_PRODUCTS.find((product) => product.id === normalized) ??
+    null
+  );
 }
 
 export function calculateOrderAmount(unitMinor: number, quantity: number) {

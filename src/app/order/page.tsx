@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import OrderForm from "@/components/order/OrderForm";
 import AccessRequiredCard from "@/components/auth/AccessRequiredCard";
+import { getAdminContext } from "@/lib/securityServer";
 import { supabaseServerPublic } from "@/lib/supabase/server-public";
 import {
   getOrderCatalogProduct,
@@ -25,6 +26,9 @@ export default async function OrderPage({
 
   const catalogProduct = getOrderCatalogProduct(productId);
   if (!catalogProduct) notFound();
+
+  const adminContext = catalogProduct.internalOnly ? await getAdminContext() : null;
+  if (catalogProduct.internalOnly && !adminContext?.ok) notFound();
 
   if (!catalogProduct.active) {
     return (
@@ -73,10 +77,12 @@ export default async function OrderPage({
     );
   }
 
-  const supabase = await supabaseServerPublic();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let user = adminContext?.ok ? adminContext.user : null;
+  if (!catalogProduct.internalOnly) {
+    const supabase = await supabaseServerPublic();
+    const authResult = await supabase.auth.getUser();
+    user = authResult.data.user;
+  }
 
   const currentParams = new URLSearchParams();
   Object.entries(query).forEach(([key, value]) => {

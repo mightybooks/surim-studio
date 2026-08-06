@@ -2,7 +2,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { isValidPaymentId } from "@/lib/paymentId";
 import ConfirmSummary from "./ConfirmSummary";
 import ConfirmAddress from "./ConfirmAddress";
@@ -32,6 +32,7 @@ type Order = {
 };
 
 type PaymentMethod = "bank_transfer" | "card" | "paypal";
+type PaypalUiState = "idle" | "loading" | "ready" | "error";
 
 export default function ConfirmForm() {
   const router = useRouter();
@@ -49,6 +50,12 @@ export default function ConfirmForm() {
   const [expired, setExpired] = useState(false);
   const [showDelayNotice, setShowDelayNotice] = useState(false);
   const [copyDone, setCopyDone] = useState(false);
+  const [paypalUiState, setPaypalUiState] = useState<PaypalUiState>("idle");
+  const [paypalUiError, setPaypalUiError] = useState<string | null>(null);
+  const [paypalRenderAttempt, setPaypalRenderAttempt] = useState(0);
+  const paypalContainerRef = useRef<HTMLDivElement | null>(null);
+  const paypalRenderKeyRef = useRef<string | null>(null);
+  const mountedRef = useRef(false);
 
   const payment: PaymentMethod =
     paymentParam === "bank_transfer" || paymentParam === "paypal"
@@ -74,18 +81,16 @@ export default function ConfirmForm() {
     };
   }, [orderId, redirectedPaymentId, redirectedCode, redirectedMessage]);
 
-  // ✅ order 기반으로 PayPal 여부 판단 (query 의존 제거)
-  const isPaypal = useMemo(() => {
-    if (payment === "paypal") return true;
-    if (!order) return false;
+  const isPaypal =
+    order?.currency === "USD" && String(order.pg).toLowerCase() === "paypal";
+  const isBankTransfer = payment === "bank_transfer" && !isPaypal;
 
-    return (
-      order.currency === "USD" &&
-      String(order.pg).toLowerCase() === "paypal"
-    );
-  }, [order, payment]);
-
-  const isBankTransfer = payment === "bank_transfer";
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   /* -----------------------------
      주문 정보 조회 (orderId 기준)
@@ -180,6 +185,117 @@ export default function ConfirmForm() {
     return () => clearTimeout(t);
   }, [loading]);
 
+  useEffect(() => {
+    if (!order || !isPaypal || isBankTransfer) return;
+
+    const renderKey = `${order.id}:${paypalRenderAttempt}`;
+    if (paypalRenderKeyRef.current === renderKey) return;
+    paypalRenderKeyRef.current = renderKey;
+
+    const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID;
+    const channelKey = process.env.NEXT_PUBLIC_PAYPAL_CHANNEL_KEY;
+    const portOne = window.PortOne;
+    const container = paypalContainerRef.current;
+    const reportSetupError = (message: string) => {
+      queueMicrotask(() => {
+        if (!mountedRef.current) return;
+        setPaypalUiState("error");
+        setPaypalUiError(message);
+      });
+    };
+
+    if (!storeId) {
+      reportSetupError("PortOne 상점 ID가 설정되지 않았습니다.");
+      return;
+    }
+    if (!channelKey) {
+      reportSetupError(
+        "PayPal 채널키가 설정되지 않았습니다. NEXT_PUBLIC_PAYPAL_CHANNEL_KEY를 확인해 주세요.",
+      );
+      return;
+    }
+    if (!portOne?.loadPaymentUI) {
+      reportSetupError("PortOne 결제 SDK를 불러오지 못했습니다.");
+      return;
+    }
+    if (!container) {
+      reportSetupError("PayPal 결제 버튼을 표시할 영역을 준비하지 못했습니다.");
+      return;
+    }
+    if (!isValidPaymentId(order.id)) {
+      reportSetupError("결제 ID 형식이 올바르지 않습니다.");
+      return;
+    }
+
+    container.replaceChildren();
+    queueMicrotask(() => {
+      if (!mountedRef.current) return;
+      setPaypalUiState("loading");
+      setPaypalUiError(null);
+    });
+
+    const loadPaypalUi = async () => {
+      try {
+        await portOne.loadPaymentUI(
+          {
+            uiType: "PAYPAL_SPB",
+            storeId,
+            channelKey,
+            paymentId: order.id,
+            orderName: order.product_name,
+            totalAmount: order.amount_minor,
+            currency: "USD",
+            customer: {
+              fullName: order.recipient_name,
+              phoneNumber: order.phone,
+              email: order.buyer_email,
+            },
+          },
+          {
+            onPaymentSuccess: (response) => {
+              if (!mountedRef.current) return;
+              if (response.paymentId !== order.id) {
+                console.error("PAYPAL_PAYMENT_ID_MISMATCH");
+                setPaypalUiState("error");
+                setPaypalUiError("PayPal 결제 ID가 주문 정보와 일치하지 않습니다.");
+                setLoading(false);
+                return;
+              }
+              setPaypalUiError(null);
+              setShowDelayNotice(false);
+              setLoading(true);
+            },
+            onPaymentFail: (error) => {
+              console.error("PAYPAL_PAYMENT_FAILED", {
+                code: error.code,
+                pgCode: error.pgCode,
+              });
+              if (!mountedRef.current) return;
+              setLoading(false);
+              setPaypalUiState("error");
+              setPaypalUiError(error.message || "PayPal 결제에 실패했습니다.");
+            },
+          },
+        );
+        if (mountedRef.current) setPaypalUiState("ready");
+      } catch (error: unknown) {
+        console.error("PAYPAL_UI_LOAD_FAILED", {
+          message: error instanceof Error ? error.message : "Unknown error",
+        });
+        if (!mountedRef.current) return;
+        setLoading(false);
+        setPaypalUiState("error");
+        setPaypalUiError(
+          error instanceof Error
+            ? error.message
+            : "PayPal 결제 버튼을 불러오지 못했습니다.",
+        );
+      }
+    };
+
+    void loadPaypalUi();
+  }, [isBankTransfer, isPaypal, order, paypalRenderAttempt]);
+
   if (!orderId) {
     return (
       <main className="mx-auto max-w-2xl px-4 py-8">
@@ -218,14 +334,31 @@ export default function ConfirmForm() {
   /* -----------------------------
      결제 요청
   ----------------------------- */
-  const requestPayment = async (method: "CARD" | "KAKAOPAY" | "PAYPAL") => {
+  const requestPayment = async (method: "CARD" | "KAKAOPAY") => {
     if (!order || loading) return;
 
+    const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID;
+    if (!storeId) {
+      alert("PortOne 상점 ID가 설정되지 않았습니다.");
+      return;
+    }
 
-    // ✅ PayPal 채널키는 env에서만 사용 (A안)
-    const paypalChannelKey = process.env.NEXT_PUBLIC_PAYPAL_CHANNEL_KEY;
-    if (method === "PAYPAL" && !paypalChannelKey) {
-      alert("PayPal 채널키(env)가 없습니다. NEXT_PUBLIC_PAYPAL_CHANNEL_KEY를 확인해 주세요.");
+    const channelKey =
+      method === "KAKAOPAY"
+        ? process.env.NEXT_PUBLIC_PORTONE_KAKAOPAY_CHANNEL_KEY
+        : process.env.NEXT_PUBLIC_PORTONE_INICIS_CHANNEL_KEY;
+    if (!channelKey) {
+      alert(
+        method === "KAKAOPAY"
+          ? "카카오페이 채널키가 설정되지 않았습니다. NEXT_PUBLIC_PORTONE_KAKAOPAY_CHANNEL_KEY를 확인해 주세요."
+          : "KG이니시스 채널키가 설정되지 않았습니다. NEXT_PUBLIC_PORTONE_INICIS_CHANNEL_KEY를 확인해 주세요.",
+      );
+      return;
+    }
+
+    const portOne = window.PortOne;
+    if (!portOne?.requestPayment) {
+      alert("PortOne 결제 SDK를 불러오지 못했습니다.");
       return;
     }
 
@@ -238,48 +371,18 @@ export default function ConfirmForm() {
     setLoading(true);
 
     try {
-      // ✅ PayPal (V2 / SPB) - amount_minor(센트) 사용
-      if (method === "PAYPAL") {
-
-        await window.PortOne.requestPayment({
-          storeId: process.env.NEXT_PUBLIC_PORTONE_STORE_ID!,
-          channelKey: paypalChannelKey!,
-          paymentId,
-          orderName: order.product_name,
-
-          uiType: "PAYPAL_SPB",
-          totalAmount: order.amount_minor,
-          currency: "USD",
-          payMethod: "PAYPAL",
-
-          customer: {
-            fullName: order.recipient_name,
-            phoneNumber: order.phone,
-            email: order.buyer_email,
-          },
-        });
-
-        return;
-      }
-
       // ✅ 기존 국내 결제 로직 - amount_minor(원) 사용
-      const channelKey =
-        method === "KAKAOPAY"
-          ? process.env.NEXT_PUBLIC_PORTONE_KAKAOPAY_CHANNEL_KEY!
-          : process.env.NEXT_PUBLIC_PORTONE_INICIS_CHANNEL_KEY!;
-
       const payMethodForPortOne = method === "KAKAOPAY" ? "EASY_PAY" : "CARD";
 
-
-      await window.PortOne.requestPayment({
-        storeId: process.env.NEXT_PUBLIC_PORTONE_STORE_ID!,
+      await portOne.requestPayment({
+        storeId,
         channelKey,
         paymentId,
         orderName: order.product_name,
         totalAmount: order.amount_minor,
         currency: "KRW",
         payMethod: payMethodForPortOne,
-        ...(order.amount_minor < 1000
+        ...(method === "CARD" && order.amount_minor < 1000
           ? {
               bypass: {
                 inicis_v2: {
@@ -380,12 +483,31 @@ export default function ConfirmForm() {
           )}
 
           {isPaypal && !isBankTransfer && (
-            <section className="rounded-xl border p-4 bg-white space-y-2">
+            <section className="rounded-xl border p-4 bg-white space-y-3">
               <div className="text-sm font-medium text-zinc-800">PayPal 결제</div>
-              <div className="text-xs text-zinc-500">
-                아래 영역에 PayPal 버튼이 표시됩니다. (표시가 안 되면 “PayPal로 결제”를 눌러주세요.)
-              </div>
-              <div className="portone-ui-container" />
+              {(paypalUiState === "idle" || paypalUiState === "loading") && (
+                <p className="text-sm text-zinc-600">
+                  PayPal 결제 버튼을 불러오는 중입니다.
+                </p>
+              )}
+              {paypalUiError && (
+                <div className="space-y-2 rounded-lg border border-red-200 bg-red-50 p-3">
+                  <p className="text-sm text-red-700">{paypalUiError}</p>
+                  <button
+                    type="button"
+                    disabled={loading}
+                    onClick={() => setPaypalRenderAttempt((attempt) => attempt + 1)}
+                    className="rounded-lg border border-red-300 bg-white px-3 py-2 text-sm font-medium text-red-700 disabled:opacity-50"
+                  >
+                    PayPal 버튼 다시 불러오기
+                  </button>
+                </div>
+              )}
+              <div
+                ref={paypalContainerRef}
+                className={`portone-ui-container ${loading ? "pointer-events-none opacity-60" : ""}`}
+                data-portone-ui-type="paypal-spb"
+              />
             </section>
           )}
 
@@ -428,11 +550,10 @@ export default function ConfirmForm() {
             </section>
           )}
 
-          {!isBankTransfer && (
+          {!isBankTransfer && !isPaypal && (
             <ConfirmPaymentButtons
               loading={loading || expired}
               onPay={requestPayment}
-              showPaypal={isPaypal}
             />
           )}
         </>
