@@ -11,7 +11,7 @@ const contentSecurityPolicy = [
   "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
   "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.portone.io https://checkout-service.prod.iamport.co https://*.paypal.com https://*.paypalobjects.com https://*.venmo.com https://cloud.umami.is https://gateway.umami.is",
-  "frame-src 'self' https://*.portone.io https://checkout-service.prod.iamport.co https://*.inicis.com https://*.paypal.com https://*.paypalobjects.com https://*.venmo.com https://postcode.map.kakao.com https://postcode.map.daum.net https://www.youtube.com https://www.youtube-nocookie.com https://www.google.com",
+  "frame-src 'self' https://*.portone.io https://checkout-service.prod.iamport.co https://*.inicis.com https://online-payment.kakaopay.com https://*.paypal.com https://*.paypalobjects.com https://*.venmo.com https://postcode.map.kakao.com https://postcode.map.daum.net https://www.youtube.com https://www.youtube-nocookie.com https://www.google.com",
   "child-src 'self' https://*.paypal.com https://*.paypalobjects.com https://*.venmo.com",
   "media-src 'self' blob:",
   "worker-src 'self' blob:",
