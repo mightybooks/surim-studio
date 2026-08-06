@@ -412,7 +412,7 @@ export default function ConfirmForm() {
           {loading && (
             <section className="rounded-xl border p-4 bg-zinc-50 text-center">
               <p className="text-sm text-zinc-600">
-                결제가 정상적으로 처리되었습니다. 결과를 확인 중입니다.<br />
+                결제창을 불러오거나 승인 결과를 확인하고 있습니다.<br />
                 새로고침·뒤로 가기·재결제를 하지 마세요.
               </p>
             </section>
