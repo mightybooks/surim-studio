@@ -3,7 +3,6 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
-import { majorToMinor } from "@/lib/formatMoney";
 import OrderSummary from "./OrderSummary";
 import RecipientFields from "./RecipientFields";
 import AddressFields from "./AddressFields";
@@ -22,18 +21,24 @@ type PaymentMethod = "bank_transfer" | "card" | "paypal";
 
 const MAX_QTY_PER_ORDER = 100;
 
-export default function OrderForm() {
+export default function OrderForm({
+  productId,
+  productName,
+  amountMinor,
+  currency,
+  pg,
+  source,
+}: {
+  productId: string;
+  productName: string;
+  amountMinor: number;
+  currency: "KRW" | "USD";
+  pg: "inicis" | "paypal";
+  source: "shop" | "funding_500";
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // 상품 정보 (query 기반)
-  const productId = searchParams.get("productId");
-  const productName = searchParams.get("productName");
-  const priceParam = searchParams.get("price");
-
-  // ✅ 해외결제 분기용 파라미터 (PurchaseSummary에서 넘겨줌)
-  const currency = (searchParams.get("currency") ?? "KRW").toUpperCase(); // KRW | USD
-  const pg = (searchParams.get("pg") ?? "").toLowerCase(); // "paypal" | ""
   const payRegion = (searchParams.get("payRegion") ?? "").toUpperCase(); // "OVERSEAS" 등 (선택)
   const paymentParam = (searchParams.get("payment") ?? "").toLowerCase();
 
@@ -44,13 +49,8 @@ export default function OrderForm() {
 
   const isOverseas = currency === "USD" && pg === "paypal";
   const isBankTransfer = payment === "bank_transfer";
-  const amountMinorParam = searchParams.get("amount_minor");
 
-  // ✅ 펀딩 여부 (query 기반)
-  const sourceParam = searchParams.get("source");
-  const isFunding = sourceParam === "funding_500";
-
-  const price = Number(priceParam ?? 0);
+  const isFunding = source === "funding_500";
 
   const [form, setForm] = useState<OrderFormState>({
     recipientName: "",
@@ -65,17 +65,6 @@ export default function OrderForm() {
   const [deliveryMemo, setDeliveryMemo] = useState("");
   const [receiptType, setReceiptType] = useState<ReceiptType>("NONE");
   const [receiptValue, setReceiptValue] = useState("");
-
-    const amount_minor = useMemo(() => {
-    // 1) 새 링크: amount_minor 우선
-    if (amountMinorParam) {
-      const v = Number(amountMinorParam);
-      return Number.isFinite(v) ? v : 0;
-    }
-
-    // 2) 구버전 링크의 major-unit price를 통화별 minor unit으로 변환
-    return majorToMinor(price, currency) ?? 0;
-  }, [amountMinorParam, currency, price]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -99,16 +88,6 @@ export default function OrderForm() {
     return "펀딩 수량(권)";
   }, [isFunding]);
 
-  if (!productId || !productName || (!priceParam && !amountMinorParam)) {
-    return (
-      <main className="mx-auto max-w-2xl px-4 py-8">
-        <p className="text-red-600">
-          상품 정보가 올바르지 않습니다. 다시 시도해 주세요.
-        </p>
-      </main>
-    );
-  }
-
   /* ------------------------------
     주문 생성 API
   -------------------------------- */
@@ -124,8 +103,7 @@ export default function OrderForm() {
       body: JSON.stringify({
         productId,
         productName,
-        amount_minor,
-        price,
+        amount_minor: amountMinor,
         currency,     // ✅ 추가
         pg,           // ✅ 추가        
         payRegion,    // ✅ 선택(로그/분석용)
@@ -145,7 +123,7 @@ export default function OrderForm() {
         // ✅ 추가: 수량
         quantity,
 
-        ...(sourceParam ? { source: sourceParam } : {}),
+        source,
       }),
     });
 
@@ -191,7 +169,7 @@ export default function OrderForm() {
       params.set("payment", payment);
       params.set("currency", currency);
       params.set("pg", pg);
-      if (sourceParam) params.set("source", sourceParam);
+      if (isFunding) params.set("source", source);
 
       // (선택) 디버그/안전벨트: 해외결제 힌트도 같이 넘기고 싶으면
       // params.set("currency", currency); // "USD" | "KRW"
@@ -211,8 +189,8 @@ export default function OrderForm() {
       {/* 상품 요약 */}
       <OrderSummary
         productName={productName}
-        amount_minor={amount_minor}
-        currency={currency as "KRW" | "USD"}
+        amount_minor={amountMinor}
+        currency={currency}
       />
 
 
