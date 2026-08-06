@@ -1,6 +1,34 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+
+const POSTCODE_SCRIPT_ID = "daum-postcode-script";
+const POSTCODE_SCRIPT_SRC =
+  "https://t1.kakaocdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
+
+type ScriptStatus = "loading" | "ready" | "error";
+
+type PostcodeResult = {
+  zonecode: string;
+  address: string;
+};
+
+type PostcodeInstance = {
+  open: () => void;
+};
+
+type PostcodeConstructor = new (options: {
+  oncomplete: (data: PostcodeResult) => void;
+}) => PostcodeInstance;
+
+type PostcodeWindow = {
+  kakao?: {
+    Postcode?: PostcodeConstructor;
+  };
+  daum?: {
+    Postcode?: PostcodeConstructor;
+  };
+};
 
 type AddressFieldsProps = {
   zipcode: string;
@@ -9,10 +37,13 @@ type AddressFieldsProps = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-declare global {
-  interface Window {
-    daum: any;
-  }
+function getPostcodeWindow() {
+  return window as unknown as PostcodeWindow;
+}
+
+function getPostcodeConstructor() {
+  const postcodeWindow = getPostcodeWindow();
+  return postcodeWindow.kakao?.Postcode ?? postcodeWindow.daum?.Postcode;
 }
 
 export default function AddressFields({
@@ -21,56 +52,108 @@ export default function AddressFields({
   addressDetail,
   onChange,
 }: AddressFieldsProps) {
-  /**
-   * 다음 주소 API 스크립트 로드
-   * - 한 번만 로드되도록 방어
-   */
-  useEffect(() => {
-    if (document.getElementById("daum-postcode-script")) return;
+  const [scriptStatus, setScriptStatus] = useState<ScriptStatus>("loading");
+  const [loadAttempt, setLoadAttempt] = useState(0);
 
-    const script = document.createElement("script");
-    script.id = "daum-postcode-script";
-    script.src =
-      "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
-    script.async = true;
-    document.body.appendChild(script);
-  }, []);
+  useEffect(() => {
+    let active = true;
+
+    queueMicrotask(() => {
+      if (!active) return;
+
+      if (getPostcodeConstructor()) {
+        setScriptStatus("ready");
+        return;
+      }
+
+      document.getElementById(POSTCODE_SCRIPT_ID)?.remove();
+
+      const script = document.createElement("script");
+      script.id = POSTCODE_SCRIPT_ID;
+      script.src = POSTCODE_SCRIPT_SRC;
+      script.async = true;
+      script.onload = () => {
+        if (!active) return;
+        if (getPostcodeConstructor()) {
+          setScriptStatus("ready");
+          return;
+        }
+        console.error("Kakao postcode script loaded without the Postcode API.");
+        setScriptStatus("error");
+      };
+      script.onerror = () => {
+        if (!active) return;
+        console.error("Failed to load the Kakao postcode script.");
+        setScriptStatus("error");
+      };
+      document.head.appendChild(script);
+    });
+
+    return () => {
+      active = false;
+      const script = document.getElementById(POSTCODE_SCRIPT_ID);
+      if (script instanceof HTMLScriptElement) {
+        script.onload = null;
+        script.onerror = null;
+      }
+    };
+  }, [loadAttempt]);
 
   /**
    * 주소 검색 버튼 클릭
    */
   const handleAddressSearch = () => {
-    if (!window.daum) {
-      alert("주소 검색 서비스를 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
+    if (scriptStatus === "error") {
+      setScriptStatus("loading");
+      setLoadAttempt((attempt) => attempt + 1);
       return;
     }
 
-    new window.daum.Postcode({
-      oncomplete: function (data: any) {
-        // 우편번호, 기본주소 자동 입력
-        onChange({
-          target: {
-            name: "zipcode",
-            value: data.zonecode,
-          },
-        } as React.ChangeEvent<HTMLInputElement>);
+    const Postcode = getPostcodeConstructor();
+    if (scriptStatus !== "ready" || !Postcode) {
+      console.error("Kakao postcode API is not ready.");
+      setScriptStatus("error");
+      return;
+    }
 
-        onChange({
-          target: {
-            name: "address",
-            value: data.address,
-          },
-        } as React.ChangeEvent<HTMLInputElement>);
+    try {
+      new Postcode({
+        oncomplete: (data) => {
+          // 우편번호, 기본주소 자동 입력
+          onChange({
+            target: {
+              name: "zipcode",
+              value: data.zonecode,
+            },
+          } as React.ChangeEvent<HTMLInputElement>);
 
-        // 상세주소 입력으로 포커스 이동
-        const detailInput = document.querySelector(
-          'input[name="addressDetail"]'
-        ) as HTMLInputElement | null;
+          onChange({
+            target: {
+              name: "address",
+              value: data.address,
+            },
+          } as React.ChangeEvent<HTMLInputElement>);
 
-        detailInput?.focus();
-      },
-    }).open();
+          // 상세주소 입력으로 포커스 이동
+          const detailInput = document.querySelector(
+            'input[name="addressDetail"]',
+          ) as HTMLInputElement | null;
+
+          detailInput?.focus();
+        },
+      }).open();
+    } catch {
+      console.error("Failed to open the Kakao postcode popup.");
+      setScriptStatus("error");
+    }
   };
+
+  const buttonLabel =
+    scriptStatus === "loading"
+      ? "주소 검색 불러오는 중"
+      : scriptStatus === "ready"
+        ? "주소 검색"
+        : "주소 검색 다시 불러오기";
 
   return (
     <section className="space-y-3">
@@ -80,9 +163,11 @@ export default function AddressFields({
       <button
         type="button"
         onClick={handleAddressSearch}
-        className="w-full rounded-md border border-dashed px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
+        disabled={scriptStatus === "loading"}
+        aria-busy={scriptStatus === "loading"}
+        className="w-full rounded-md border border-dashed px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 disabled:cursor-wait disabled:opacity-60"
       >
-        주소 검색
+        {buttonLabel}
       </button>
 
       {/* 우편번호 (자동 입력) */}
