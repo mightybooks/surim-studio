@@ -62,6 +62,21 @@ const PRODUCT_CATALOG: EditionProduct[] = [
     composition: "노트 7권 1세트",
     spec: "B5 / 무선제본 36매 / 표지 120g",
   },
+  {
+    id: "payment-smoke-test-20260806",
+    slug: "payment-smoke-test-20260806",
+    section: "goods",
+    name: "결제 시스템 점검용 상품",
+    type: "GOODS",
+    category: "internal-test",
+    summary: "운영 실결제 흐름 확인을 위한 비노출 임시 상품",
+    price: 100,
+    priceUsd: 0,
+    delivery: "결제 시스템 점검용",
+    thumbnail: "/productlist/8cut_list.webp",
+    detailImage: "/productdetail/8cut_detail.webp",
+    composition: "결제 시스템 점검용 상품 1개",
+  },
 ];
 
 const SECTION_TARGETS: Record<EditionSection, ProductTarget[]> = {
