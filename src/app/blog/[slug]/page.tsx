@@ -51,7 +51,7 @@ function normalizeHeroUrl(raw: string | null | undefined): string | null {
 // 메타데이터 (OG 이미지 포함)
 // ─────────────────────────────────────────────
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const supabase = supabaseServerPublic();
+  const supabase = await supabaseServerPublic();
   const { data } = await supabase
     .from("blog_posts")
     .select("title, subtitle, hero_image_url, status")
@@ -90,7 +90,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 // 본문 페이지
 // ─────────────────────────────────────────────
 export default async function BlogPostPage({ params }: Props) {
-  const supabase = supabaseServerPublic();
+  const supabase = await supabaseServerPublic();
   
   // 1) 현재 글 정보 가져오기
   const { data: post, error } = await supabase
@@ -172,28 +172,25 @@ export default async function BlogPostPage({ params }: Props) {
         <div className="prose prose-sm max-w-none whitespace-pre-wrap sm:prose-base">
           <ReactMarkdown
             components={{
-              p({ node, ...props }) {
+              p({ children }) {
                 return (
-                  <p
-                    className="mb-4 leading-relaxed text-slate-800"
-                    {...props}
-                  />
+                  <p className="mb-4 leading-relaxed text-slate-800">
+                    {children}
+                  </p>
                 );
               },
-              h2({ node, ...props }) {
+              h2({ children }) {
                 return (
-                  <h2
-                    className="mt-10 mb-4 border-t border-slate-200 pt-6 text-xl font-semibold text-slate-900"
-                    {...props}
-                  />
+                  <h2 className="mt-10 mb-4 border-t border-slate-200 pt-6 text-xl font-semibold text-slate-900">
+                    {children}
+                  </h2>
                 );
               },
-              h3({ node, ...props }) {
+              h3({ children }) {
                 return (
-                  <h3
-                    className="mt-8 mb-3 text-lg font-semibold text-slate-900"
-                    {...props}
-                  />
+                  <h3 className="mt-8 mb-3 text-lg font-semibold text-slate-900">
+                    {children}
+                  </h3>
                 );
               },
             }}

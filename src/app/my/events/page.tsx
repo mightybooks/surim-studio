@@ -4,7 +4,7 @@ import { supabaseServerPublic } from "@/lib/supabase/server-public";
 import Link from "next/link";
 
 export default async function MyEventsPage() {
-  const supabase = supabaseServerPublic();
+  const supabase = await supabaseServerPublic();
   const {
     data: { user },
   } = await supabase.auth.getUser();

@@ -1,170 +1,131 @@
-// src/app/api/webhooks/portone/route.ts
-
+import { createHash } from "crypto";
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
-import type { OrderStatus } from "@/lib/orderStatus";
+import * as PortOne from "@portone/server-sdk";
+import { isValidPaymentId } from "@/lib/paymentId";
+import { serviceRoleClient } from "@/lib/securityServer";
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+const MAX_WEBHOOK_BYTES = 64 * 1024;
 
-function normalizePortoneStatus(payment: any): OrderStatus | null {
-  switch (payment?.status) {
-    case "PAID":
-      return "paid";
-    case "READY":
-      return "pending";
-    case "FAILED":
-    case "CANCELLED":
-      return "failed";
-    default:
-      return null;
-  }
+type PaymentDetails = {
+  id?: unknown;
+  amount?: { total?: unknown };
+  currency?: unknown;
+  orderName?: unknown;
+  storeId?: unknown;
+  status?: unknown;
+};
+
+function response(status = 200) {
+  return NextResponse.json({ ok: status < 400 }, { status });
 }
 
 export async function POST(req: Request) {
+  const contentLength = Number(req.headers.get("content-length") ?? 0);
+  if (contentLength > MAX_WEBHOOK_BYTES) return response(413);
+  const rawBody = await req.text();
+  if (Buffer.byteLength(rawBody, "utf8") > MAX_WEBHOOK_BYTES) return response(413);
+
+  const webhookSecret = process.env.PORTONE_WEBHOOK_SECRET;
+  if (!webhookSecret) {
+    console.error("portone webhook secret is not configured");
+    return response(500);
+  }
+
+  let webhook: Awaited<ReturnType<typeof PortOne.Webhook.verify>>;
   try {
-    /* -----------------------------
-       0. 기본 헤더 로그 (진단용)
-    ----------------------------- */
-    console.log("HEADERS CHECK", {
-      authorization: req.headers.get("authorization"),
-      version: req.headers.get("x-portone-api-version"),
-      contentType: req.headers.get("content-type"),
-      userAgent: req.headers.get("user-agent"),
-    });
+    webhook = await PortOne.Webhook.verify(webhookSecret, rawBody, Object.fromEntries(req.headers));
+  } catch {
+    return response(400);
+  }
 
-    const raw = await req.json();
+  if (!("data" in webhook) || !("paymentId" in webhook.data)) return response();
+  const paymentId = webhook.data.paymentId;
+  const eventId = req.headers.get("webhook-id") ?? "";
+  // The SDK accepts any non-empty webhook-id and authenticates its exact value
+  // as part of the signature input. Do not impose a guessed UUID/charset format.
+  if (!isValidPaymentId(paymentId) || !eventId) return response(400);
 
-    console.log("WEBHOOK RAW KEYS", Object.keys(raw));
+  const secretKey = process.env.PORTONE_SECRET_KEY;
+  if (!secretKey) return response(500);
 
-    const paymentId: string | null =
-      raw?.payment_id ?? raw?.paymentId ?? null;
-
-    console.log("WEBHOOK paymentId =", paymentId);
-
-    /* -----------------------------
-       1. 웹훅 원문 저장 (항상)
-    ----------------------------- */
-    await supabase.from("payment_webhooks").insert({
-      provider: "portone",
-      event_status: raw?.status ?? null,
-      event_type: raw?.type ?? null,
-      payment_id: paymentId,
-      merchant_uid: raw?.merchant_uid ?? null,
-      raw_payload: raw,
-    });
-
-    if (!paymentId) {
-      return NextResponse.json({ ok: true });
-    }
-
-    /* -----------------------------
-       2. PortOne 결제 상세 조회
-    ----------------------------- */
-    console.log("FETCH PORTONE PAYMENT START");
-
+  let payment: PaymentDetails;
+  try {
     const paymentRes = await fetch(
-      `https://api.portone.io/payments/${paymentId}`,
+      `https://api.portone.io/payments/${encodeURIComponent(paymentId)}`,
       {
         headers: {
-          Authorization: `PortOne ${process.env.PORTONE_SECRET_KEY}`,
+          Authorization: `PortOne ${secretKey}`,
           "X-PortOne-Api-Version": "2024-01-01",
-          "Content-Type": "application/json",
         },
-      }
+        cache: "no-store",
+      },
     );
-
-    console.log(
-      "FETCH PORTONE PAYMENT RES OK =",
-      paymentRes.ok,
-      paymentRes.status
-    );
-
-    if (!paymentRes.ok) {
-      const text = await paymentRes.text();
-      console.log("PORTONE ERROR BODY =", text);
-      return NextResponse.json({ ok: true });
-    }
-
-    const payment = await paymentRes.json();
-
-    console.log("PORTONE PAYMENT =", {
-      status: payment?.status,
-      total: payment?.amount?.total,
-    });
-
-    /* -----------------------------
-       3. 주문 조회
-    ----------------------------- */
-    const { data: order } = await supabase
-      .from("orders")
-      .select("*")
-      .eq("id", paymentId)
-      .single();
-
-    console.log("ORDER FOUND =", order?.id, order?.status);
-
-    if (!order) {
-      return NextResponse.json({ ok: true });
-    }
-
-    // 이미 결제완료면 재처리 금지
-    if (order.status === "paid") {
-      console.log("ORDER ALREADY PAID – SKIP");
-      return NextResponse.json({ ok: true });
-    }
-
-    /* -----------------------------
-       4. 상태별 처리 (핵심)
-    ----------------------------- */
-
-    const nextStatus = normalizePortoneStatus(payment);
-
-    if (!nextStatus) {
-      console.log("UNKNOWN PAYMENT STATUS – SKIP", payment?.status);
-      return NextResponse.json({ ok: true });
-    }
-
-    // paid 상태는 금액 검증 필수
-    if (
-      nextStatus === "paid" &&
-      payment?.amount?.total !== order.amount
-    ) {
-      console.log("AMOUNT MISMATCH – SKIP", {
-        payment: payment?.amount?.total,
-        order: order.amount,
-      });
-      return NextResponse.json({ ok: true });
-    }
-
-    if (nextStatus === "paid" && order.status !== "pending") {
-      console.log("INVALID STATUS TRANSITION", {
-        orderId: paymentId,
-        current: order.status,
-        next: nextStatus,
-      });
-      return NextResponse.json({ ok: true });
-    }
-
-    const { error } = await supabase
-      .from("orders")
-      .update({
-        status: nextStatus,
-        portone_payment_id: paymentId,
-      })
-      .eq("id", paymentId);
-
-    console.log("ORDER STATUS UPDATE", {
-      orderId: paymentId,
-      nextStatus,
-      error,
-    });
-
-    return NextResponse.json({ ok: true });
-  } catch (err) {
-    console.error("PORTONE WEBHOOK ERROR", err);
-    return NextResponse.json({ ok: true });
+    if (paymentRes.status === 404) return response();
+    if (!paymentRes.ok) return response(502);
+    payment = await paymentRes.json();
+  } catch {
+    return response(502);
   }
+
+  const supabase = serviceRoleClient();
+  const { data: order, error: orderError } = await supabase
+    .from("orders")
+    .select("id, portone_payment_id, status, amount_minor, amount, currency, product_name")
+    .eq("portone_payment_id", paymentId)
+    .maybeSingle();
+  if (orderError) return response(500);
+  if (!order) return response();
+
+  const expectedAmount = Number(order.amount_minor ?? order.amount);
+  const paymentAmount = Number(payment?.amount?.total);
+  const paymentCurrency = String(payment?.currency ?? "").toUpperCase();
+  const paymentOrderName = String(payment?.orderName ?? "");
+  const storeId = process.env.PORTONE_STORE_ID ?? process.env.NEXT_PUBLIC_PORTONE_STORE_ID;
+
+  if (
+    order.portone_payment_id !== paymentId ||
+    payment?.id !== paymentId ||
+    paymentAmount !== expectedAmount ||
+    paymentCurrency !== String(order.currency).toUpperCase() ||
+    paymentOrderName !== order.product_name ||
+    (storeId && payment?.storeId !== storeId)
+  ) {
+    return response();
+  }
+
+  let nextStatus: "paid" | "failed" | null = null;
+  if (payment.status === "PAID") nextStatus = "paid";
+  if (payment.status === "FAILED" || payment.status === "CANCELLED") nextStatus = "failed";
+
+  if (nextStatus) {
+    const { error: updateError } = await supabase
+      .from("orders")
+      .update({ status: nextStatus, portone_payment_id: paymentId })
+      .eq("id", order.id)
+      .eq("status", "pending");
+    if (updateError) return response(500);
+  }
+
+  const payloadHash = createHash("sha256").update(rawBody).digest("hex");
+  const { error: eventError } = await supabase.from("payment_webhooks").upsert(
+    {
+      provider: "portone",
+      provider_event_id: eventId,
+      payload_hash: payloadHash,
+      event_status: payment.status ?? null,
+      event_type: webhook.type,
+      payment_id: paymentId,
+      merchant_uid: paymentId,
+      raw_payload: {
+        type: webhook.type,
+        timestamp: "timestamp" in webhook ? webhook.timestamp : null,
+        storeId: "storeId" in webhook.data ? webhook.data.storeId : null,
+      },
+      processed_at: new Date().toISOString(),
+    },
+    { onConflict: "provider,provider_event_id", ignoreDuplicates: true },
+  );
+  if (eventError) return response(500);
+
+  return response();
 }

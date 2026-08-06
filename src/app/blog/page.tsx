@@ -41,7 +41,7 @@ function revealStyle(delay: number) {
 }
 
 export default async function BlogPage({ searchParams }: PageProps) {
-  const supabase = supabaseServerPublic();
+  const supabase = await supabaseServerPublic();
 
   // ?section=log | insight | note
   const rawSection = searchParams?.section;

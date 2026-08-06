@@ -18,7 +18,7 @@ export default async function OrderIntlPage({
   const isGoodsIntlBlocked =
     isGoodsProductId(productId) && (currency === "USD" || pg === "paypal");
 
-  const supabase = supabaseServerPublic();
+  const supabase = await supabaseServerPublic();
   const {
     data: { user },
   } = await supabase.auth.getUser();

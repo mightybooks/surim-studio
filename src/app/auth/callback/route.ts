@@ -15,7 +15,7 @@ export async function GET(request: Request) {
   const returnToRaw = url.searchParams.get("returnTo") ?? url.searchParams.get("next");
   const returnTo = isSafeInternalRedirect(returnToRaw) ? returnToRaw : "/my";
 
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

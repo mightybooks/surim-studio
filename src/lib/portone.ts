@@ -1,5 +1,11 @@
+import { isValidPaymentId } from "@/lib/paymentId";
+import { UUID_PATTERN } from "@/lib/securityServer";
+
 export async function verifyPortonePayment(paymentId: string) {
-  const res = await fetch(`https://api.portone.io/payments/${paymentId}`, {
+  if (!isValidPaymentId(paymentId)) {
+    return { ok: false, reason: "INVALID_PAYMENT_ID" };
+  }
+  const res = await fetch(`https://api.portone.io/payments/${encodeURIComponent(paymentId)}`, {
     headers: {
       Authorization: `PortOne ${process.env.PORTONE_API_SECRET}`,
     },
@@ -32,8 +38,11 @@ export async function verifyPortonePayment(paymentId: string) {
 
 // orderId(merchant_uid) 기준으로 결제 조회
 export async function fetchPaymentIdByOrderId(orderId: string) {
+  if (!UUID_PATTERN.test(orderId)) {
+    throw new Error("INVALID_ORDER_ID");
+  }
   const res = await fetch(
-    `https://api.portone.io/payments?merchant_uid=${orderId}`,
+    `https://api.portone.io/payments?merchant_uid=${encodeURIComponent(orderId)}`,
     {
       headers: {
         Authorization: `PortOne ${process.env.PORTONE_API_SECRET}`,
@@ -52,6 +61,9 @@ export async function fetchPaymentIdByOrderId(orderId: string) {
 
   if (!payment) {
     throw new Error("NO_PAYMENT_FOUND");
+  }
+  if (!isValidPaymentId(payment.id)) {
+    throw new Error("INVALID_PAYMENT_ID");
   }
 
   return {

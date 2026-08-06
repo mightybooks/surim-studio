@@ -2,16 +2,15 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { formatMoney } from "@/lib/formatMoney";
+import { formatMajorMoney, formatMoney, majorToMinor } from "@/lib/formatMoney";
 import { detectDevicePlatform, isInAppBrowser } from "@/lib/inAppBrowser";
-import { isGoodsProduct } from "@/lib/editionProducts";
+import { isGoodsProduct, type EditionProduct } from "@/lib/editionProducts";
 
 export default function PurchaseSummary({
   product,
-  ctaLabel = "주문하기",
   extraQuery = {},
 }: {
-  product: any;
+  product: EditionProduct;
   ctaLabel?: string;
   extraQuery?: Record<string, string>;
 }) {
@@ -19,9 +18,13 @@ export default function PurchaseSummary({
   const [ua, setUa] = useState("");
 
   useEffect(() => {
-    if (typeof navigator !== "undefined") {
-      setUa(navigator.userAgent || "");
-    }
+    let active = true;
+    queueMicrotask(() => {
+      if (active) setUa(navigator.userAgent || "");
+    });
+    return () => {
+      active = false;
+    };
   }, []);
 
   const platform = useMemo(() => detectDevicePlatform(ua), [ua]);
@@ -105,7 +108,9 @@ export default function PurchaseSummary({
         })}
       </div>
       {product.priceUsd !== undefined && product.priceUsd !== null && (
-        <div className="text-sm text-zinc-500">약 ${product.priceUsd} USD</div>
+        <div className="text-sm text-zinc-500">
+          약 {formatMajorMoney({ amount_major: product.priceUsd, currency: "USD" })} USD
+        </div>
       )}
 
       {isMobile && isInApp && (
@@ -154,8 +159,8 @@ export default function PurchaseSummary({
         <button
           onClick={() => {
             if (guardInAppForPay()) return;
-            const usd = Number(product.priceUsd ?? 1.0);
-            const usdMinor = Math.round(usd * 100);
+            const usdMinor = majorToMinor(Number(product.priceUsd), "USD");
+            if (!usdMinor || usdMinor <= 0) return;
             goOrder("/order/intl", {
               amount_minor: String(usdMinor),
               currency: "USD",

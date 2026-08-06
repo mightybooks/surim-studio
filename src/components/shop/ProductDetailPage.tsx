@@ -1,7 +1,9 @@
 // src/components/shop/ProductDetailPage.tsx
 
 import Link from "next/link";
-import { formatMoney } from "@/lib/formatMoney";
+import Image from "next/image";
+import { formatMajorMoney, formatMoney } from "@/lib/formatMoney";
+import type { EditionProduct } from "@/lib/editionProducts";
 import PurchaseSummary from "./PurchaseSummary";
 import ProductDescription from "./ProductDescription";
 import ProductInfoTable from "./ProductInfoTable";
@@ -18,7 +20,7 @@ export default function ProductDetailPage({
   extraQuery,
   children,
 }: {
-  product: any;
+  product: EditionProduct;
   ctaLabel?: string;
   extraQuery?: Record<string, string>;
   children?: React.ReactNode;
@@ -29,9 +31,11 @@ export default function ProductDetailPage({
       {/* 상단: 이미지 + 요약 */}
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
         <div className="reveal-up rounded-2xl border overflow-hidden bg-white" style={revealStyle(300)}>
-          <img
+          <Image
             src={product.thumbnail}
             alt={product.name}
+            width={1200}
+            height={800}
             className="w-full object-cover"
           />
         </div>
@@ -46,7 +50,9 @@ export default function ProductDetailPage({
               })}
             </p>
             {product.priceUsd !== undefined && product.priceUsd !== null && (
-              <p className="mt-1 text-sm text-zinc-500">≈ ${product.priceUsd} USD</p>
+              <p className="mt-1 text-sm text-zinc-500">
+                ≈ {formatMajorMoney({ amount_major: product.priceUsd, currency: "USD" })} USD
+              </p>
             )}
           </div>
 

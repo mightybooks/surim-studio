@@ -64,7 +64,7 @@ export default async function SurimjiIssue0ReadPage({ params }: SurimjiIssue0Rea
     notFound();
   }
 
-  const supabase = supabaseServerPublic();
+  const supabase = await supabaseServerPublic();
   const {
     data: { user },
   } = await supabase.auth.getUser();

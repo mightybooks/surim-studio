@@ -2,13 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { createClient } from "@supabase/supabase-js";
 import { createServerClient } from "@supabase/ssr";
+import { consumeRateLimit } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 function getOrigin(req: NextRequest) {
-  const url = new URL(req.url);
-  return `${url.protocol}//${url.host}`;
+  const configured = process.env.NEXT_PUBLIC_SITE_URL;
+  if (configured) return new URL(configured).origin;
+  return process.env.NODE_ENV === "production" ? "https://surimstudio.com" : req.nextUrl.origin;
 }
 
 // base64url helpers
@@ -21,6 +23,14 @@ function b64urlDecodeToString(input: string) {
 function hmacSign(payloadB64: string, secret: string) {
   return crypto.createHmac("sha256", secret).update(payloadB64).digest("base64").replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
 }
+
+function signaturesMatch(provided: string, expected: string) {
+  const a = Buffer.from(provided);
+  const b = Buffer.from(expected);
+  return a.length === b.length && crypto.timingSafeEqual(a, b);
+}
+
+type NaverState = { exp: number; nonce: string; returnTo?: string };
 
 function safeReturnTo(v: unknown) {
   if (typeof v !== "string") return "/my";
@@ -70,19 +80,21 @@ export async function GET(req: NextRequest) {
 
   const [payloadB64, sig] = parts;
   const expected = hmacSign(payloadB64, process.env.AUTH_BRIDGE_SECRET!);
-  if (sig !== expected) {
+  if (!signaturesMatch(sig, expected)) {
     return NextResponse.redirect(`${origin}/login?error=naver_state_invalid_signature`);
   }
 
-  let payload: any;
+  let payload: NaverState;
   try {
-    payload = JSON.parse(b64urlDecodeToString(payloadB64));
+    const parsed: unknown = JSON.parse(b64urlDecodeToString(payloadB64));
+    if (!parsed || typeof parsed !== "object") throw new Error();
+    payload = parsed as NaverState;
   } catch {
     return NextResponse.redirect(`${origin}/login?error=naver_state_payload_parse_failed`);
   }
 
   const now = Math.floor(Date.now() / 1000);
-  if (!payload?.exp || payload.exp < now) {
+  if (!Number.isSafeInteger(payload.exp) || payload.exp < now || typeof payload.nonce !== "string" || !/^[a-f0-9]{32}$/.test(payload.nonce)) {
     return NextResponse.redirect(`${origin}/login?error=naver_state_expired`);
   }
 
@@ -126,12 +138,16 @@ export async function GET(req: NextRequest) {
   const profileJson = await profileRes.json();
   const resp = profileJson?.response;
   const naverId = resp?.id as string | undefined;
-  if (!naverId) {
+  if (!naverId || !/^[A-Za-z0-9_-]{1,100}$/.test(naverId)) {
     return NextResponse.redirect(`${origin}/login?error=naver_no_id`);
   }
 
   const email = synthEmail(naverId);
   const password = hmacPassword(naverId);
+  const rate = await consumeRateLimit("naver-auth", naverId, 10, 60 * 60);
+  if (!rate.configured || !rate.allowed) {
+    return NextResponse.redirect(`${origin}/login?error=naver_rate_limited`);
+  }
 
   // 3) Supabase 로그인/유저생성
   const supabaseAnon = createClient(

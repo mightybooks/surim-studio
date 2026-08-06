@@ -39,7 +39,7 @@ function revealStyle(delay: number) {
 }
 
 export default async function SurimjiIssue0Page() {
-  const supabase = supabaseServerPublic();
+  const supabase = await supabaseServerPublic();
   const {
     data: { user },
   } = await supabase.auth.getUser();

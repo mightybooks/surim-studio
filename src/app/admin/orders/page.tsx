@@ -4,15 +4,33 @@ import { cookies, headers } from "next/headers";
 import ShipButton from "./ShipButton";
 import { STATUS_LABEL } from "@/lib/orderStatus";
 import type { OrderStatus } from "@/lib/orderStatus";
+import { formatMoney } from "@/lib/formatMoney";
+
+type AdminOrder = {
+  id: string;
+  recipient_name: string;
+  product_name: string;
+  amount: number | null;
+  amount_minor: number | null;
+  currency: string | null;
+  status: OrderStatus;
+  created_at: string;
+};
+
+type AdminOrdersResponse = {
+  orders: AdminOrder[];
+};
 
 async function getOrders() {
-  const host = headers().get("host");
+  const requestHeaders = await headers();
+  const cookieStore = await cookies();
+  const host = requestHeaders.get("host");
   const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
 
   const res = await fetch(`${protocol}://${host}/api/admin-orders`, {
     cache: "no-store",
     headers: {
-      Cookie: cookies().toString(),
+      Cookie: cookieStore.toString(),
     },
   });
 
@@ -20,13 +38,11 @@ async function getOrders() {
     throw new Error("주문 목록을 불러오지 못했습니다.");
   }
 
-  return res.json();
+  return (await res.json()) as AdminOrdersResponse;
 }
 
 export default async function AdminOrdersPage() {
   const { orders } = await getOrders();
-
-console.log("ADMIN ORDERS RAW =", orders);
 
   return (
     <div className="p-6 space-y-6">
@@ -45,12 +61,17 @@ console.log("ADMIN ORDERS RAW =", orders);
           </tr>
         </thead>
         <tbody>
-          {orders.map((o: any) => (
+          {orders.map((o) => (
             <tr key={o.id} className="border-b">
               <td className="p-2">{o.id.slice(0, 8)}</td>
               <td className="p-2">{o.recipient_name}</td>
               <td className="p-2">{o.product_name}</td>              
-              <td className="p-2">{o.amount.toLocaleString()}원</td>
+              <td className="p-2">
+                {formatMoney({
+                  amount_minor: o.amount_minor ?? o.amount,
+                  currency: o.currency,
+                })}
+              </td>
               <td className="p-2">{STATUS_LABEL[o.status as OrderStatus]}</td>
               <td className="p-2">
                 {new Date(o.created_at).toLocaleString()}

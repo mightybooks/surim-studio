@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabase/server";
 
 export async function GET() {
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -20,6 +20,7 @@ export async function GET() {
     supabase
       .from("contest_submissions")
       .select("id, contest_year, work_title, pen_name, status, submitted_at")
+      .eq("user_id", user.id)
       .order("submitted_at", { ascending: false }),
     supabase
       .from("orders")
@@ -32,9 +33,9 @@ export async function GET() {
 
   if (profileRes.error || submissionsRes.error || ordersRes.error) {
     console.error("my summary fetch failed", {
-      profile: profileRes.error,
-      submissions: submissionsRes.error,
-      orders: ordersRes.error,
+      profile: profileRes.error?.code,
+      submissions: submissionsRes.error?.code,
+      orders: ordersRes.error?.code,
     });
 
     return NextResponse.json({ error: "FETCH_FAILED" }, { status: 500 });

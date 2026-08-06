@@ -3,6 +3,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
+import { majorToMinor } from "@/lib/formatMoney";
 import OrderSummary from "./OrderSummary";
 import RecipientFields from "./RecipientFields";
 import AddressFields from "./AddressFields";
@@ -49,17 +50,6 @@ export default function OrderForm() {
   const sourceParam = searchParams.get("source");
   const isFunding = sourceParam === "funding_500";
 
-  // 🚨 상품 정보가 없으면 여기서 컴포넌트 종료
-  if (!productId || !productName || (!priceParam && !amountMinorParam)) {
-    return (
-      <main className="mx-auto max-w-2xl px-4 py-8">
-        <p className="text-red-600">
-          상품 정보가 올바르지 않습니다. 다시 시도해 주세요.
-        </p>
-      </main>
-    );
-  }
-
   const price = Number(priceParam ?? 0);
 
   const [form, setForm] = useState<OrderFormState>({
@@ -83,9 +73,8 @@ export default function OrderForm() {
       return Number.isFinite(v) ? v : 0;
     }
 
-    // 2) 구버전 링크 호환
-    if (currency === "USD") return Math.round(price * 100);
-    return Math.round(price);
+    // 2) 구버전 링크의 major-unit price를 통화별 minor unit으로 변환
+    return majorToMinor(price, currency) ?? 0;
   }, [amountMinorParam, currency, price]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,6 +98,16 @@ export default function OrderForm() {
     if (!isFunding) return "수량";
     return "펀딩 수량(권)";
   }, [isFunding]);
+
+  if (!productId || !productName || (!priceParam && !amountMinorParam)) {
+    return (
+      <main className="mx-auto max-w-2xl px-4 py-8">
+        <p className="text-red-600">
+          상품 정보가 올바르지 않습니다. 다시 시도해 주세요.
+        </p>
+      </main>
+    );
+  }
 
   /* ------------------------------
     주문 생성 API
@@ -199,8 +198,8 @@ export default function OrderForm() {
       // params.set("pg", pg);             // "paypal" | "inicis"
 
       router.push(`/order/confirm?${params.toString()}`);
-    } catch (err) {
-      alert(String((err as any)?.message ?? "주문 생성 중 오류가 발생했습니다."));
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : "주문 생성 중 오류가 발생했습니다.");
       console.error(err);
     }
   };

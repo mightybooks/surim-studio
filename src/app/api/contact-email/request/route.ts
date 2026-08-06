@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { supabaseServer } from "@/lib/supabase/server";
 import { sendVerifyEmail } from "@/lib/mail/send";
+import { consumeRateLimit } from "@/lib/rateLimit";
+import { hasValidOrigin, readJsonBody, serviceRoleClient } from "@/lib/securityServer";
 
 function b64url(input: string) {
   return Buffer.from(input).toString("base64url");
@@ -19,7 +21,10 @@ function isValidEmail(email: string) {
 }
 
 export async function POST(req: Request) {
-  const supabase = supabaseServer();
+  if (!hasValidOrigin(req)) {
+    return NextResponse.json({ error: "FORBIDDEN_ORIGIN" }, { status: 403 });
+  }
+  const supabase = await supabaseServer();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -28,10 +33,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   }
 
-  const body = await req.json().catch(() => ({}));
+  const rate = await consumeRateLimit("contact-email", user.id, 5, 60 * 60);
+  if (!rate.configured) return NextResponse.json({ error: "RATE_LIMIT_UNAVAILABLE" }, { status: 503 });
+  if (!rate.allowed) return NextResponse.json({ error: "TOO_MANY_REQUESTS" }, { status: 429 });
+
+  const parsed = await readJsonBody(req, 4096);
+  if (!parsed.ok) return NextResponse.json({ error: parsed.error }, { status: parsed.status });
+  const body = parsed.value;
   const email = String(body?.email ?? "").trim().toLowerCase();
 
-  if (!isValidEmail(email)) {
+  if (email.length > 254 || !isValidEmail(email)) {
     return NextResponse.json({ error: "INVALID_EMAIL" }, { status: 400 });
   }
 
@@ -48,7 +59,7 @@ export async function POST(req: Request) {
   const token = `${payloadB64}.${sig}`;
 
   // 1️⃣ profiles upsert
-  const { error: upsertErr } = await supabase
+  const { error: upsertErr } = await serviceRoleClient()
     .from("profiles")
     .upsert(
       {
@@ -64,7 +75,7 @@ export async function POST(req: Request) {
 
   if (upsertErr) {
     
-    console.error("contact email upsert failed", upsertErr);
+    console.error("contact email upsert failed", { code: upsertErr.code });
     return NextResponse.json(
       { error: "DB_UPSERT_FAILED" },
       { status: 500 }
@@ -80,8 +91,8 @@ export async function POST(req: Request) {
   // 3️⃣ send mail
   try {
     await sendVerifyEmail(email, verifyUrl);
-  } catch (err) {
-    console.error("email send failed", err);
+  } catch {
+    console.error("contact verification email failed");
     return NextResponse.json(
       { error: "EMAIL_SEND_FAILED" },
       { status: 500 }

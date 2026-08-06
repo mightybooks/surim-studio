@@ -5,8 +5,9 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 function getOrigin(req: NextRequest) {
-  const url = new URL(req.url);
-  return `${url.protocol}//${url.host}`;
+  const configured = process.env.NEXT_PUBLIC_SITE_URL;
+  if (configured) return new URL(configured).origin;
+  return process.env.NODE_ENV === "production" ? "https://surimstudio.com" : req.nextUrl.origin;
 }
 
 // base64url helpers

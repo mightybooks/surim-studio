@@ -71,7 +71,6 @@ export default function LibraryBookPage({
 }: {
   params: { slug: string };
 }): React.ReactElement {
-  console.log("LIB DEBUG params =", params);
 
   const book = findBookBySlug(params?.slug);
   if (!book) notFound();

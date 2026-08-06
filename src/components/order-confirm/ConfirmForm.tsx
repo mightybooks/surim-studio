@@ -3,15 +3,10 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { isValidPaymentId } from "@/lib/paymentId";
 import ConfirmSummary from "./ConfirmSummary";
 import ConfirmAddress from "./ConfirmAddress";
 import ConfirmPaymentButtons from "./ConfirmPaymentButtons";
-
-declare global {
-  interface Window {
-    PortOne: any;
-  }
-}
 
 type Order = {
   id: string;
@@ -63,25 +58,21 @@ export default function ConfirmForm() {
   // ✅ 모바일 리디렉션으로 돌아온 경우: 자동으로 상태 폴링 시작
   useEffect(() => {
     if (!orderId) return;
-    if (redirectedPaymentId && redirectedPaymentId === orderId) {
-      // 실패 코드가 같이 오면 로딩 켜지지 않게 처리
+    let active = true;
+    queueMicrotask(() => {
+      if (!active || !redirectedPaymentId || redirectedPaymentId !== orderId) return;
       if (redirectedCode) {
         console.warn("REDIRECT_PAYMENT_FAILED", { redirectedCode, redirectedMessage });
         setLoading(false);
-        return;
+      } else {
+        setShowDelayNotice(false);
+        setLoading(true);
       }
-      setLoading(true);
-    }
+    });
+    return () => {
+      active = false;
+    };
   }, [orderId, redirectedPaymentId, redirectedCode, redirectedMessage]);
-  
-  // ❌ orderId 없으면 잘못된 접근
-  if (!orderId) {
-    return (
-      <main className="mx-auto max-w-2xl px-4 py-8">
-        <p>잘못된 접근입니다.</p>
-      </main>
-    );
-  }
 
   // ✅ order 기반으로 PayPal 여부 판단 (query 의존 제거)
   const isPaypal = useMemo(() => {
@@ -118,7 +109,7 @@ export default function ConfirmForm() {
       }
     };
 
-    fetchOrder();
+    void fetchOrder();
 
     return () => {
       alive = false;
@@ -127,13 +118,15 @@ export default function ConfirmForm() {
 
   useEffect(() => {
     if (errorType === "payment_failed" && orderId) {
-      fetch("/api/orders/update", {
+      void fetch("/api/orders/update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           orderId,
           status: "failed",
         }),
+      }).catch((error: unknown) => {
+        console.error("ORDER_FAILURE_UPDATE_ERROR", error);
       });
     }
   }, [errorType, orderId]);
@@ -178,10 +171,7 @@ export default function ConfirmForm() {
   }, [orderId, loading, router]);
 
   useEffect(() => {
-    if (!loading) {
-      setShowDelayNotice(false);
-      return;
-    }
+    if (!loading) return;
 
     const t = setTimeout(() => {
       setShowDelayNotice(true);
@@ -189,6 +179,14 @@ export default function ConfirmForm() {
 
     return () => clearTimeout(t);
   }, [loading]);
+
+  if (!orderId) {
+    return (
+      <main className="mx-auto max-w-2xl px-4 py-8">
+        <p>잘못된 접근입니다.</p>
+      </main>
+    );
+  }
 
   const bankAccount = "우리은행 1005-004-218834 이경민(마이티북스)";
 
@@ -223,14 +221,6 @@ export default function ConfirmForm() {
   const requestPayment = async (method: "CARD" | "KAKAOPAY" | "PAYPAL") => {
     if (!order || loading) return;
 
-      console.log("PAY_REQUEST_BASE", {
-      orderId: order.id,
-      method,
-      currency: order.currency,
-      pg: order.pg,      
-      amount_minor: order.amount_minor,
-      paypalChannelKeyOk: !!process.env.NEXT_PUBLIC_PAYPAL_CHANNEL_KEY,
-    });
 
     // ✅ PayPal 채널키는 env에서만 사용 (A안)
     const paypalChannelKey = process.env.NEXT_PUBLIC_PAYPAL_CHANNEL_KEY;
@@ -239,22 +229,19 @@ export default function ConfirmForm() {
       return;
     }
 
-    setLoading(true);
-
     const paymentId = order.id;
+    if (!isValidPaymentId(paymentId)) {
+      alert("결제 ID 형식이 올바르지 않습니다.");
+      return;
+    }
+    setShowDelayNotice(false);
+    setLoading(true);
 
     try {
       // ✅ PayPal (V2 / SPB) - amount_minor(센트) 사용
       if (method === "PAYPAL") {
-            console.log("PAYPAL_PAY_REQUEST", {
-            orderId: order.id,
-            uiType: "PAYPAL_SPB",
-            currency: "USD",
-            totalAmount: order.amount_minor,
-            channelKey: paypalChannelKey,
-          });
 
-        window.PortOne.requestPayment({
+        await window.PortOne.requestPayment({
           storeId: process.env.NEXT_PUBLIC_PORTONE_STORE_ID!,
           channelKey: paypalChannelKey!,
           paymentId,
@@ -283,16 +270,8 @@ export default function ConfirmForm() {
 
       const payMethodForPortOne = method === "KAKAOPAY" ? "EASY_PAY" : "CARD";
 
-      console.log("KR_PAY_REQUEST", {
-      orderId: order.id,
-      method,
-      payMethodForPortOne,
-      currency: "KRW",
-      totalAmount: order.amount_minor,
-      channelKeyOk: !!channelKey,
-    });
 
-      window.PortOne.requestPayment({
+      await window.PortOne.requestPayment({
         storeId: process.env.NEXT_PUBLIC_PORTONE_STORE_ID!,
         channelKey,
         paymentId,

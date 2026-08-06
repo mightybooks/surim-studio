@@ -1,12 +1,14 @@
 ﻿import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { supabaseServer } from "@/lib/supabase/server";
+import { getExtension, MAX_CONTEST_FILE_SIZE, safeOriginalFileName, validateContestFile, validateContestSignature } from "@/lib/fileValidation";
+import { consumeRateLimit } from "@/lib/rateLimit";
+import { serviceRoleClient } from "@/lib/securityServer";
 
 const BUCKET_NAME = "contest-submissions";
-const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const SIGNED_URL_EXPIRES_IN = 60 * 60 * 24 * 7;
 const ALLOWED_CATEGORIES = ["novel", "poetry", "essay"] as const;
-const ALLOWED_EXTENSIONS = ["hwp", "hwpx", "doc", "docx", "pdf", "txt"];
+const ALLOWED_EXTENSIONS = ["hwp", "hwpx", "doc", "docx", "pdf", "txt"] as const;
 const BLOCKED_ARCHIVE_EXTENSIONS = ["zip", "7z", "rar"];
 const CATEGORY_LABELS: Record<(typeof ALLOWED_CATEGORIES)[number], string> = {
   novel: "단편소설",
@@ -16,12 +18,8 @@ const CATEGORY_LABELS: Record<(typeof ALLOWED_CATEGORIES)[number], string> = {
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-function getExtension(fileName: string) {
-  return fileName.split(".").pop()?.toLowerCase() ?? "";
-}
-
 function getText(formData: FormData, key: string) {
-  return formData.get(key)?.toString().trim() ?? "";
+  return (formData.get(key)?.toString() ?? "").replace(/[\u0000-\u001f\u007f]/g, " ").trim();
 }
 
 function isAllowedCategory(value: string): value is (typeof ALLOWED_CATEGORIES)[number] {
@@ -37,7 +35,7 @@ function jsonError(error: string, status = 400) {
 }
 
 export async function POST(req: Request) {
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
   const {
     data: { user },
     error: authError,
@@ -53,6 +51,15 @@ export async function POST(req: Request) {
 
   if (!user.email_confirmed_at) {
     return jsonError("이메일 인증을 완료한 뒤 접수할 수 있습니다.", 403);
+  }
+
+  const rate = await consumeRateLimit("contest-2027", user.id, 3, 15 * 60);
+  if (!rate.configured) return jsonError("요청 제한 서비스를 확인할 수 없습니다. 잠시 후 다시 시도해 주세요.", 503);
+  if (!rate.allowed) return jsonError("잠시 후 다시 접수해 주세요.", 429);
+
+  const contentLength = Number(req.headers.get("content-length") ?? 0);
+  if (contentLength > MAX_CONTEST_FILE_SIZE + 256 * 1024) {
+    return jsonError("요청 용량이 너무 큽니다.", 413);
   }
 
   const formData = await req.formData();
@@ -76,32 +83,33 @@ export async function POST(req: Request) {
   if (referenceLink.length > 300) {
     return jsonError("참고 링크는 300자 이하로 입력해 주세요.");
   }
+  if (referenceLink) {
+    try {
+      const url = new URL(referenceLink);
+      if (!["http:", "https:"].includes(url.protocol)) throw new Error();
+    } catch {
+      return jsonError("참고 링크 형식을 확인해 주세요.");
+    }
+  }
 
   if (!workTitle || workTitle.length > 100) {
     return jsonError("대표 작품 제목은 100자 이하로 입력해 주세요.");
   }
 
-  if (!(file instanceof File) || file.size === 0) {
+  if (!(file instanceof File)) {
     return jsonError("원고 파일을 선택해 주세요.");
   }
 
   const extension = getExtension(file.name);
+  const safeDisplayFileName = safeOriginalFileName(file.name);
 
   if (BLOCKED_ARCHIVE_EXTENSIONS.includes(extension)) {
     return jsonError("zip 등의 압축파일은 접수하지 않습니다.");
   }
 
-  if (!ALLOWED_EXTENSIONS.includes(extension)) {
-    return jsonError(
-      "허용하지 않는 파일 형식입니다. hwp, hwpx, doc, docx, pdf, txt 파일만 접수할 수 있습니다.",
-    );
-  }
-
-  if (file.size > MAX_FILE_SIZE) {
-    return jsonError(
-      "파일 용량이 5MB를 초과했습니다. 이미지를 제거하고 원고 본문 중심으로 정리한 뒤 다시 제출해 주세요.",
-    );
-  }
+  const validationError = validateContestFile(file, ALLOWED_EXTENSIONS);
+  if (validationError === "FILE_TOO_LARGE") return jsonError("파일 용량이 5MB를 초과했습니다.", 413);
+  if (validationError) return jsonError("파일 확장자와 MIME 형식을 확인해 주세요.");
 
   if (!consentOriginal || !consentNoInfringement || !consentPublication) {
     return jsonError("필수 확인 사항에 모두 동의해야 접수할 수 있습니다.");
@@ -115,6 +123,9 @@ export async function POST(req: Request) {
   const mailFrom = process.env.MAIL_FROM || "Sulim Studio <no-reply@surimstudio.com>";
 
   const fileBuffer = Buffer.from(await file.arrayBuffer());
+  if (!validateContestSignature(extension, fileBuffer)) {
+    return jsonError("파일 내용과 확장자가 일치하지 않습니다.");
+  }
   const { error: uploadError } = await supabase.storage
     .from(BUCKET_NAME)
     .upload(storagePath, fileBuffer, {
@@ -131,7 +142,7 @@ export async function POST(req: Request) {
     return jsonError("원고 파일을 업로드하지 못했습니다. 잠시 후 다시 시도해 주세요.", 500);
   }
 
-  const { data: submission, error: insertError } = await supabase
+  const { data: submission, error: insertError } = await serviceRoleClient()
     .from("contest_submissions")
     .insert({
       id: submissionId,
@@ -144,7 +155,7 @@ export async function POST(req: Request) {
       reference_link: referenceLink || null,
       file_bucket: BUCKET_NAME,
       file_path: storagePath,
-      original_file_name: file.name,
+      original_file_name: safeDisplayFileName,
       file_size_bytes: file.size,
       file_mime_type: file.type || null,
       consent_original: consentOriginal,
@@ -169,7 +180,7 @@ export async function POST(req: Request) {
   const { data: signedUrlData, error: signedUrlError } = await supabase.storage
     .from(BUCKET_NAME)
     .createSignedUrl(storagePath, SIGNED_URL_EXPIRES_IN, {
-      download: file.name,
+      download: safeDisplayFileName,
     });
 
   const signedUrl = signedUrlError ? null : signedUrlData?.signedUrl ?? null;
@@ -196,7 +207,7 @@ export async function POST(req: Request) {
 contest_year: 2027
 
 [원고 파일]
-원본 파일명: ${file.name}
+원본 파일명: ${safeDisplayFileName}
 파일 크기: ${formatFileSize(file.size)} (${file.size} bytes)
 파일 MIME 타입: ${file.type || "-"}
 Storage bucket: ${BUCKET_NAME}

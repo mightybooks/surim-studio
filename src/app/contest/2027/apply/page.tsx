@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Contest2027ApplyPage() {
-  const supabase = supabaseServerPublic();
+  const supabase = await supabaseServerPublic();
   const {
     data: { user },
   } = await supabase.auth.getUser();

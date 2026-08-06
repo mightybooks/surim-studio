@@ -5,7 +5,7 @@ import Link from "next/link";
 import { formatMoney } from "@/lib/formatMoney";
 
 export default async function MyFundingsPage() {
-  const supabase = supabaseServerPublic();
+  const supabase = await supabaseServerPublic();
   const {
     data: { user },
   } = await supabase.auth.getUser();

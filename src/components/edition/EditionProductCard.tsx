@@ -1,9 +1,11 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   type EditionProduct,
   getDisplayPrice,
   getProductDetailHref,
 } from "@/lib/editionProducts";
+import { formatMajorMoney } from "@/lib/formatMoney";
 
 export default function EditionProductCard({
   product,
@@ -13,7 +15,13 @@ export default function EditionProductCard({
   return (
     <article className="rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] p-4 shadow-sm">
       <div className="overflow-hidden rounded-xl border border-[var(--border)] bg-white">
-        <img src={product.thumbnail} alt={product.name} className="w-full object-cover" />
+        <Image
+          src={product.thumbnail}
+          alt={product.name}
+          width={1200}
+          height={800}
+          className="h-auto w-full object-cover"
+        />
       </div>
 
       <div className="mt-4 space-y-2">
@@ -23,7 +31,9 @@ export default function EditionProductCard({
         <div className="space-y-1">
           <p className="text-base font-semibold text-zinc-900">{getDisplayPrice(product)}</p>
           {product.priceUsd !== undefined && product.priceUsd !== null && (
-            <p className="text-sm text-zinc-500">${product.priceUsd} USD</p>
+            <p className="text-sm text-zinc-500">
+              {formatMajorMoney({ amount_major: product.priceUsd, currency: "USD" })} USD
+            </p>
           )}
         </div>
       </div>

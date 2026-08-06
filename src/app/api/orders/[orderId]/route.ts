@@ -5,9 +5,10 @@ import { supabaseServer } from "@/lib/supabase/server";
 
 export async function GET(
   _req: Request,
-  { params }: { params: { orderId: string } }
+  { params }: { params: Promise<{ orderId: string }> }
 ) {
-  const supabase = supabaseServer();
+  const { orderId } = await params;
+  const supabase = await supabaseServer();
 
   // ✅ 로그인 강제
   const {
@@ -48,7 +49,7 @@ export async function GET(
       buyer_email,
       user_id
     `)
-    .eq("id", params.orderId)
+    .eq("id", orderId)
     .eq("user_id", user.id)
     .single();
 

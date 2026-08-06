@@ -1,9 +1,40 @@
 /** @type {import('next').NextConfig} */
+const isDevelopment = process.env.NODE_ENV === "development";
+const contentSecurityPolicy = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  "frame-ancestors 'none'",
+  "form-action 'self'",
+  "script-src 'self' 'unsafe-inline'" + (isDevelopment ? " 'unsafe-eval'" : "") + " https://cdn.portone.io https://developers.kakao.com https://cloud.umami.is",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https:",
+  "font-src 'self' data:",
+  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.portone.io https://*.paypal.com https://cloud.umami.is",
+  "frame-src 'self' https://*.portone.io https://*.inicis.com https://*.paypal.com https://www.youtube.com https://www.youtube-nocookie.com https://www.google.com",
+  "media-src 'self' blob:",
+  "worker-src 'self' blob:",
+  "upgrade-insecure-requests",
+].join("; ");
+
+const securityHeaders = [
+  { key: "Content-Security-Policy", value: contentSecurityPolicy },
+  { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(self)" },
+  { key: "X-Frame-Options", value: "DENY" },
+  { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
+];
+
 const nextConfig = {
   reactStrictMode: true,
   images: {
     // 정적 파일 포함, 이미지 최적화 비활성화 (엑박 방지용)
     unoptimized: true,
+  },
+  async headers() {
+    return [{ source: "/(.*)", headers: securityHeaders }];
   },
   async redirects() {
     return [

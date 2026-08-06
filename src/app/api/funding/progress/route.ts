@@ -1,6 +1,6 @@
 // src/app/api/funding/progress/route.ts
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { serviceRoleClient } from "@/lib/securityServer";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -15,9 +15,6 @@ export const revalidate = 0;
  * - 결제 완료 상태값(status)은 기본 "paid"로 가정 (프로젝트에 맞게 조정 가능)
  */
 
-const supabaseUrl = process.env.SUPABASE_URL!;
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-
 // 결제 완료로 집계할 상태값(프로젝트에 맞게 하나로 통일 권장)
 const PAID_STATUS = process.env.FUNDING_PAID_STATUS ?? "paid";
 
@@ -26,17 +23,10 @@ const TARGET_BOOKS = 150;
 
 export async function GET(req: Request) {
   try {
-    if (!supabaseUrl || !serviceRoleKey) {
-      return NextResponse.json(
-        { error: "Server env is not configured (SUPABASE keys missing)." },
-        { status: 500 }
-      );
-    }
-
     const { searchParams } = new URL(req.url);
     const source = searchParams.get("source");
 
-    if (!source || source.trim().length === 0) {
+    if (source !== "funding_500") {
       return NextResponse.json(
         { error: "Missing required query param: source" },
         { status: 400 }
@@ -44,14 +34,7 @@ export async function GET(req: Request) {
     }
 
     // Service Role로 조회 (RLS 영향 없이 집계)
-    const supabase = createClient(supabaseUrl, serviceRoleKey, {
-      auth: { persistSession: false },
-    });
-
-    // ✅ 임시 디버그: 어떤 Supabase를 보고 있는지 식별
-    const supaHost = (() => {
-      try { return new URL(supabaseUrl).host; } catch { return "invalid-url"; }
-    })();
+    const supabase = serviceRoleClient();
 
     // ✅ RPC: DB에서 SUM(quantity) 수행
     // public.funding_current_books(p_source, p_paid_status) -> bigint
@@ -61,7 +44,7 @@ export async function GET(req: Request) {
     });
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json({ error: "FUNDING_PROGRESS_FAILED" }, { status: 500 });
     }
 
     // rpc returns bigint -> JS에서는 number로 변환
@@ -80,9 +63,9 @@ export async function GET(req: Request) {
         },
       }
     );
-  } catch (e: any) {
+  } catch {
     return NextResponse.json(
-      { error: e?.message ?? "Unknown server error" },
+      { error: "FUNDING_PROGRESS_FAILED" },
       { status: 500 }
     );
   }

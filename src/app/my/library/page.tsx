@@ -11,7 +11,7 @@ type LibraryOrder = {
 };
 
 export default async function MyLibraryPage() {
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
   const {
     data: { user },
   } = await supabase.auth.getUser();

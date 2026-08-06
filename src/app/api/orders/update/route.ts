@@ -1,13 +1,36 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { getAdminContext, hasValidOrigin, readJsonBody, UUID_PATTERN } from "@/lib/securityServer";
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+const ALLOWED_STATUSES = ["failed", "expired", "shipped"] as const;
+const TRACKING_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._ -]{2,79}$/;
 
 export async function POST(req: Request) {
-  const { orderId, status, trackingNumber } = await req.json();
+  if (!hasValidOrigin(req)) {
+    return NextResponse.json({ ok: false, error: "FORBIDDEN_ORIGIN" }, { status: 403 });
+  }
+
+  const admin = await getAdminContext();
+  if (!admin.ok) {
+    return NextResponse.json(
+      { ok: false, error: admin.status === 401 ? "UNAUTHORIZED" : "FORBIDDEN" },
+      { status: admin.status },
+    );
+  }
+
+  const parsed = await readJsonBody(req, 4096);
+  if (!parsed.ok) {
+    return NextResponse.json({ ok: false, error: parsed.error }, { status: parsed.status });
+  }
+  const orderId = String(parsed.value.orderId ?? "").trim();
+  const status = String(parsed.value.status ?? "").trim();
+  const trackingNumber = String(parsed.value.trackingNumber ?? "").trim();
+
+  if (!UUID_PATTERN.test(orderId) || !ALLOWED_STATUSES.includes(status as typeof ALLOWED_STATUSES[number])) {
+    return NextResponse.json({ ok: false, error: "INVALID_INPUT" }, { status: 400 });
+  }
+  if (status === "shipped" && !TRACKING_PATTERN.test(trackingNumber)) {
+    return NextResponse.json({ ok: false, error: "INVALID_TRACKING_NUMBER" }, { status: 400 });
+  }
 
   if (status === "paid") {
     return NextResponse.json(
@@ -16,18 +39,37 @@ export async function POST(req: Request) {
     );
   }
 
-  const { error } = await supabase
+  const update: Record<string, string> = { status };
+  if (status === "shipped") {
+    update.tracking_number = trackingNumber;
+    update.shipped_at = new Date().toISOString();
+  }
+
+  const { data: existingOrder, error: lookupError } = await admin.adminClient
     .from("orders")
-    .update({
-      status,
-      tracking_number: trackingNumber ?? null,
-      shipped_at: status === "shipped" ? new Date() : null,
-    })
-    .eq("id", orderId);
+    .select("status")
+    .eq("id", orderId)
+    .maybeSingle();
+  if (lookupError) return NextResponse.json({ ok: false, error: "LOOKUP_FAILED" }, { status: 500 });
+  if (!existingOrder) return NextResponse.json({ ok: false, error: "NOT_FOUND" }, { status: 404 });
+  const expectedCurrentStatus = status === "shipped" ? "paid" : "pending";
+  if (existingOrder.status !== expectedCurrentStatus) {
+    return NextResponse.json({ ok: false, error: "INVALID_STATUS_TRANSITION" }, { status: 409 });
+  }
+
+  const { data, error } = await admin.adminClient
+    .from("orders")
+    .update(update)
+    .eq("id", orderId)
+    .eq("status", expectedCurrentStatus)
+    .select("id")
+    .maybeSingle();
 
   if (error) {
-    return NextResponse.json({ ok: false, error }, { status: 500 });
+    return NextResponse.json({ ok: false, error: "UPDATE_FAILED" }, { status: 500 });
   }
+
+  if (!data) return NextResponse.json({ ok: false, error: "NOT_FOUND" }, { status: 404 });
 
   return NextResponse.json({ ok: true });
 }

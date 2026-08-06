@@ -1,19 +1,21 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { supabaseServer } from "@/lib/supabase/server";
-
-console.log("CONTACT EMAIL VERIFY ROUTE HIT");
+import { serviceRoleClient } from "@/lib/securityServer";
 
 function verifySig(payloadB64: string, sig: string, secret: string) {
   const expected = crypto.createHmac("sha256", secret).update(payloadB64).digest("base64url");
-  return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(sig));
+  const expectedBuffer = Buffer.from(expected);
+  const providedBuffer = Buffer.from(sig);
+  return expectedBuffer.length === providedBuffer.length &&
+    crypto.timingSafeEqual(expectedBuffer, providedBuffer);
 }
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const token = url.searchParams.get("token") ?? "";
 
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.redirect(new URL("/my?email_verify=unauthorized", url.origin));
 
@@ -52,7 +54,7 @@ export async function GET(req: Request) {
       return NextResponse.redirect(new URL("/my?email_verify=mismatch", url.origin));
     }
 
-    const { error } = await supabase
+    const { error } = await serviceRoleClient()
       .from("profiles")
       .update({
         contact_email: pending,

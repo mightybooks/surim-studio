@@ -3,7 +3,7 @@ import ContestSubmitForm from "@/components/contest/ContestSubmitForm";
 import { supabaseServerPublic } from "@/lib/supabase/server-public";
 
 export default async function ContestSubmitPage() {
-  const supabase = supabaseServerPublic();
+  const supabase = await supabaseServerPublic();
   const {
     data: { user },
   } = await supabase.auth.getUser();
