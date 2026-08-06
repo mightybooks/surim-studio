@@ -279,6 +279,16 @@ export default function ConfirmForm() {
         totalAmount: order.amount_minor,
         currency: "KRW",
         payMethod: payMethodForPortOne,
+        ...(order.amount_minor < 1000
+          ? {
+              bypass: {
+                inicis_v2: {
+                  acceptmethod: ["below1000"],
+                  P_RESERVED: ["below1000=Y"],
+                },
+              },
+            }
+          : {}),
         // ✅ 모바일 환경 필수: 결제 후 돌아올 URL
         //    (대부분 모바일이 리디렉션 방식이므로 redirectUrl이 필요) :contentReference[oaicite:2]{index=2}
         redirectUrl: `${window.location.origin}/order/confirm?orderId=${orderId}&payment=${payment}`,
