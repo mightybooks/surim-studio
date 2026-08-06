@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { isSafeInternalRedirect } from "@/lib/inAppBrowser";
 
-export default function VerifyEmailPage({
+export default async function VerifyEmailPage({
   searchParams,
 }: {
-  searchParams?: { next?: string; returnTo?: string };
+  searchParams: Promise<{ next?: string; returnTo?: string }>;
 }) {
-  const requestedPath = searchParams?.returnTo ?? searchParams?.next;
+  const query = await searchParams;
+  const requestedPath = query.returnTo ?? query.next;
   const returnTo = isSafeInternalRedirect(requestedPath) ? requestedPath : "/my";
 
   return (

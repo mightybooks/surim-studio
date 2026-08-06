@@ -10,12 +10,13 @@ function revealStyle(delay: number) {
   return { animationDelay: `${delay}ms` };
 }
 
-export default function NoticeDetailPage({
+export default async function NoticeDetailPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const item = getNoticeBySlug(params.slug);
+  const { slug } = await params;
+  const item = getNoticeBySlug(slug);
   if (!item) notFound();
 
   return (

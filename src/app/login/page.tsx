@@ -1,13 +1,14 @@
 import LoginForm from "@/components/auth/LoginForm";
 import { isSafeInternalRedirect } from "@/lib/inAppBrowser";
 
-export default function LoginPage({
+export default async function LoginPage({
   searchParams,
 }: {
-  searchParams?: { from?: string; next?: string; returnTo?: string };
+  searchParams: Promise<{ from?: string; next?: string; returnTo?: string }>;
 }) {
-  const fromVerify = searchParams?.from === "verify";
-  const requestedPath = searchParams?.returnTo ?? searchParams?.next;
+  const query = await searchParams;
+  const fromVerify = query.from === "verify";
+  const requestedPath = query.returnTo ?? query.next;
   const nextPath = isSafeInternalRedirect(requestedPath) ? requestedPath : "/my";
 
   return (

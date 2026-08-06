@@ -1,13 +1,14 @@
 import InAppGuideClient from "@/components/gate/InAppGuideClient";
 
-export default function InAppGuidePage({
+export default async function InAppGuidePage({
   searchParams,
 }: {
-  searchParams: { redirect?: string | string[] };
+  searchParams: Promise<{ redirect?: string | string[] }>;
 }) {
-  const redirectParam = Array.isArray(searchParams.redirect)
-    ? searchParams.redirect[0]
-    : searchParams.redirect;
+  const query = await searchParams;
+  const redirectParam = Array.isArray(query.redirect)
+    ? query.redirect[0]
+    : query.redirect;
 
   return <InAppGuideClient redirectParam={redirectParam} />;
 }

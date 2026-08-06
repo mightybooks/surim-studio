@@ -12,12 +12,13 @@ export function generateStaticParams() {
   }));
 }
 
-export default function EditionGoodsDetailPage({
+export default async function EditionGoodsDetailPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const product = getEditionProductBySlug("goods", params.slug);
+  const { slug } = await params;
+  const product = getEditionProductBySlug("goods", slug);
 
   if (!product) {
     notFound();
