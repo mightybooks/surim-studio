@@ -10,8 +10,8 @@ const adminSupabase = createClient(
 );
 
 type Props = {
-  params: { slug: string };
-  searchParams?: { saved?: string };
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ saved?: string }>;
 };
 
 function normalizeSaved(value: string | undefined) {
@@ -19,10 +19,11 @@ function normalizeSaved(value: string | undefined) {
 }
 
 export default async function AdminNewsEditPage({ params, searchParams }: Props) {
+  const [{ slug }, query] = await Promise.all([params, searchParams]);
   const { data, error } = await adminSupabase
     .from("news_posts")
     .select("slug, title, summary, content_markdown, status, published_at")
-    .eq("slug", params.slug)
+    .eq("slug", slug)
     .maybeSingle();
 
   if (error || !data) {
@@ -31,8 +32,15 @@ export default async function AdminNewsEditPage({ params, searchParams }: Props)
 
   return (
     <NewsEditorClient
-      initialPost={data as any}
-      saved={normalizeSaved(searchParams?.saved)}
+      initialPost={data as {
+        slug: string;
+        title: string;
+        summary: string | null;
+        content_markdown: string;
+        status: "draft" | "published";
+        published_at: string | null;
+      }}
+      saved={normalizeSaved(query.saved)}
     />
   );
 }

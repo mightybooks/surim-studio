@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 type NewsPost = {
@@ -57,7 +57,8 @@ async function getDbPost(slug: string) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { post, failed } = await getDbPost(params.slug);
+  const { slug } = await params;
+  const { post } = await getDbPost(slug);
   if (post) {
     if (!isVisiblePublishedNews(post)) return {};
     return {
@@ -67,7 +68,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
 
-  const legacy = NEWS.find((item) => item.slug === params.slug);
+  const legacy = NEWS.find((item) => item.slug === slug);
   if (!legacy) return {};
 
   return {
@@ -77,7 +78,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function NewsDetailPage({ params }: Props) {
-  const { post: dbPost, failed } = await getDbPost(params.slug);
+  const { slug } = await params;
+  const { post: dbPost } = await getDbPost(slug);
 
   if (dbPost) {
     if (!isVisiblePublishedNews(dbPost)) notFound();
@@ -94,7 +96,7 @@ export default async function NewsDetailPage({ params }: Props) {
       published_at: post.published_at ?? null,
     }));
 
-    const { prev, next } = getPrevNextPost(safePosts, `/news/${params.slug}`);
+    const { prev, next } = getPrevNextPost(safePosts, `/news/${slug}`);
 
     return (
       <main className="mx-auto max-w-3xl px-6 py-12 space-y-8">
@@ -155,7 +157,7 @@ export default async function NewsDetailPage({ params }: Props) {
   }
 
 
-  const item = NEWS.find((news) => news.slug === params.slug);
+  const item = NEWS.find((news) => news.slug === slug);
   if (!item) notFound();
 
   if (item.href) {

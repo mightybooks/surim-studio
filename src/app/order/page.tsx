@@ -9,14 +9,15 @@ import { isGoodsProductId } from "@/lib/editionProducts";
 export default async function OrderPage({
   searchParams,
 }: {
-  searchParams?: Record<string, string | string[] | undefined>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  const query = await searchParams;
   const firstParam = (value: string | string[] | undefined) =>
     Array.isArray(value) ? value[0] : value;
 
-  const productId = firstParam(searchParams?.productId) ?? "";
-  const currency = String(firstParam(searchParams?.currency) ?? "KRW").toUpperCase();
-  const pg = String(firstParam(searchParams?.pg) ?? "").toLowerCase();
+  const productId = firstParam(query.productId) ?? "";
+  const currency = String(firstParam(query.currency) ?? "KRW").toUpperCase();
+  const pg = String(firstParam(query.pg) ?? "").toLowerCase();
   const isGoodsIntlBlocked =
     isGoodsProductId(productId) && (currency === "USD" || pg === "paypal");
 
@@ -26,7 +27,7 @@ export default async function OrderPage({
   } = await supabase.auth.getUser();
 
   const currentParams = new URLSearchParams();
-  Object.entries(searchParams ?? {}).forEach(([key, value]) => {
+  Object.entries(query).forEach(([key, value]) => {
     if (Array.isArray(value)) {
       value.forEach((item) => currentParams.append(key, item));
       return;

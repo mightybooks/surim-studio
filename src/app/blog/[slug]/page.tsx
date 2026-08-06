@@ -14,7 +14,7 @@ import { PostNavigation } from "@/components/PostNavigation";
 import PostEngagement from "@/components/engagement/PostEngagement";
 
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 // 공통: hero_image_url 정리 로직
@@ -51,11 +51,12 @@ function normalizeHeroUrl(raw: string | null | undefined): string | null {
 // 메타데이터 (OG 이미지 포함)
 // ─────────────────────────────────────────────
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
   const supabase = await supabaseServerPublic();
   const { data } = await supabase
     .from("blog_posts")
     .select("title, subtitle, hero_image_url, status")
-    .eq("slug", params.slug)
+    .eq("slug", slug)
     .maybeSingle();
 
   if (!data || data.status !== "published") {
@@ -90,13 +91,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 // 본문 페이지
 // ─────────────────────────────────────────────
 export default async function BlogPostPage({ params }: Props) {
+  const { slug } = await params;
   const supabase = await supabaseServerPublic();
   
   // 1) 현재 글 정보 가져오기
   const { data: post, error } = await supabase
     .from("blog_posts")
     .select("*")
-    .eq("slug", params.slug)
+    .eq("slug", slug)
     .maybeSingle();
 
   if (error || !post || post.status !== "published") {
@@ -117,7 +119,7 @@ export default async function BlogPostPage({ params }: Props) {
     }));
 
     // 올바른 구조분해
-    const { prev, next } = getPrevNextPost(safePosts, params.slug);
+    const { prev, next } = getPrevNextPost(safePosts, slug);
 
   const publishedDate = post.published_at
     ? new Date(post.published_at).toLocaleDateString("ko-KR")

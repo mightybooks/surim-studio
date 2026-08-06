@@ -33,7 +33,7 @@ const FILTER_TABS: { value: "all" | BlogSection; label: string }[] = [
 ];
 
 type PageProps = {
-  searchParams?: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 function revealStyle(delay: number) {
@@ -41,10 +41,11 @@ function revealStyle(delay: number) {
 }
 
 export default async function BlogPage({ searchParams }: PageProps) {
+  const queryParams = await searchParams;
   const supabase = await supabaseServerPublic();
 
   // ?section=log | insight | note
-  const rawSection = searchParams?.section;
+  const rawSection = queryParams.section;
   const sectionParam =
     typeof rawSection === "string" ? rawSection : Array.isArray(rawSection) ? rawSection[0] : undefined;
 

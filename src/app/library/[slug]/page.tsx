@@ -33,9 +33,10 @@ function findBookBySlug(slugRaw: unknown): Book | null {
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const book = findBookBySlug(params?.slug);
+  const { slug } = await params;
+  const book = findBookBySlug(slug);
   if (!book) {
     return {
       title: "도서를 찾을 수 없습니다",
@@ -66,13 +67,14 @@ export async function generateMetadata({
   } as const;
 }
 
-export default function LibraryBookPage({
+export default async function LibraryBookPage({
   params,
 }: {
-  params: { slug: string };
-}): React.ReactElement {
+  params: Promise<{ slug: string }>;
+}): Promise<React.ReactElement> {
 
-  const book = findBookBySlug(params?.slug);
+  const { slug } = await params;
+  const book = findBookBySlug(slug);
   if (!book) notFound();
 
   const { title, subtitle, author, imprint, isbn, cover, description } = book;

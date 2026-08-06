@@ -19,12 +19,13 @@ export function generateStaticParams() {
   }));
 }
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
-  params: { isbn: string };
-}): Metadata {
-  const book = getWriterBookByIsbn(params.isbn);
+  params: Promise<{ isbn: string }>;
+}): Promise<Metadata> {
+  const { isbn } = await params;
+  const book = getWriterBookByIsbn(isbn);
 
   if (!book) {
     return {
@@ -60,12 +61,13 @@ function ParagraphBlock({
   );
 }
 
-export default function WriterBookDetailPage({
+export default async function WriterBookDetailPage({
   params,
 }: {
-  params: { isbn: string };
+  params: Promise<{ isbn: string }>;
 }) {
-  const book = getWriterBookByIsbn(params.isbn);
+  const { isbn } = await params;
+  const book = getWriterBookByIsbn(isbn);
 
   if (!book) {
     notFound();

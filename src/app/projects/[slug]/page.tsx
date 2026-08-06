@@ -81,10 +81,11 @@ const PROJECT_DETAIL: Record<string, ProjectDetail> = {
 // ─────────────────────────────────────────────────────────────
 //   동적 메타데이터
 // ─────────────────────────────────────────────────────────────
-type Props = { params: { slug: string } };
+type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const data = PROJECT_DETAIL[params.slug];
+  const { slug } = await params;
+  const data = PROJECT_DETAIL[slug];
   if (!data) return {};
   const title = `${data.title} – 수림 스튜디오`;
   const description = data.summary;
@@ -100,7 +101,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: "article",
       locale: "ko_KR",
     },
-    alternates: { canonical: `/projects/${params.slug}` },
+    alternates: { canonical: `/projects/${slug}` },
   };
 }
 
@@ -112,8 +113,9 @@ export async function generateStaticParams() {
 // ─────────────────────────────────────────────────────────────
 //   UI
 // ─────────────────────────────────────────────────────────────
-export default function ProjectDetailPage({ params }: Props) {
-  const data = PROJECT_DETAIL[params.slug];
+export default async function ProjectDetailPage({ params }: Props) {
+  const { slug } = await params;
+  const data = PROJECT_DETAIL[slug];
   if (!data) notFound();
 
   const { title, summary, status, tags, hero, intro, highlights, cta } = data;

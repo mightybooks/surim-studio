@@ -12,12 +12,13 @@ export function generateStaticParams() {
   }));
 }
 
-export default function EditionSurimseogaDetailPage({
+export default async function EditionSurimseogaDetailPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const product = getEditionProductBySlug("surimseoga", params.slug);
+  const { slug } = await params;
+  const product = getEditionProductBySlug("surimseoga", slug);
 
   if (!product) {
     notFound();

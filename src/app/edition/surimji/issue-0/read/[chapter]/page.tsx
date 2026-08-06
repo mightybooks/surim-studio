@@ -5,9 +5,9 @@ import { supabaseServerPublic } from "@/lib/supabase/server-public";
 import ReaderShell from "../ReaderShell";
 
 type SurimjiIssue0ReadPageProps = {
-  params: {
+  params: Promise<{
     chapter: string;
-  };
+  }>;
 };
 
 const FULL_PUBLIC_CHAPTER_SLUGS = new Set(["cover", "opening-technology"]);
@@ -57,7 +57,8 @@ function createPreviewChapter(chapter: SurimjiChapter): SurimjiChapter {
 }
 
 export default async function SurimjiIssue0ReadPage({ params }: SurimjiIssue0ReadPageProps) {
-  const chapterIndex = issue0Chapters.findIndex((item) => item.slug === params.chapter);
+  const { chapter: chapterSlug } = await params;
+  const chapterIndex = issue0Chapters.findIndex((item) => item.slug === chapterSlug);
   const chapter = issue0Chapters[chapterIndex];
 
   if (!chapter) {

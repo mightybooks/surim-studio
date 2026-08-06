@@ -128,15 +128,16 @@ const WORKS: Record<string, WorkContent> = {
 };
 
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 function revealStyle(delay: number) {
   return { animationDelay: `${delay}ms` };
 }
 
-export default function WinterWasWorkPage({ params }: Props) {
-  const work = WORKS[params.slug];
+export default async function WinterWasWorkPage({ params }: Props) {
+  const { slug } = await params;
+  const work = WORKS[slug];
   if (!work) return notFound();
 
   return (

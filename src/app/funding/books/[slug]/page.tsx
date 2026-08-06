@@ -3,7 +3,19 @@ import FundingDetailPage from "@/components/funding/FundingDetailPage";
 import { notFound } from "next/navigation";
 
 type FundingConfig = {
-  product: any;
+  product: {
+    id: string;
+    type: string;
+    name: string;
+    price: number;
+    priceUsd: number;
+    delivery: string;
+    thumbnail: string;
+    detailImage: string;
+    composition: string;
+    spec: string;
+    isbn: string;
+  };
   targetBooks: number;
   source: string;
   fundingActive: boolean;
@@ -37,8 +49,9 @@ const FUNDINGS: Record<string, FundingConfig> = {
   // "new-2026": { ... fundingActive: true ... }
 };
 
-export default function Page({ params }: { params: { slug: string } }) {
-  const cfg = FUNDINGS[params.slug];
+export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const cfg = FUNDINGS[slug];
   if (!cfg) return notFound();
 
   return (
