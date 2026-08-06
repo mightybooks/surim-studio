@@ -5,7 +5,7 @@ const contentSecurityPolicy = [
   "base-uri 'self'",
   "object-src 'none'",
   "frame-ancestors 'none'",
-  "form-action 'self'",
+  "form-action 'self' https://mobile.inicis.com",
   "script-src 'self' 'unsafe-inline'" + (isDevelopment ? " 'unsafe-eval'" : "") + " https://cdn.portone.io https://developers.kakao.com https://t1.kakaocdn.net https://t1.daumcdn.net https://cloud.umami.is",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https:",
