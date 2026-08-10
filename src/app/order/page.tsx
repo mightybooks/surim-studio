@@ -30,18 +30,10 @@ export default async function OrderPage({
   const adminContext = catalogProduct.internalOnly ? await getAdminContext() : null;
   if (catalogProduct.internalOnly && !adminContext?.ok) notFound();
 
-  if (!catalogProduct.active) {
+  if (!catalogProduct.purchasable) {
     return (
       <main className="mx-auto max-w-2xl px-4 py-8">
         <p className="text-sm text-zinc-700">판매가 종료된 상품입니다.</p>
-      </main>
-    );
-  }
-
-  if (!catalogProduct.shippable) {
-    return (
-      <main className="mx-auto max-w-2xl px-4 py-8">
-        <p className="text-sm text-zinc-700">현재 주문할 수 없는 상품입니다.</p>
       </main>
     );
   }
@@ -111,6 +103,8 @@ export default async function OrderPage({
         currency={currency}
         pg={pg}
         source={catalogProduct.source}
+        isDigital={catalogProduct.isDigital}
+        requiresShipping={catalogProduct.requiresShipping}
       />
     </Suspense>
   );

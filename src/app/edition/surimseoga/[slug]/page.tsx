@@ -1,4 +1,6 @@
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
+import ProductFlipbookAutoOpen from "@/components/flipbook/ProductFlipbookAutoOpen";
 import ProductDetailPage from "@/components/shop/ProductDetailPage";
 import {
   getEditionProductBySlug,
@@ -25,11 +27,22 @@ export default async function EditionSurimseogaDetailPage({
   }
 
   return (
-    <ProductDetailPage
-      product={product}
-      ctaLabel="주문하기"
-      extraQuery={{ source: getOrderQuerySource(product) }}
-    />
+    <>
+      <ProductDetailPage
+        product={product}
+        ctaLabel="주문하기"
+        extraQuery={{ source: getOrderQuerySource(product) }}
+      />
+      {product.id === "digital-500-fiction" && (
+        <Suspense fallback={null}>
+          <ProductFlipbookAutoOpen
+            productId={product.id}
+            title={product.name}
+            cleanPath={`/edition/surimseoga/${product.slug}`}
+          />
+        </Suspense>
+      )}
+    </>
   );
 }
 

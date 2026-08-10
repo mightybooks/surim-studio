@@ -2,12 +2,14 @@ type RecipientFieldsProps = {
   recipientName: string;
   phone: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  requiresShipping?: boolean;
 };
 
 export default function RecipientFields({
   recipientName,
   phone,
   onChange,
+  requiresShipping = true,
 }: RecipientFieldsProps) {
   return (
     <section className="space-y-3">
@@ -16,7 +18,7 @@ export default function RecipientFields({
       <input
         type="text"
         name="recipientName"
-        placeholder="수령인 이름"
+        placeholder={requiresShipping ? "수령인 이름" : "주문자 이름"}
         value={recipientName}
         onChange={onChange}
         className="w-full rounded-md border px-3 py-2"

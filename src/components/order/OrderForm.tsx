@@ -28,6 +28,8 @@ export default function OrderForm({
   currency,
   pg,
   source,
+  isDigital,
+  requiresShipping,
 }: {
   productId: string;
   productName: string;
@@ -35,6 +37,8 @@ export default function OrderForm({
   currency: "KRW" | "USD";
   pg: "inicis" | "paypal";
   source: "shop" | "funding_500";
+  isDigital: boolean;
+  requiresShipping: boolean;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -154,7 +158,7 @@ export default function OrderForm({
       return;
     }
 
-    if (!validateAddress()) return;
+    if (requiresShipping && !validateAddress()) return;
 
     if (isBankTransfer && receiptType !== "NONE" && !receiptValue.trim()) {
       alert("증빙 발행 번호를 입력해 주세요.");
@@ -201,56 +205,63 @@ export default function OrderForm({
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* ✅ 수량 선택 */}
-        <section className="rounded-xl border p-4 bg-white space-y-2">
-          <div className="text-sm text-zinc-600">{qtyLabel}</div>
+        {!isDigital && (
+          <section className="rounded-xl border p-4 bg-white space-y-2">
+            <div className="text-sm text-zinc-600">{qtyLabel}</div>
 
-          <div className="flex items-center gap-3">
-            <input
-              type="number"
-              min={1}
-              max={MAX_QTY_PER_ORDER}
-              value={quantity}
-              onChange={(e) => setQuantity(Math.floor(Number(e.target.value) || 1))}
-              className="w-28 rounded-lg border px-3 py-2"
-            />
-            <div className="text-sm text-zinc-500">
-              최대 {MAX_QTY_PER_ORDER}권
+            <div className="flex items-center gap-3">
+              <input
+                type="number"
+                min={1}
+                max={MAX_QTY_PER_ORDER}
+                value={quantity}
+                onChange={(e) => setQuantity(Math.floor(Number(e.target.value) || 1))}
+                className="w-28 rounded-lg border px-3 py-2"
+              />
+              <div className="text-sm text-zinc-500">
+                최대 {MAX_QTY_PER_ORDER}권
+              </div>
             </div>
-          </div>
 
-          {isFunding && (
-            <div className="text-xs text-zinc-500 leading-relaxed">
-              펀딩 진행률은 <b>실제 구매된 권수</b> 기준으로 집계됩니다.
-            </div>
-          )}
-        </section>
+            {isFunding && (
+              <div className="text-xs text-zinc-500 leading-relaxed">
+                펀딩 진행률은 <b>실제 구매된 권수</b> 기준으로 집계됩니다.
+              </div>
+            )}
+          </section>
+        )}
 
         <RecipientFields
           recipientName={form.recipientName}
           phone={form.phone}
           onChange={handleChange}
+          requiresShipping={requiresShipping}
         />
 
-        <AddressFields
-          zipcode={form.zipcode}
-          address={form.address}
-          addressDetail={form.addressDetail}
-          onChange={handleChange}
-        />
+        {requiresShipping && (
+          <>
+            <AddressFields
+              zipcode={form.zipcode}
+              address={form.address}
+              addressDetail={form.addressDetail}
+              onChange={handleChange}
+            />
 
-        <section className="rounded-xl border p-4 bg-white space-y-2">
-          <label htmlFor="delivery_memo" className="block text-sm text-zinc-700">
-            배송 시 요청사항(특이사항)
-          </label>
-          <textarea
-            id="delivery_memo"
-            value={deliveryMemo}
-            onChange={(e) => setDeliveryMemo(e.target.value)}
-            className="w-full rounded-lg border px-3 py-2 text-sm"
-            rows={3}
-            placeholder="예) 공동현관 비밀번호, 부재 시 문 앞에 놓아주세요, 편의점 보관 등"
-          />
-        </section>
+            <section className="rounded-xl border p-4 bg-white space-y-2">
+              <label htmlFor="delivery_memo" className="block text-sm text-zinc-700">
+                배송 시 요청사항(특이사항)
+              </label>
+              <textarea
+                id="delivery_memo"
+                value={deliveryMemo}
+                onChange={(e) => setDeliveryMemo(e.target.value)}
+                className="w-full rounded-lg border px-3 py-2 text-sm"
+                rows={3}
+                placeholder="예) 공동현관 비밀번호, 부재 시 문 앞에 놓아주세요, 편의점 보관 등"
+              />
+            </section>
+          </>
+        )}
 
         {isBankTransfer && (
           <section className="rounded-xl border p-4 bg-white space-y-3">

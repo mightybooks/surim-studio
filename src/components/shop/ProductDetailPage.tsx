@@ -92,7 +92,7 @@ export default function ProductDetailPage({
       <ProductNotice type={product.type} />
 
       {/* 하단 정책 */}
-      <ProductPolicyBlock />
+      <ProductPolicyBlock type={product.type} />
     </section>
   );
 }

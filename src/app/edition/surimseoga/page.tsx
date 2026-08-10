@@ -17,7 +17,13 @@ export default function EditionSurimseogaPage() {
 
       <section className="grid gap-4 sm:grid-cols-2">
         {products.map((product, index) => (
-          <div className="reveal-up" style={revealStyle(420 + index * 90)}><EditionProductCard key={product.id ?? product.slug ?? product.name} product={product} /></div>
+          <div
+            key={product.id ?? product.slug}
+            className="reveal-up"
+            style={revealStyle(420 + index * 90)}
+          >
+            <EditionProductCard product={product} />
+          </div>
         ))}
       </section>
     </main>

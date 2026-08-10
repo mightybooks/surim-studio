@@ -1,14 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import LibraryListClient, { type LibraryItem } from "@/components/my/LibraryListClient";
 import { supabaseServer } from "@/lib/supabase/server";
-
-type LibraryOrder = {
-  id: string;
-  product_name: string;
-  status: string;
-  created_at: string;
-  source: string | null;
-};
 
 export default async function MyLibraryPage() {
   const supabase = await supabaseServer();
@@ -22,7 +15,7 @@ export default async function MyLibraryPage() {
 
   const { data: items, error } = await supabase
     .from("orders")
-    .select("id, product_name, status, created_at, source")
+    .select("id, product_id, product_name, status, created_at, source")
     .eq("user_id", user.id)
     .eq("is_digital", true)
     .in("status", ["paid", "shipped"])
@@ -43,16 +36,7 @@ export default async function MyLibraryPage() {
       ) : !items || items.length === 0 ? (
         <EmptyState>아직 보관함에 표시할 콘텐츠가 없습니다.</EmptyState>
       ) : (
-        <ul className="space-y-3">
-          {(items as LibraryOrder[]).map((item) => (
-            <li key={item.id} className="rounded-lg border border-[color:var(--border)] bg-white p-4 space-y-1">
-              <p className="font-medium">{item.product_name}</p>
-              <p className="text-sm text-neutral-600">구매일: {new Date(item.created_at).toLocaleDateString()}</p>
-              <p className="text-sm text-neutral-600">상태: 열람 가능</p>
-              {item.source ? <p className="text-xs text-neutral-400">{item.source}</p> : null}
-            </li>
-          ))}
-        </ul>
+        <LibraryListClient items={items as LibraryItem[]} />
       )}
     </main>
   );

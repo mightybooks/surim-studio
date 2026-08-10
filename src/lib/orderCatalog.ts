@@ -14,26 +14,28 @@ export type CatalogPrice = {
 export type OrderCatalogProduct = {
   id: string;
   name: string;
-  active: boolean;
+  purchasable: boolean;
+  isDigital: boolean;
+  requiresShipping: boolean;
   internalOnly?: boolean;
   source: "shop" | "funding_500";
   prices: Partial<Record<Currency, CatalogPrice>>;
   allowedPgs: PaymentGateway[];
-  shippable: boolean;
 };
 
 const FUNDING_PRODUCTS: OrderCatalogProduct[] = [
   {
     id: "funding_500_2026_01",
     name: "문수림의『500자 소설』(펀딩)",
-    active: false,
+    purchasable: false,
+    isDigital: false,
+    requiresShipping: true,
     source: "funding_500",
     prices: {
       KRW: { currency: "KRW", unitAmountMinor: 11000 },
       USD: { currency: "USD", unitAmountMinor: 2200 },
     },
     allowedPgs: ["inicis", "paypal"],
-    shippable: true,
   },
 ];
 
@@ -41,7 +43,9 @@ const INTERNAL_PRODUCTS: OrderCatalogProduct[] = [
   {
     id: "payment-channel-smoke-20260806",
     name: "결제수단 점검용 상품",
-    active: true,
+    purchasable: true,
+    isDigital: false,
+    requiresShipping: true,
     internalOnly: true,
     source: "shop",
     prices: {
@@ -49,7 +53,6 @@ const INTERNAL_PRODUCTS: OrderCatalogProduct[] = [
       USD: { currency: "USD", unitAmountMinor: 100 },
     },
     allowedPgs: ["inicis", "paypal"],
-    shippable: true,
   },
 ];
 
@@ -58,10 +61,13 @@ export function getOrderCatalogProduct(id: string): OrderCatalogProduct | null {
   const edition = getEditionProductById(normalized);
   if (edition) {
     const goods = isGoodsProduct(edition);
+    const isDigital = edition.type === "DIGITAL";
     return {
       id: normalized,
       name: edition.name,
-      active: true,
+      purchasable: true,
+      isDigital,
+      requiresShipping: !isDigital,
       source: "shop",
       prices: {
         KRW: { currency: "KRW", unitAmountMinor: edition.price },
@@ -75,7 +81,6 @@ export function getOrderCatalogProduct(id: string): OrderCatalogProduct | null {
           : {}),
       },
       allowedPgs: goods ? ["inicis"] : ["inicis", "paypal"],
-      shippable: true,
     };
   }
   return (

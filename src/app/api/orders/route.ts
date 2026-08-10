@@ -35,12 +35,14 @@ export async function POST(req: Request) {
     const adminContext = await getAdminContext();
     if (!adminContext.ok) return error("존재하지 않는 상품입니다.", 404);
   }
-  if (!product.active) return error("판매가 종료된 상품입니다.", 410);
-  if (!product.shippable) return error("현재 배송할 수 없는 상품입니다.", 403);
+  if (!product.purchasable) return error("판매가 종료된 상품입니다.", 410);
 
   const quantity = Number(body.quantity ?? 1);
   if (!Number.isSafeInteger(quantity) || quantity < 1 || quantity > MAX_QTY_PER_ORDER) {
     return error("수량이 올바르지 않습니다.", 400);
+  }
+  if (product.isDigital && quantity !== 1) {
+    return error("디지털 상품은 한 번에 1개만 주문할 수 있습니다.", 400);
   }
 
   const currency = cleanSingleLine(body.currency ?? "KRW", 3)?.toUpperCase();
@@ -66,14 +68,25 @@ export async function POST(req: Request) {
 
   const recipientName = cleanSingleLine(body.recipientName, 80);
   const phone = cleanSingleLine(body.phone, 24);
-  const zipcode = cleanSingleLine(body.zipcode, 12);
-  const address = cleanSingleLine(body.address, 300);
-  const addressDetail = cleanSingleLine(body.addressDetail, 200);
-  const deliveryMemo = cleanSingleLine(body.delivery_memo, 300);
-  if (!recipientName || !phone || !zipcode || !address || addressDetail === null || deliveryMemo === null) {
+  const zipcode = product.requiresShipping ? cleanSingleLine(body.zipcode, 12) : "";
+  const address = product.requiresShipping ? cleanSingleLine(body.address, 300) : "";
+  const addressDetail = product.requiresShipping ? cleanSingleLine(body.addressDetail, 200) : "";
+  const deliveryMemo = product.requiresShipping
+    ? cleanSingleLine(body.delivery_memo, 300)
+    : null;
+  if (
+    !recipientName ||
+    !phone ||
+    (product.requiresShipping && (!zipcode || !address || addressDetail === null || deliveryMemo === null))
+  ) {
     return error("필수 주문 정보가 누락되었거나 너무 깁니다.", 400);
   }
-  if (!PHONE_PATTERN.test(phone) || !ZIPCODE_PATTERN.test(zipcode)) return error("전화번호 또는 우편번호 형식이 올바르지 않습니다.", 400);
+  if (
+    !PHONE_PATTERN.test(phone) ||
+    (product.requiresShipping && (!zipcode || !ZIPCODE_PATTERN.test(zipcode)))
+  ) {
+    return error("전화번호 또는 우편번호 형식이 올바르지 않습니다.", 400);
+  }
 
   const receiptType = cleanSingleLine(body.receipt_type ?? "NONE", 8)?.toUpperCase();
   if (!receiptType || !["NONE", "CASH", "BUSINESS"].includes(receiptType)) return error("증빙 유형이 올바르지 않습니다.", 400);
@@ -148,6 +161,7 @@ export async function POST(req: Request) {
     buyer_email: profile.contact_email,
     portone_payment_id: orderId,
     status: "pending",
+    is_digital: product.isDigital,
   });
   if (insertError) {
     console.error("order insert failed", { code: insertError.code });

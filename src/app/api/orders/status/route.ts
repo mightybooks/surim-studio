@@ -25,7 +25,7 @@ export async function GET(req: Request) {
   // disclosing whether another user's order exists.
   const { data: order, error } = await supabase
     .from("orders")
-    .select("status")
+    .select("status, product_id")
     .eq("id", orderId)
     .eq("user_id", user.id)
     .maybeSingle();
@@ -34,5 +34,9 @@ export async function GET(req: Request) {
     return NextResponse.json({ ok: false, error: "NOT_FOUND" }, { status: 404 });
   }
 
-  return NextResponse.json({ ok: true, status: String(order.status ?? "").trim() });
+  return NextResponse.json({
+    ok: true,
+    status: String(order.status ?? "").trim(),
+    productId: String(order.product_id ?? "").trim(),
+  });
 }

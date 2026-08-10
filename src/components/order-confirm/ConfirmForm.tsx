@@ -10,6 +10,7 @@ import ConfirmPaymentButtons from "./ConfirmPaymentButtons";
 
 type Order = {
   id: string;
+  product_id: string;
   product_name: string;
 
   // ✅ 결제 기준(최소단위)
@@ -34,6 +35,12 @@ type Order = {
 type PaymentMethod = "bank_transfer" | "card" | "paypal";
 type PaypalUiState = "idle" | "loading" | "ready" | "error";
 
+const DIGITAL_FLIPBOOK_PRODUCT_ID = "digital-500-fiction";
+const DIGITAL_FLIPBOOK_READER_HREF =
+  "/edition/surimseoga/500-fiction-digital?open=reader";
+const PAYMENT_STATUS_POLL_INTERVAL_MS = 2000;
+const PAYMENT_STATUS_MAX_ATTEMPTS = 30;
+
 export default function ConfirmForm() {
   const router = useRouter();
   const params = useSearchParams();
@@ -49,6 +56,8 @@ export default function ConfirmForm() {
   const [loading, setLoading] = useState(false);
   const [expired, setExpired] = useState(false);
   const [showDelayNotice, setShowDelayNotice] = useState(false);
+  const [paymentCheckDelayed, setPaymentCheckDelayed] = useState(false);
+  const [paymentCheckAttempt, setPaymentCheckAttempt] = useState(0);
   const [copyDone, setCopyDone] = useState(false);
   const [paypalUiState, setPaypalUiState] = useState<PaypalUiState>("idle");
   const [paypalUiError, setPaypalUiError] = useState<string | null>(null);
@@ -73,6 +82,7 @@ export default function ConfirmForm() {
         setLoading(false);
       } else {
         setShowDelayNotice(false);
+        setPaymentCheckDelayed(false);
         setLoading(true);
       }
     });
@@ -139,41 +149,73 @@ export default function ConfirmForm() {
   useEffect(() => {
     if (!orderId || !loading) return;
 
-    const timer = setInterval(async () => {
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    let attempts = 0;
+
+    const checkStatus = async () => {
+      attempts += 1;
+
       try {
         const res = await fetch(`/api/orders/status?orderId=${orderId}`, {
           cache: "no-store",
         });
         const json = await res.json();
-        if (!json?.ok) return;
+        if (cancelled) return;
 
-        const status = json.status as string;
+        if (json?.ok) {
+          const status = String(json.status ?? "");
+          const productId = String(json.productId ?? "");
 
-        if (status === "paid" || status === "shipped") {
-          clearInterval(timer);
-          router.replace(`/order/complete?orderId=${orderId}`);
-          return;
-        }
+          if (status === "paid") {
+            router.replace(
+              productId === DIGITAL_FLIPBOOK_PRODUCT_ID
+                ? DIGITAL_FLIPBOOK_READER_HREF
+                : `/order/complete?orderId=${orderId}`,
+            );
+            return;
+          }
 
-        if (status === "expired") {
-          clearInterval(timer);
-          setExpired(true);
-          setLoading(false);
-          return;
-        }
+          if (status === "shipped") {
+            router.replace(`/order/complete?orderId=${orderId}`);
+            return;
+          }
 
-        if (status === "failed") {
-          clearInterval(timer);
-          setLoading(false);
-          return;
+          if (status === "expired") {
+            setExpired(true);
+            setLoading(false);
+            return;
+          }
+
+          if (status === "failed") {
+            setLoading(false);
+            return;
+          }
         }
       } catch (e) {
         console.error("POLLING ERROR", e);
       }
-    }, 2000);
 
-    return () => clearInterval(timer);
-  }, [orderId, loading, router]);
+      if (cancelled) return;
+      if (attempts >= PAYMENT_STATUS_MAX_ATTEMPTS) {
+        setShowDelayNotice(false);
+        setPaymentCheckDelayed(true);
+        setLoading(false);
+        return;
+      }
+
+      timer = setTimeout(() => {
+        void checkStatus();
+      }, PAYMENT_STATUS_POLL_INTERVAL_MS);
+    };
+
+    void checkStatus();
+
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+    };
+  }, [orderId, loading, paymentCheckAttempt, router]);
 
   useEffect(() => {
     if (!loading) return;
@@ -263,6 +305,7 @@ export default function ConfirmForm() {
               }
               setPaypalUiError(null);
               setShowDelayNotice(false);
+              setPaymentCheckDelayed(false);
               setLoading(true);
             },
             onPaymentFail: (error) => {
@@ -331,6 +374,13 @@ export default function ConfirmForm() {
     }
   };
 
+  const retryPaymentStatus = () => {
+    setShowDelayNotice(false);
+    setPaymentCheckDelayed(false);
+    setPaymentCheckAttempt((attempt) => attempt + 1);
+    setLoading(true);
+  };
+
   /* -----------------------------
      결제 요청
   ----------------------------- */
@@ -368,6 +418,7 @@ export default function ConfirmForm() {
       return;
     }
     setShowDelayNotice(false);
+    setPaymentCheckDelayed(false);
     setLoading(true);
 
     try {
@@ -438,13 +489,15 @@ export default function ConfirmForm() {
             currency={order.currency}
           />
 
-          <ConfirmAddress
-            recipientName={order.recipient_name}
-            phone={order.phone}
-            zipcode={order.zipcode}
-            address={order.address}
-            addressDetail={order.address_detail}
-          />
+          {order.product_id !== DIGITAL_FLIPBOOK_PRODUCT_ID && (
+            <ConfirmAddress
+              recipientName={order.recipient_name}
+              phone={order.phone}
+              zipcode={order.zipcode}
+              address={order.address}
+              addressDetail={order.address_detail}
+            />
+          )}
 
           {/* ✅ PayPal은 이 컨테이너에 버튼 렌더 */}
           {order.delivery_memo && (
@@ -505,7 +558,7 @@ export default function ConfirmForm() {
               )}
               <div
                 ref={paypalContainerRef}
-                className={`portone-ui-container ${loading ? "pointer-events-none opacity-60" : ""}`}
+                className={`portone-ui-container ${loading || paymentCheckDelayed ? "pointer-events-none opacity-60" : ""}`}
                 data-portone-ui-type="paypal-spb"
               />
             </section>
@@ -550,9 +603,25 @@ export default function ConfirmForm() {
             </section>
           )}
 
+          {paymentCheckDelayed && (
+            <section className="space-y-3 rounded-xl border border-blue-200 bg-blue-50 p-4 text-center">
+              <p className="text-sm text-blue-700">
+                결제 확인이 지연되고 있습니다.<br />
+                결제를 다시 시도하지 말고 상태를 다시 확인해 주세요.
+              </p>
+              <button
+                type="button"
+                onClick={retryPaymentStatus}
+                className="rounded-lg border border-blue-300 bg-white px-4 py-2 text-sm font-medium text-blue-800 hover:bg-blue-100"
+              >
+                결제 상태 다시 확인
+              </button>
+            </section>
+          )}
+
           {!isBankTransfer && !isPaypal && (
             <ConfirmPaymentButtons
-              loading={loading || expired}
+              loading={loading || expired || paymentCheckDelayed}
               onPay={requestPayment}
             />
           )}

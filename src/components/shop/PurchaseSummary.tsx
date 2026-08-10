@@ -33,6 +33,8 @@ export default function PurchaseSummary({
   const isAndroid = platform === "android";
   const isInApp = useMemo(() => isInAppBrowser(ua), [ua]);
   const isGoods = useMemo(() => isGoodsProduct(product), [product]);
+  const isDigital = product.type === "DIGITAL";
+  const hasUsdPrice = Number.isFinite(product.priceUsd) && Number(product.priceUsd) > 0;
 
   async function copyCurrentUrl() {
     const url = typeof window !== "undefined" ? window.location.href : "";
@@ -107,9 +109,11 @@ export default function PurchaseSummary({
           currency: "KRW",
         })}
       </div>
-      {product.priceUsd !== undefined && product.priceUsd !== null && (
+      {hasUsdPrice && (
         <div className="text-sm text-zinc-500">
-          약 {formatMajorMoney({ amount_major: product.priceUsd, currency: "USD" })} USD
+          {isDigital ? "PayPal USD " : "약 "}
+          {formatMajorMoney({ amount_major: Number(product.priceUsd), currency: "USD" })}
+          {!isDigital && " USD"}
         </div>
       )}
 
@@ -136,7 +140,7 @@ export default function PurchaseSummary({
         }}
         className="mt-3 w-full rounded-xl bg-[#8b3a62] px-4 py-3 font-semibold text-white transition hover:bg-[#7a3256] disabled:opacity-50"
       >
-        국내주문 계좌이체
+        {isDigital ? "디지털판 구매 · 계좌이체" : "국내주문 계좌이체"}
       </button>
 
       <button
@@ -152,16 +156,16 @@ export default function PurchaseSummary({
         }}
         className="w-full rounded-xl bg-emerald-700 px-4 py-3 font-semibold text-white transition hover:bg-emerald-800 disabled:opacity-50"
       >
-        국내주문 카드결제
+        {isDigital ? "디지털판 구매 · 카드결제" : "국내주문 카드결제"}
       </button>
 
-      {!isGoods && (
+      {!isGoods && hasUsdPrice && (
         <button
           onClick={() => {
             if (guardInAppForPay()) return;
             const usdMinor = majorToMinor(Number(product.priceUsd), "USD");
             if (!usdMinor || usdMinor <= 0) return;
-            goOrder("/order/intl", {
+            goOrder(isDigital ? "/order" : "/order/intl", {
               amount_minor: String(usdMinor),
               currency: "USD",
               payRegion: "OVERSEAS",
@@ -171,11 +175,15 @@ export default function PurchaseSummary({
           }}
           className="w-full rounded-xl bg-[#003087] px-4 py-3 font-semibold text-white transition hover:bg-[#001f5c] disabled:opacity-50"
         >
-          해외주문 PayPal
+          {isDigital
+            ? `PayPal · ${formatMajorMoney({ amount_major: Number(product.priceUsd), currency: "USD" })}`
+            : "해외주문 PayPal"}
         </button>
       )}
 
-      {isGoods ? (
+      {isDigital ? (
+        <div className="text-xs text-zinc-500">결제 완료 후 계정에 디지털 열람 권한이 부여됩니다.</div>
+      ) : isGoods ? (
         <div className="text-xs text-zinc-500">이 상품은 국내 배송 전용입니다.</div>
       ) : (
         <div className="text-xs text-zinc-500">해외결제는 USD로 진행됩니다.</div>
